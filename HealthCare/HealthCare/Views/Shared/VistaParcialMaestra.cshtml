@@ -1,0 +1,18 @@
+﻿@model IEnumerable<string>
+<div>
+
+    Esto es lo que apareceria en la vista parcial Maestra ---la plantilla para otras vistas---
+    lo que venia siendo las MasterPage en los webforms
+    @Html.ActionLink("enlace a Index accion", "Index");
+
+</div>
+
+<div>
+    <ul>
+        <!-- @Model.ToList().Select(x => "<li>" + x + "</li>"); -->
+        @foreach(string elem in Model)
+        {
+            <li>@elem</li>
+        }
+    </ul>
+</div>
