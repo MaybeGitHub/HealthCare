@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="MiBBDD" Class="MiDBContextDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=(localdb)\ProjectsV12;Initial Catalog=MiBBDD;Integrated Security=True;Connect Timeout=30" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="MiBBDDConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Clientes" Member="Clientes">
+    <Type Name="Clientes">
+      <Column Name="SS" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Apellidos" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Telefono" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Edad" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Association Name="Clientes_Direcciones" Member="Direcciones" ThisKey="SS" OtherKey="IDDueño" Type="Direcciones" Cardinality="One" />
+      <Association Name="Clientes_Prescripciones" Member="Prescripciones" ThisKey="SS" OtherKey="IDCliente" Type="Prescripciones" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Direcciones" Member="Direcciones">
+    <Type Name="Direcciones">
+      <Column Name="IDDueño" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Calle" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Numero" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Puerta" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
+      <Column Name="[Codigo Postal]" Member="Codigo_Postal" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Detalles" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Portal" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Piso" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Empresas_Direcciones" Member="Empresas" ThisKey="IDDueño" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
+      <Association Name="Clientes_Direcciones" Member="Clientes" ThisKey="IDDueño" OtherKey="SS" Type="Clientes" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Empleados" Member="Empleados">
+    <Type Name="Empleados">
+      <Column Name="IDEmpleado" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Profesion" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Valoracion" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IDEmpresa" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Empleados_Empresas" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresas" Cardinality="One" />
+      <Association Name="Prescripciones_Empleados" Member="Prescripciones" ThisKey="IDEmpleado" OtherKey="IDEmpleado" Type="Prescripciones" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Empresas" Member="Empresas">
+    <Type Name="Empresas">
+      <Column Name="IDEmpresa" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Tipo" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Telefono" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Empresas_Direcciones" Member="Direcciones" ThisKey="IDEmpresa" OtherKey="IDDueño" Type="Direcciones" Cardinality="One" />
+      <Association Name="Empleados_Empresas" Member="Empleados" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empleados" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Items" Member="Items">
+    <Type Name="Items">
+      <Column Name="IDItem" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="IDPrescripcion" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Tipo" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Detalles" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="Prescripciones_Items" Member="Prescripciones" ThisKey="IDPrescripcion" OtherKey="IDPrescripcion" Type="Prescripciones" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Prescripciones" Member="Prescripciones">
+    <Type Name="Prescripciones">
+      <Column Name="IDPrescripcion" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="IDCliente" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IDEmpleado" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Seguro" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Member="Estado" Type="System.Int32" CanBeNull="false" />
+      <Association Name="Prescripciones_Empleados" Member="Empleados" ThisKey="IDEmpleado" OtherKey="IDEmpleado" Type="Empleados" Cardinality="One" />
+      <Association Name="Prescripciones_Items" Member="Items" ThisKey="IDPrescripcion" OtherKey="IDPrescripcion" Type="Items" />
+      <Association Name="Clientes_Prescripciones" Member="Clientes" ThisKey="IDCliente" OtherKey="SS" Type="Clientes" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>

@@ -1,0 +1,94 @@
+﻿@model HealthCare.Models.Clientes
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/Content/bootstrap-theme.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <title>Bienvenido</title>
+</head>
+<body>
+    <center>
+        <div id="Principal">
+            <h1><u>Principal</u></h1>
+            <input type="button" value="Domestico" id="btn_Domestico" />
+            <input type="button" value="Mascotas" id="btn_Mascotas" />
+            <input type="button" value="Salud" id="btn_Salud" />
+            <input type="button" value="Cuidados" id="btn_Cuidados" />
+        </div>
+        <div hidden="hidden" id="Domestico">
+            <h1><u>Domestico</u></h1>
+            <input type="button" value="Labores Domesticas" id="btn_Domestico_Asistencia" />
+            <input type="button" value="Cocina" id="btn_Domestico_Cocina" />
+        </div>
+        <div hidden="hidden" id="Mascotas">
+            <h1><u>Mascotas</u></h1>
+            <input type="button" value="Consulta de Mascotas Comunes" id="btn_Mascotas_Comunes" />
+            <input type="button" value="Consulta de Mascotas Exoticas" id="btn_Mascotas_Exoticas" />
+            <input type="button" value="Cuidados Cosmeticos" id="btn_Mascotas_Cosmeticos" />
+            <input type="button" value="Cuidados Especiales" id="btn_Mascotas_Especiales" />
+        </div>
+        <div hidden="hidden" id="Salud">
+            <h1><u>Salud</u></h1>
+            <input type="button" value="Medicina General" id="btn_Salud_Medicina" />
+            <input type="button" value="Farmacia" id="btn_Salud_Farmacia" />
+            <input type="button" value="Tratamientos" id="btn_Salud_Tratamientos" />
+            <input type="button" value="Rehabilitacion" id="btn_Salud_Rehabilitacion" />
+            <input type="button" value="Dentista" id="btn_Salud_Dentista" />
+        </div>
+        <div hidden="hidden" id="Cuidados">
+            <h1><u>Cuidados</u></h1>
+            <input type="button" value="Peluqueria y Cosmetica" id="btn_Cuidados_Peluqueria" />
+            <input type="button" value="Compañia y Asistencia" id="btn_Cuidados_Compañia" />
+            <input type="button" value="Ocio y Bienestar" id="btn_Cuidados_Compañia" />
+        </div>
+        <input type="button" value="Volver" id="btn_Volver" hidden="hidden" />
+        <br />
+        <br />
+    </center>
+
+    @{
+        int cuantos = Model.Prescripciones.Where(x => x.IDCliente == Model.SS).Count();
+        string salida = "";
+        if(cuantos != 0)
+        {
+            salida = "Tiene " + cuantos + (cuantos == 1 ? " prescripción" : " prescripciones") + " a la espera";
+        }
+        else
+        {
+            salida = "No tiene prescripciones a la espera";
+        }
+    }
+
+    <input type="button" value="@salida" id="btn_Prescripciones" />   
+
+    <script>
+        var cual;
+        $("#Principal > input").each(function (pos, el) {
+            el.onclick = function () {
+                cual = el.id.split("_")[1];
+                $("#Principal").attr("hidden","hidden");
+                $("#" + cual).attr("hidden", null);
+                $("#btn_Volver").attr("hidden", null);
+            };            
+        })
+
+        $("#btn_Volver").on("click", function () {
+            if ($("#Principal").hidden == "undefined") {
+                window.location.href("Index.cshtml");
+            } else {
+                $("#Principal").attr("hidden", null);
+                $("#btn_Volver").attr("hidden", "hidden");
+                $("#" + cual).attr("hidden", "hidden");
+            }
+        })        
+    </script>
+</body>
+</html>

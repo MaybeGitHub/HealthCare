@@ -1,28 +1,22 @@
-﻿
+﻿@model HealthCare.Models.Clientes
+
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
 }
 
 <!DOCTYPE html>
 
 <html>
-@section Header{
-    <head>
-        <meta name="viewport" content="width=device-width" />
-        <title>Index</title>
-    </head>
-}
-@section Body{
-    <body>
-        <div>
-            Login :<input id="txt_Login" type="text" />
-            PassWord :<input id="txt_Password" type="text" />
-            <input id="boton" type="button" value="Entrar" />
-            <script>
-
-
-            </script>
-        </div>
-    </body>
-}     
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div> 
+        @Html.BeginForm()
+            @Html.ValidationSummary()
+            @Html.TextBoxFor(x => x.SS)
+            <input type="submit" value="Entrar" />
+    </div>
+</body>
 </html>
