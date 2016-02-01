@@ -27,8 +27,12 @@ namespace HealthCare.Controllers
             catch(InvalidOperationException)
             {
                 return null;
-            }
-            
+            }            
+        }
+
+        public List<Empresas> getEmpresas(string sector, string especializacion)
+        {
+            return db.Empresas.Where(x => x.Sector == sector && x.Especializacion == especializacion).ToList();
         }
 
         public Direcciones getDireccion(Clientes cliente)
@@ -41,14 +45,26 @@ namespace HealthCare.Controllers
             return db.Direcciones.Single(x => x.IDDueño == empresa.IDEmpresa);
         }
 
-        public List<Prescripciones> getPrescripcion(Clientes cliente)
+        public Prescripciones getPrescripcion(int idPrescripcion)
+        {
+            return db.Prescripciones.Single(x => x.IDPrescripcion == idPrescripcion);
+        }
+
+        public List<Prescripciones> getPrescripciones(Clientes cliente)
         {
             return db.Prescripciones.Where(x => x.IDCliente == cliente.SS).ToList();
+        }
+
+        public Empresas getEmpresa(int iDEmpresa)
+        {
+            return db.Empresas.Single(x => x.IDEmpresa == iDEmpresa);
         }
 
         public List<Items> getItems(Prescripciones prescripcion)
         {
             return db.Items.Where(x => x.IDPrescripcion == prescripcion.IDPrescripcion).ToList();
         }
+        
+
     }
 }

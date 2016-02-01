@@ -1,6 +1,4 @@
-﻿@model HealthCare.Models.Clientes
-
-@{
+﻿@{
     Layout = null;
 }
 
@@ -13,10 +11,11 @@
 </head>
 <body>
     <div> 
-        @Html.BeginForm()
+        <form method="post" action="/Home/Index">
             @Html.ValidationSummary()
-            @Html.TextBoxFor(x => x.SS)
+            Nº Seguridad Social:<input type="text" name="SS" />
             <input type="submit" value="Entrar" />
+        </form> 
     </div>
 </body>
 </html>

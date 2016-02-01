@@ -10,6 +10,7 @@
       <Column Name="Email" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Association Name="Clientes_Direcciones" Member="Direcciones" ThisKey="SS" OtherKey="IDDueño" Type="Direcciones" Cardinality="One" />
       <Association Name="Clientes_Prescripciones" Member="Prescripciones" ThisKey="SS" OtherKey="IDCliente" Type="Prescripciones" />
+      <Association Name="Solicitudes_Clientes" Member="Solicitudes" ThisKey="SS" OtherKey="IdCliente" Type="Solicitudes" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Direcciones" Member="Direcciones">
@@ -22,30 +23,8 @@
       <Column Name="Detalles" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="Portal" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Piso" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Association Name="Empresas_Direcciones" Member="Empresas" ThisKey="IDDueño" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
       <Association Name="Clientes_Direcciones" Member="Clientes" ThisKey="IDDueño" OtherKey="SS" Type="Clientes" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Empleados" Member="Empleados">
-    <Type Name="Empleados">
-      <Column Name="IDEmpleado" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Profesion" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Valoracion" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="IDEmpresa" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Empleados_Empresas" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresas" Cardinality="One" />
-      <Association Name="Prescripciones_Empleados" Member="Prescripciones" ThisKey="IDEmpleado" OtherKey="IDEmpleado" Type="Prescripciones" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Empresas" Member="Empresas">
-    <Type Name="Empresas">
-      <Column Name="IDEmpresa" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Tipo" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Telefono" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Email" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Association Name="Empresas_Direcciones" Member="Direcciones" ThisKey="IDEmpresa" OtherKey="IDDueño" Type="Direcciones" Cardinality="One" />
-      <Association Name="Empleados_Empresas" Member="Empleados" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empleados" IsForeignKey="true" />
+      <Association Name="Empresas_Direcciones" Member="Empresas" ThisKey="IDDueño" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Items" Member="Items">
@@ -62,12 +41,36 @@
     <Type Name="Prescripciones">
       <Column Name="IDPrescripcion" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="IDCliente" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="IDEmpleado" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IDEmpleado" Member="IDEmpresa" Storage="_IDEmpleado" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Seguro" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Member="Estado" Type="System.Int32" CanBeNull="false" />
-      <Association Name="Prescripciones_Empleados" Member="Empleados" ThisKey="IDEmpleado" OtherKey="IDEmpleado" Type="Empleados" Cardinality="One" />
+      <Column Name="Estado" Type="System.Int32" CanBeNull="false" />
       <Association Name="Prescripciones_Items" Member="Items" ThisKey="IDPrescripcion" OtherKey="IDPrescripcion" Type="Items" />
+      <Association Name="Prescripciones_Empresas" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresas" Cardinality="One" />
       <Association Name="Clientes_Prescripciones" Member="Clientes" ThisKey="IDCliente" OtherKey="SS" Type="Clientes" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Empresas" Member="Empresas">
+    <Type Name="Empresas">
+      <Column Name="IDEmpresa" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Especializacion" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Telefono" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Descripcion" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Valoracion" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Sector" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Empresas_Direcciones" Member="Direcciones" ThisKey="IDEmpresa" OtherKey="IDDueño" Type="Direcciones" Cardinality="One" />
+      <Association Name="Prescripciones_Empresas" Member="Prescripciones" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Prescripciones" IsForeignKey="true" />
+      <Association Name="Solicitudes_Empresas" Member="Solicitudes" ThisKey="IDEmpresa" OtherKey="idEmpresa" Type="Solicitudes" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Solicitudes" Member="Solicitudes">
+    <Type Name="Solicitudes">
+      <Column Name="IdCliente" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="idEmpresa" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="hora" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Association Name="Solicitudes_Clientes" Member="Clientes" ThisKey="IdCliente" OtherKey="SS" Type="Clientes" Cardinality="One" />
+      <Association Name="Solicitudes_Empresas" Member="Empresas" ThisKey="idEmpresa" OtherKey="IDEmpresa" Type="Empresas" Cardinality="One" />
     </Type>
   </Table>
 </Database>

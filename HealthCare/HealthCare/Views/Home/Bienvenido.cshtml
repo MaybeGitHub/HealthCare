@@ -21,74 +21,160 @@
             <input type="button" value="Domestico" id="btn_Domestico" />
             <input type="button" value="Mascotas" id="btn_Mascotas" />
             <input type="button" value="Salud" id="btn_Salud" />
-            <input type="button" value="Cuidados" id="btn_Cuidados" />
+            <input type="button" value="Bienestar" id="btn_Bienestar" />
         </div>
         <div hidden="hidden" id="Domestico">
             <h1><u>Domestico</u></h1>
-            <input type="button" value="Labores Domesticas" id="btn_Domestico_Asistencia" />
+            <input type="button" value="Labores Domesticas" id="btn_Domestico_Labores Domesticas" />
             <input type="button" value="Cocina" id="btn_Domestico_Cocina" />
         </div>
         <div hidden="hidden" id="Mascotas">
             <h1><u>Mascotas</u></h1>
             <input type="button" value="Consulta de Mascotas Comunes" id="btn_Mascotas_Comunes" />
             <input type="button" value="Consulta de Mascotas Exoticas" id="btn_Mascotas_Exoticas" />
-            <input type="button" value="Cuidados Cosmeticos" id="btn_Mascotas_Cosmeticos" />
-            <input type="button" value="Cuidados Especiales" id="btn_Mascotas_Especiales" />
+            <input type="button" value="Cuidados Cosmeticos" id="btn_Mascotas_Cuidados Cosmeticos" />
+            <input type="button" value="Cuidados Especiales" id="btn_Mascotas_Cuidados Especiales" />
         </div>
         <div hidden="hidden" id="Salud">
             <h1><u>Salud</u></h1>
-            <input type="button" value="Medicina General" id="btn_Salud_Medicina" />
+            <input type="button" value="Medicina General" id="btn_Salud_Medicina General" />
             <input type="button" value="Farmacia" id="btn_Salud_Farmacia" />
             <input type="button" value="Tratamientos" id="btn_Salud_Tratamientos" />
             <input type="button" value="Rehabilitacion" id="btn_Salud_Rehabilitacion" />
-            <input type="button" value="Dentista" id="btn_Salud_Dentista" />
+            <input type="button" value="Especialistas" id="btn_Salud_Especialistas" />
         </div>
-        <div hidden="hidden" id="Cuidados">
-            <h1><u>Cuidados</u></h1>
-            <input type="button" value="Peluqueria y Cosmetica" id="btn_Cuidados_Peluqueria" />
-            <input type="button" value="Compañia y Asistencia" id="btn_Cuidados_Compañia" />
-            <input type="button" value="Ocio y Bienestar" id="btn_Cuidados_Compañia" />
+        <div hidden="hidden" id="Bienestar">
+            <h1><u>Bienestar</u></h1>
+            <input type="button" value="Cosmetica" id="btn_Bienestar_Cosmetica" />
+            <input type="button" value="Ocio" id="btn_Bienestar_Ocio" />
         </div>
-        <input type="button" value="Volver" id="btn_Volver" hidden="hidden" />
+        <input type="button" value="Volver" id="btn_Volver" hidden="hidden" />        
+    </center> 
+    <br />
+
+    <p id="sector">Ningun sector seleccionado</p>
+    <form method="post" action="/Home/solicitudServicio">
+        @Html.Hidden("IDEmpresa")
+        @Html.Hidden("IDCliente", Model.SS)
+        <ul id="lista"></ul> 
+    </form>
+          
         <br />
-        <br />
-    </center>
+        @{
+            int cuantos = Model.Prescripciones.Where(x => x.IDCliente == Model.SS).Count();
+            string salida = "";
+            if (cuantos == 0)
+            {
+                salida = "No tiene prescripciones a la espera";
+            }
+            else
+            {
+                salida = "Tiene " + cuantos + (cuantos == 1 ? " prescripción" : " prescripciones") + " a la espera";
+            }
+        }        
+        
+        <input type="button" value="@salida" id="btn_Prescripciones" />
+        
+        <div id="prescripciones"></div>
+        <script>
+            var cual;
+            $("#Principal > input").each(function (pos, el) {
+                el.onclick = function () {
+                    cual = el.id.split("_")[1];
+                    $("#sector").text(cual);
+                    $("#Principal").attr("hidden", "hidden");
+                    $("#" + cual).attr("hidden", null);
+                    $("#btn_Volver").attr("hidden", null);
+                };
+            })
 
-    @{
-        int cuantos = Model.Prescripciones.Where(x => x.IDCliente == Model.SS).Count();
-        string salida = "";
-        if(cuantos != 0)
-        {
-            salida = "Tiene " + cuantos + (cuantos == 1 ? " prescripción" : " prescripciones") + " a la espera";
-        }
-        else
-        {
-            salida = "No tiene prescripciones a la espera";
-        }
-    }
-
-    <input type="button" value="@salida" id="btn_Prescripciones" />   
-
-    <script>
-        var cual;
-        $("#Principal > input").each(function (pos, el) {
-            el.onclick = function () {
-                cual = el.id.split("_")[1];
-                $("#Principal").attr("hidden","hidden");
-                $("#" + cual).attr("hidden", null);
-                $("#btn_Volver").attr("hidden", null);
-            };            
-        })
-
-        $("#btn_Volver").on("click", function () {
-            if ($("#Principal").hidden == "undefined") {
-                window.location.href("Index.cshtml");
-            } else {
+            $("#btn_Volver").on("click", function () {
+                $("#lista").empty();
                 $("#Principal").attr("hidden", null);
                 $("#btn_Volver").attr("hidden", "hidden");
                 $("#" + cual).attr("hidden", "hidden");
-            }
-        })        
-    </script>
+                $("#sector").text("Ningun sector seleccionado");
+            })
+
+            var especifico;
+
+            $("input").not("#Principal > input").not("#btn_Volver").not("#btn_Prescripciones").each(function (pos, el) {
+                el.onclick = function () {
+                    $("#lista").empty();
+                    especifico = el.id.split("_")[2];
+                    $("#sector").text(cual + " : " + especifico);
+                    $.ajax({
+                        url: "http://localhost:18500/Home/obtenerEmpresas?sector=" + cual + "&especializacion=" + especifico
+                    }).done(function (data) {
+                        var json = JSON.parse(data)
+                        if (json.length > 0) {
+                            json.forEach(function (el, pos, ar) {
+                                $("#lista").append("<input type='submit' value='Nombre : " + el.Nombre + "   con valoracion : " + el.Valoracion + "' id=" + el.IDEmpresa + " />")
+                            })
+
+                            $("#lista > input").on("click", function(el) {
+                                $("#IDEmpresa").val(el.target.id)
+                            })
+                        } else {
+                            $("#lista").append("<li>No hay empresas aun registradas en este campo. Lo sentimos</li>");
+                        }
+                    });
+                }
+            })                     
+
+            var timerON = false;
+
+            $("#btn_Prescripciones").on("click", () => {
+                if(!timerON){
+                    timerON = true;
+                    var cont = 10;
+                    var timer = setInterval(function(){                    
+                        cont = cont - 1;
+                        if(cont == 0) {
+                            $("#prescripciones").empty();
+                            clearInterval(timer);
+                            timerON = false;
+                        }else{
+                            $("#cont").text("Este desplegable se contraera en " + cont + " segundos");
+                        }
+                    }, 1000);                
+                }              
+
+                if($("fieldset").length == 0){
+                    $.ajax({
+                        url: "http://localhost:18500/Home/obtenerPrescripciones?ss=" + @Model.SS.ToString()
+                        }).done((data) => {
+                            var json = JSON.parse(data);
+                            if(json.length > 0){
+                                json.forEach((el,pos,ar) => {   
+                                    $("#prescripciones").append("<fieldset id='" + el.IDPrescripcion + "'><legend>ID Prescripcion : " + el.IDPrescripcion + "</legend>");
+                                    $.ajax({
+                                        url: "http://localhost:18500/Home/obtenerItems?id=" + el.IDPrescripcion
+                                    }).done((dataItem) => {                                
+                                        var jsonItem = JSON.parse(dataItem);
+                                        jsonItem.forEach((ele,posi,arr) => {                                   
+                                            $("#" + el.IDPrescripcion ).append("Nombre: " + ele.Nombre + "<br/>Tipo: " + ele.Tipo + "<br/>Detalles : " + ele.Detalles + "<br/><br/>");                                    
+                                        })
+                                    }) 
+                                    $("#" + el.IDPrescripcion ).append("</fieldset>");
+                                })
+                                $.ajax({
+                                    url: "http://localhost:18500/Home/obtenerEmpresas?sector=salud&especializacion=Farmacia"
+                                }).done((dataEmpresas) => {
+                                    var jsonEmpresas = JSON.parse(dataEmpresas);
+                                    $("#prescripciones").append("<select id='idEmpresa' name='idEmpresa'>");
+                                    jsonEmpresas.forEach((elem, posic, arra) => {
+                                        $("#idEmpresa").append("<option value='" + elem.IDEmpresa + "'>" + elem.Nombre + "</option>");                                    
+                                    })
+                                    $("#prescripciones").append("</select><br/><br/><input type='button' id='btn_solicitar' value='Solicitar Envio'/><br/><br/><p id='cont'>Este desplegable se contraera en " + cont + " segundos</p>");
+                                    $("#btn_solicitar").on("click", () => {
+                                
+                                    })
+                                })
+                            }
+                        })
+                }
+            })           
+        </script>
 </body>
 </html>

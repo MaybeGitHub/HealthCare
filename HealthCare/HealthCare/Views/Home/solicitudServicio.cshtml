@@ -1,0 +1,44 @@
+﻿@model HealthCare.Models.Solicitudes
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>solicitudServicio</title>
+</head>
+<body>
+    <div> 
+        <fieldset>
+            <legend>Datos del Cliente</legend>
+            Nombre: @Model.Clientes.Nombre <br />
+            Apellidos: @Model.Clientes.Apellidos <br />
+            Edad: @Model.Clientes.Edad <br />
+            Telefono: @Model.Clientes.Telefono <br />    
+            Direccion: @Model.Clientes.Direcciones.Calle <br />       
+        </fieldset>
+        <fieldset>
+            <legend>Datos de la Empresa</legend>
+            Nombre: @Model.Empresas.Nombre <br />
+            Sector: @Model.Empresas.Sector <br />
+            Especializacion: @Model.Empresas.Especializacion <br />
+            Valoracion: @Model.Empresas.Valoracion <br />
+            Direccion: @Model.Empresas.Direcciones.Calle <br />
+        </fieldset> 
+        <center>
+            ESTAS DE ACUERDO
+            <form method="post" action="/Home/Index">
+                <input type="hidden" name="SS" value="@Model.Clientes.SS" />
+                <input type="submit" value="No" />
+            </form> 
+            
+            <form method="post" action="/Home/Terminar">
+                <input type="submit" value="Si" />
+            </form> 
+        </center>            
+    </div>
+</body>
+</html>
