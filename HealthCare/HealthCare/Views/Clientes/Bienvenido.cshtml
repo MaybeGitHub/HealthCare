@@ -53,7 +53,7 @@
     <br />
 
     <p id="sector">Ningun sector seleccionado</p>
-    <form method="post" action="/Home/solicitudServicio">
+    <form method="post" action="/Clientes/solicitudServicio">
         <input type="hidden" name="IDEmpresa" id="IDEmpresa" />
         <input type="hidden" name="IDCliente" value="@Model.SS" />
         <input type="hidden" name="prescripcion" id="prescripcion" value="false" />
@@ -104,7 +104,7 @@
                     especifico = el.id.split("_")[2];
                     $("#sector").text(cual + " : " + especifico);
                     $.ajax({
-                        url: "http://localhost:18500/Home/obtenerEmpresas?sector=" + cual + "&especializacion=" + especifico
+                        url: "http://localhost:18500/Clientes/obtenerEmpresas?sector=" + cual + "&especializacion=" + especifico
                     }).done(function (data) {
                         var json = JSON.parse(data)
                         if (json.length > 0) {
@@ -142,14 +142,14 @@
 
                 if($("fieldset").length == 0){
                     $.ajax({
-                        url: "http://localhost:18500/Home/obtenerPrescripciones?ss=" + @Model.SS.ToString()
+                        url: "http://localhost:18500/Clientes/obtenerPrescripciones?ss=" + @Model.SS.ToString()
                     }).done((data) => {
                             var json = JSON.parse(data);
                             if(json.length > 0){
                                 json.forEach((el,pos,ar) => {
                                     $("#prescripciones").append("<fieldset id='" + el.IDPrescripcion + "'><legend>ID Prescripcion : " + el.IDPrescripcion + "</legend>");
                                     $.ajax({
-                                        url: "http://localhost:18500/Home/obtenerItems?id=" + el.IDPrescripcion
+                                        url: "http://localhost:18500/Clientes/obtenerItems?id=" + el.IDPrescripcion
                                     }).done((dataItem) => {
                                         var jsonItem = JSON.parse(dataItem);
                                         jsonItem.forEach((ele,posi,arr) => {
@@ -159,7 +159,7 @@
                                     $("#" + el.IDPrescripcion ).append("</fieldset>");
                                 })
                                 $.ajax({
-                                    url: "http://localhost:18500/Home/obtenerEmpresas?sector=salud&especializacion=Farmacia"
+                                    url: "http://localhost:18500/Clientes/obtenerEmpresas?sector=salud&especializacion=Farmacia"
                                 }).done((dataEmpresas) => {
                                     var jsonEmpresas = JSON.parse(dataEmpresas);
                                     $("#prescripciones").append("<select id='selectEmpresas'>");

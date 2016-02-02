@@ -11,18 +11,18 @@
 
 namespace HealthCare.Models
 {
-	using System.Data.Linq;
-	using System.Data.Linq.Mapping;
-	using System.Data;
-	using System.Collections.Generic;
-	using System.Reflection;
-	using System.Linq;
-	using System.Linq.Expressions;
-	using System.ComponentModel;
-	using System;
-	
-	
-	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="MiBBDD")]
+    using System.Data.Linq;
+    using System.Data.Linq.Mapping;
+    using System.Data;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.ComponentModel;
+    using System;
+    using System.ComponentModel.DataAnnotations;
+
+    [global::System.Data.Linq.Mapping.DatabaseAttribute(Name="MiBBDD")]
 	public partial class MiDBContextDataContext : System.Data.Linq.DataContext
 	{
 		
@@ -133,8 +133,8 @@ namespace HealthCare.Models
 	public partial class Clientes : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);		
+        
 		private int _SS;
 		
 		private string _Nombre;
@@ -180,7 +180,8 @@ namespace HealthCare.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SS", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int SS
+        [Required(ErrorMessage = "El campo de la Seguridad Social es Obligatorio")]
+        public int SS
 		{
 			get
 			{
@@ -1274,6 +1275,7 @@ namespace HealthCare.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDEmpresa", DbType="Int NOT NULL", IsPrimaryKey=true)]
+        [Required(ErrorMessage = "El campo de Identificacion de Empresa es Obligatorio")]
 		public int IDEmpresa
 		{
 			get
