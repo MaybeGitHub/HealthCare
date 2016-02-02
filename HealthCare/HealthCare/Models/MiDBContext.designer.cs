@@ -941,6 +941,8 @@ namespace HealthCare.Models
 		
 		private EntityRef<Clientes> _Clientes;
 		
+		private EntityRef<Solicitudes> _Solicitudes;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -962,6 +964,7 @@ namespace HealthCare.Models
 			this._Items = new EntitySet<Items>(new Action<Items>(this.attach_Items), new Action<Items>(this.detach_Items));
 			this._Empresas = default(EntityRef<Empresas>);
 			this._Clientes = default(EntityRef<Clientes>);
+			this._Solicitudes = default(EntityRef<Solicitudes>);
 			OnCreated();
 		}
 		
@@ -996,7 +999,7 @@ namespace HealthCare.Models
 			{
 				if ((this._IDCliente != value))
 				{
-					if (this._Clientes.HasLoadedOrAssignedValue)
+					if ((this._Clientes.HasLoadedOrAssignedValue || this._Solicitudes.HasLoadedOrAssignedValue))
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -1141,6 +1144,40 @@ namespace HealthCare.Models
 						this._IDCliente = default(int);
 					}
 					this.SendPropertyChanged("Clientes");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Solicitudes_Prescripciones", Storage="_Solicitudes", ThisKey="IDCliente", OtherKey="IdCliente", IsForeignKey=true)]
+		public Solicitudes Solicitudes
+		{
+			get
+			{
+				return this._Solicitudes.Entity;
+			}
+			set
+			{
+				Solicitudes previousValue = this._Solicitudes.Entity;
+				if (((previousValue != value) 
+							|| (this._Solicitudes.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Solicitudes.Entity = null;
+						previousValue.Prescripciones.Remove(this);
+					}
+					this._Solicitudes.Entity = value;
+					if ((value != null))
+					{
+						value.Prescripciones.Add(this);
+						this._IDCliente = value.IdCliente;
+					}
+					else
+					{
+						this._IDCliente = default(int);
+					}
+					this.SendPropertyChanged("Solicitudes");
 				}
 			}
 		}
@@ -1530,7 +1567,11 @@ namespace HealthCare.Models
 		
 		private System.DateTime _hora;
 		
+		private int _estado;
+		
 		private EntityRef<Clientes> _Clientes;
+		
+		private EntitySet<Prescripciones> _Prescripciones;
 		
 		private EntityRef<Empresas> _Empresas;
 		
@@ -1544,11 +1585,14 @@ namespace HealthCare.Models
     partial void OnidEmpresaChanged();
     partial void OnhoraChanging(System.DateTime value);
     partial void OnhoraChanged();
+    partial void OnestadoChanging(int value);
+    partial void OnestadoChanged();
     #endregion
 		
 		public Solicitudes()
 		{
 			this._Clientes = default(EntityRef<Clientes>);
+			this._Prescripciones = new EntitySet<Prescripciones>(new Action<Prescripciones>(this.attach_Prescripciones), new Action<Prescripciones>(this.detach_Prescripciones));
 			this._Empresas = default(EntityRef<Empresas>);
 			OnCreated();
 		}
@@ -1613,6 +1657,26 @@ namespace HealthCare.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_estado", CanBeNull=false)]
+		public int estado
+		{
+			get
+			{
+				return this._estado;
+			}
+			set
+			{
+				if ((this._estado != value))
+				{
+					this.OnestadoChanging(value);
+					this.SendPropertyChanging();
+					this._estado = value;
+					this.SendPropertyChanged("estado");
+					this.OnestadoChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Solicitudes_Clientes", Storage="_Clientes", ThisKey="IdCliente", OtherKey="SS", IsUnique=true, IsForeignKey=false)]
 		public Clientes Clientes
 		{
@@ -1639,6 +1703,19 @@ namespace HealthCare.Models
 					}
 					this.SendPropertyChanged("Clientes");
 				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Solicitudes_Prescripciones", Storage="_Prescripciones", ThisKey="IdCliente", OtherKey="IDCliente")]
+		public EntitySet<Prescripciones> Prescripciones
+		{
+			get
+			{
+				return this._Prescripciones;
+			}
+			set
+			{
+				this._Prescripciones.Assign(value);
 			}
 		}
 		
@@ -1689,6 +1766,18 @@ namespace HealthCare.Models
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_Prescripciones(Prescripciones entity)
+		{
+			this.SendPropertyChanging();
+			entity.Solicitudes = this;
+		}
+		
+		private void detach_Prescripciones(Prescripciones entity)
+		{
+			this.SendPropertyChanging();
+			entity.Solicitudes = null;
 		}
 	}
 }

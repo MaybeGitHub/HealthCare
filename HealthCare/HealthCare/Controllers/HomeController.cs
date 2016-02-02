@@ -1,6 +1,7 @@
 ﻿using HealthCare.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -80,12 +81,16 @@ namespace HealthCare.Controllers
         }
 
         [HttpPost]
-        public ViewResult solicitudServicio(int IDCliente, int IDEmpresa)
+        public ViewResult solicitudServicio(int IDCliente, int IDEmpresa, bool prescripcion)
         {
-            Solicitudes solicitud = new Solicitudes { IdCliente = IDCliente, idEmpresa = IDEmpresa, hora = DateTime.Now };
+            Solicitudes solicitud = new Solicitudes { IdCliente = IDCliente, idEmpresa = IDEmpresa, hora = DateTime.Now, estado = 0 };
             solicitud.Clientes = db.getCliente(IDCliente);
             solicitud.Empresas = db.getEmpresa(IDEmpresa);
-            return View("solicitudServicio", solicitud);
+            if (prescripcion)
+            {
+                solicitud.Prescripciones.AddRange(db.getPrescripciones(db.getCliente(IDCliente)));
+            }            
+            return View(solicitud);
         }
     }
 }

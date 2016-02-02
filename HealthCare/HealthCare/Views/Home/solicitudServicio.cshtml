@@ -1,4 +1,5 @@
 ﻿@model HealthCare.Models.Solicitudes
+@using HealthCare.Models
 @{
     Layout = null;
 }
@@ -9,36 +10,77 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>solicitudServicio</title>
+    <link rel="stylesheet" href="~/Content/bootstrap-theme.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
 </head>
 <body>
     <div> 
         <fieldset>
-            <legend>Datos del Cliente</legend>
+            <legend style="text-align:center">Datos del Cliente</legend>
             Nombre: @Model.Clientes.Nombre <br />
             Apellidos: @Model.Clientes.Apellidos <br />
             Edad: @Model.Clientes.Edad <br />
             Telefono: @Model.Clientes.Telefono <br />    
             Direccion: @Model.Clientes.Direcciones.Calle <br />       
         </fieldset>
+        <br />
         <fieldset>
-            <legend>Datos de la Empresa</legend>
+            <legend style="text-align:center">Datos de la Empresa</legend>
             Nombre: @Model.Empresas.Nombre <br />
             Sector: @Model.Empresas.Sector <br />
             Especializacion: @Model.Empresas.Especializacion <br />
             Valoracion: @Model.Empresas.Valoracion <br />
             Direccion: @Model.Empresas.Direcciones.Calle <br />
         </fieldset> 
+        <br />
+        @{
+            if (Model.Prescripciones.Count != 0)
+            {
+                <fieldset>
+                    <legend style="text-align:center">Datos de las Prescripciones</legend>
+                    @{
+                        int cont = 1;
+                        foreach (Prescripciones p in Model.Prescripciones)
+                        {
+                            <fieldset>
+                                <legend>Prescripcion @cont</legend>
+                                @{
+                                    int contItems = 0;
+                                    foreach (Items i in p.Items.Where(x => x.IDPrescripcion == p.IDPrescripcion))
+                                    {
+                                        contItems++;
+                                        <label>Nombre: @i.Nombre</label><br />
+                                        <label>Tipo: @i.Tipo</label><br />
+                                        <label>Detalles: @i.Detalles</label><br />
+                                        if (contItems < p.Items.Where(x => x.IDPrescripcion == p.IDPrescripcion).Count())
+                                        {
+                                            <br />
+                                        }
+                                    }
+                                }
+                            </fieldset>
+                            <br />
+                            cont++;
+                        }
+                    }
+                </fieldset>
+            }
+        }
+
         <center>
             ESTAS DE ACUERDO
-            <form method="post" action="/Home/Index">
-                <input type="hidden" name="SS" value="@Model.Clientes.SS" />
-                <input type="submit" value="No" />
-            </form> 
-            
-            <form method="post" action="/Home/Terminar">
-                <input type="submit" value="Si" />
-            </form> 
+            <form id="form" method="post" action="/Home/Index">
+                <input type="hidden" name="SS" value="@Model.Clientes.SS" />               
+                <input type="submit" id="btn_no" value="No" />
+                <input type="submit" id="btn_si" value="Si" />
+            </form>
         </center>            
     </div>
+    <script>
+        $("#btn_si").on("click", () => {
+            $("#form").attr("action", "/Home/Terminar");
+        })
+    </script>
 </body>
 </html>

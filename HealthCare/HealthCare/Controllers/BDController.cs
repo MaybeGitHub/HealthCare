@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using HealthCare.Models;
 using System.Configuration;
+using System.Data.Linq;
 
 namespace HealthCare.Controllers
 {

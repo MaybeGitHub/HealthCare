@@ -54,11 +54,11 @@
 
     <p id="sector">Ningun sector seleccionado</p>
     <form method="post" action="/Home/solicitudServicio">
-        @Html.Hidden("IDEmpresa")
-        @Html.Hidden("IDCliente", Model.SS)
-        <ul id="lista"></ul> 
-    </form>
-          
+        <input type="hidden" name="IDEmpresa" id="IDEmpresa" />
+        <input type="hidden" name="IDCliente" value="@Model.SS" />
+        <input type="hidden" name="prescripcion" id="prescripcion" value="false" />
+        <ul id="lista"></ul>
+
         <br />
         @{
             int cuantos = Model.Prescripciones.Where(x => x.IDCliente == Model.SS).Count();
@@ -71,10 +71,10 @@
             {
                 salida = "Tiene " + cuantos + (cuantos == 1 ? " prescripción" : " prescripciones") + " a la espera";
             }
-        }        
-        
+        }
+
         <input type="button" value="@salida" id="btn_Prescripciones" />
-        
+
         <div id="prescripciones"></div>
         <script>
             var cual;
@@ -120,7 +120,7 @@
                         }
                     });
                 }
-            })                     
+            })
 
             var timerON = false;
 
@@ -128,7 +128,7 @@
                 if(!timerON){
                     timerON = true;
                     var cont = 10;
-                    var timer = setInterval(function(){                    
+                    var timer = setInterval(function(){
                         cont = cont - 1;
                         if(cont == 0) {
                             $("#prescripciones").empty();
@@ -137,44 +137,48 @@
                         }else{
                             $("#cont").text("Este desplegable se contraera en " + cont + " segundos");
                         }
-                    }, 1000);                
-                }              
+                    }, 1000);
+                }
 
                 if($("fieldset").length == 0){
                     $.ajax({
                         url: "http://localhost:18500/Home/obtenerPrescripciones?ss=" + @Model.SS.ToString()
-                        }).done((data) => {
+                    }).done((data) => {
                             var json = JSON.parse(data);
                             if(json.length > 0){
-                                json.forEach((el,pos,ar) => {   
+                                json.forEach((el,pos,ar) => {
                                     $("#prescripciones").append("<fieldset id='" + el.IDPrescripcion + "'><legend>ID Prescripcion : " + el.IDPrescripcion + "</legend>");
                                     $.ajax({
                                         url: "http://localhost:18500/Home/obtenerItems?id=" + el.IDPrescripcion
-                                    }).done((dataItem) => {                                
+                                    }).done((dataItem) => {
                                         var jsonItem = JSON.parse(dataItem);
-                                        jsonItem.forEach((ele,posi,arr) => {                                   
-                                            $("#" + el.IDPrescripcion ).append("Nombre: " + ele.Nombre + "<br/>Tipo: " + ele.Tipo + "<br/>Detalles : " + ele.Detalles + "<br/><br/>");                                    
+                                        jsonItem.forEach((ele,posi,arr) => {
+                                            $("#" + el.IDPrescripcion ).append("Nombre: " + ele.Nombre + "<br/>Tipo: " + ele.Tipo + "<br/>Detalles : " + ele.Detalles + "<br/><br/>");
                                         })
-                                    }) 
+                                    })
                                     $("#" + el.IDPrescripcion ).append("</fieldset>");
                                 })
                                 $.ajax({
                                     url: "http://localhost:18500/Home/obtenerEmpresas?sector=salud&especializacion=Farmacia"
                                 }).done((dataEmpresas) => {
                                     var jsonEmpresas = JSON.parse(dataEmpresas);
-                                    $("#prescripciones").append("<select id='idEmpresa' name='idEmpresa'>");
+                                    $("#prescripciones").append("<select id='selectEmpresas'>");
                                     jsonEmpresas.forEach((elem, posic, arra) => {
-                                        $("#idEmpresa").append("<option value='" + elem.IDEmpresa + "'>" + elem.Nombre + "</option>");                                    
+                                        $("#selectEmpresas").append("<option value='" + elem.IDEmpresa + "'>" + elem.Nombre + "</option>");
                                     })
-                                    $("#prescripciones").append("</select><br/><br/><input type='button' id='btn_solicitar' value='Solicitar Envio'/><br/><br/><p id='cont'>Este desplegable se contraera en " + cont + " segundos</p>");
+                                    $("#prescripciones").append("</select><br/><br/>"
+                                       + "<input type='submit' id='btn_solicitar' value='Solicitar Envio'/><br/><br/>"
+                                       + "<p id='cont'>Este desplegable se contraera en 10 segundos</p>");
                                     $("#btn_solicitar").on("click", () => {
-                                
+                                        $("#IDEmpresa").val($("#selectEmpresas").val());
+                                        $("#prescripcion").val("true");
                                     })
                                 })
                             }
                         })
                 }
-            })           
+            })
         </script>
+    </form>
 </body>
 </html>
