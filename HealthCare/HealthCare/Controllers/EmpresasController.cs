@@ -30,6 +30,39 @@ namespace HealthCare.Controllers
             {
                 return View();
             }
-        }        
+        }
+        
+        public string obtenerSolicitudes(int IDEmpresa, int estado)
+        {
+            string json = "[";
+            
+            foreach (Solicitudes s in db.getSolicitudes(IDEmpresa, estado))
+            {
+                string items = "";
+                items += "\"";
+                foreach (Prescripciones p in db.getPrescripciones(s.Clientes, s.Empresas))
+                {
+                    foreach(Items i in p.Items)
+                    {
+                        items += i.Nombre + " ";  
+                    }
+                }
+                items += "\"";
+                json += "{\"Nombre\":\"" + s.Clientes.Nombre + "\",\"Direccion\":\"" + s.Clientes.Direcciones.Calle + " " + s.Clientes.Direcciones.Numero + "\",\"Hora\":\"" + s.Hora + "\",\"Telefono\":" + s.Clientes.Telefono + ",\"IDCliente\":" + s.IDCliente + ",\"Items\":" + items + "},";
+            }
+
+            if (json.Length > 1)
+            {
+                json = json.Substring(0, json.Length - 1);
+            }
+
+            json += "]";
+            return json;
+        }    
+        
+        public int cambiarEstadoSolicitud(int idEmpresa, int idCliente, int estado)
+        {
+            return db.cambiarEstadoSolicitud(idEmpresa,idCliente, estado);
+        }
     }
 }

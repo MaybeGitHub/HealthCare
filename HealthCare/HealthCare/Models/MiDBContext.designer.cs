@@ -11,18 +11,18 @@
 
 namespace HealthCare.Models
 {
-    using System.Data.Linq;
-    using System.Data.Linq.Mapping;
-    using System.Data;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.ComponentModel;
-    using System;
-    using System.ComponentModel.DataAnnotations;
-
-    [global::System.Data.Linq.Mapping.DatabaseAttribute(Name="MiBBDD")]
+	using System.Data.Linq;
+	using System.Data.Linq.Mapping;
+	using System.Data;
+	using System.Collections.Generic;
+	using System.Reflection;
+	using System.Linq;
+	using System.Linq.Expressions;
+	using System.ComponentModel;
+	using System;
+	
+	
+	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="MiBBDD")]
 	public partial class MiDBContextDataContext : System.Data.Linq.DataContext
 	{
 		
@@ -133,8 +133,8 @@ namespace HealthCare.Models
 	public partial class Clientes : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);		
-        
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
 		private int _SS;
 		
 		private string _Nombre;
@@ -151,7 +151,7 @@ namespace HealthCare.Models
 		
 		private EntitySet<Prescripciones> _Prescripciones;
 		
-		private EntityRef<Solicitudes> _Solicitudes;
+		private EntitySet<Solicitudes> _Solicitudes;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -175,13 +175,12 @@ namespace HealthCare.Models
 		{
 			this._Direcciones = default(EntityRef<Direcciones>);
 			this._Prescripciones = new EntitySet<Prescripciones>(new Action<Prescripciones>(this.attach_Prescripciones), new Action<Prescripciones>(this.detach_Prescripciones));
-			this._Solicitudes = default(EntityRef<Solicitudes>);
+			this._Solicitudes = new EntitySet<Solicitudes>(new Action<Solicitudes>(this.attach_Solicitudes), new Action<Solicitudes>(this.detach_Solicitudes));
 			OnCreated();
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SS", DbType="Int NOT NULL", IsPrimaryKey=true)]
-        [Required(ErrorMessage = "El campo de la Seguridad Social es Obligatorio")]
-        public int SS
+		public int SS
 		{
 			get
 			{
@@ -191,10 +190,6 @@ namespace HealthCare.Models
 			{
 				if ((this._SS != value))
 				{
-					if (this._Solicitudes.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
 					this.OnSSChanging(value);
 					this.SendPropertyChanging();
 					this._SS = value;
@@ -346,37 +341,16 @@ namespace HealthCare.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Solicitudes_Clientes", Storage="_Solicitudes", ThisKey="SS", OtherKey="IdCliente", IsForeignKey=true)]
-		public Solicitudes Solicitudes
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Clientes_Solicitudes", Storage="_Solicitudes", ThisKey="SS", OtherKey="IDCliente")]
+		public EntitySet<Solicitudes> Solicitudes
 		{
 			get
 			{
-				return this._Solicitudes.Entity;
+				return this._Solicitudes;
 			}
 			set
 			{
-				Solicitudes previousValue = this._Solicitudes.Entity;
-				if (((previousValue != value) 
-							|| (this._Solicitudes.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Solicitudes.Entity = null;
-						previousValue.Clientes = null;
-					}
-					this._Solicitudes.Entity = value;
-					if ((value != null))
-					{
-						value.Clientes = this;
-						this._SS = value.IdCliente;
-					}
-					else
-					{
-						this._SS = default(int);
-					}
-					this.SendPropertyChanged("Solicitudes");
-				}
+				this._Solicitudes.Assign(value);
 			}
 		}
 		
@@ -407,6 +381,18 @@ namespace HealthCare.Models
 		}
 		
 		private void detach_Prescripciones(Prescripciones entity)
+		{
+			this.SendPropertyChanging();
+			entity.Clientes = null;
+		}
+		
+		private void attach_Solicitudes(Solicitudes entity)
+		{
+			this.SendPropertyChanging();
+			entity.Clientes = this;
+		}
+		
+		private void detach_Solicitudes(Solicitudes entity)
 		{
 			this.SendPropertyChanging();
 			entity.Clientes = null;
@@ -930,11 +916,7 @@ namespace HealthCare.Models
 		
 		private int _IDCliente;
 		
-		private int _IDEmpleado;
-		
-		private string _Seguro;
-		
-		private int _Estado;
+		private int _IDEmpresa;
 		
 		private EntitySet<Items> _Items;
 		
@@ -954,10 +936,6 @@ namespace HealthCare.Models
     partial void OnIDClienteChanged();
     partial void OnIDEmpresaChanging(int value);
     partial void OnIDEmpresaChanged();
-    partial void OnSeguroChanging(string value);
-    partial void OnSeguroChanged();
-    partial void OnEstadoChanging(int value);
-    partial void OnEstadoChanged();
     #endregion
 		
 		public Prescripciones()
@@ -1013,62 +991,26 @@ namespace HealthCare.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="IDEmpleado", Storage="_IDEmpleado", DbType="Int NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDEmpresa", DbType="Int NOT NULL")]
 		public int IDEmpresa
 		{
 			get
 			{
-				return this._IDEmpleado;
+				return this._IDEmpresa;
 			}
 			set
 			{
-				if ((this._IDEmpleado != value))
+				if ((this._IDEmpresa != value))
 				{
+					if (this._Solicitudes.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnIDEmpresaChanging(value);
 					this.SendPropertyChanging();
-					this._IDEmpleado = value;
+					this._IDEmpresa = value;
 					this.SendPropertyChanged("IDEmpresa");
 					this.OnIDEmpresaChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Seguro", DbType="NVarChar(50)")]
-		public string Seguro
-		{
-			get
-			{
-				return this._Seguro;
-			}
-			set
-			{
-				if ((this._Seguro != value))
-				{
-					this.OnSeguroChanging(value);
-					this.SendPropertyChanging();
-					this._Seguro = value;
-					this.SendPropertyChanged("Seguro");
-					this.OnSeguroChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Estado")]
-		public int Estado
-		{
-			get
-			{
-				return this._Estado;
-			}
-			set
-			{
-				if ((this._Estado != value))
-				{
-					this.OnEstadoChanging(value);
-					this.SendPropertyChanging();
-					this._Estado = value;
-					this.SendPropertyChanged("Estado");
-					this.OnEstadoChanged();
 				}
 			}
 		}
@@ -1149,7 +1091,7 @@ namespace HealthCare.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Solicitudes_Prescripciones", Storage="_Solicitudes", ThisKey="IDCliente", OtherKey="IdCliente", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Solicitudes_Prescripciones", Storage="_Solicitudes", ThisKey="IDCliente,IDEmpresa", OtherKey="IDCliente,IDEmpresa", IsForeignKey=true)]
 		public Solicitudes Solicitudes
 		{
 			get
@@ -1172,11 +1114,13 @@ namespace HealthCare.Models
 					if ((value != null))
 					{
 						value.Prescripciones.Add(this);
-						this._IDCliente = value.IdCliente;
+						this._IDCliente = value.IDCliente;
+						this._IDEmpresa = value.IDEmpresa;
 					}
 					else
 					{
 						this._IDCliente = default(int);
+						this._IDEmpresa = default(int);
 					}
 					this.SendPropertyChanged("Solicitudes");
 				}
@@ -1240,9 +1184,9 @@ namespace HealthCare.Models
 		
 		private EntityRef<Direcciones> _Direcciones;
 		
-		private EntityRef<Prescripciones> _Prescripciones;
+		private EntitySet<Solicitudes> _Solicitudes;
 		
-		private EntityRef<Solicitudes> _Solicitudes;
+		private EntityRef<Prescripciones> _Prescripciones;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -1269,13 +1213,12 @@ namespace HealthCare.Models
 		public Empresas()
 		{
 			this._Direcciones = default(EntityRef<Direcciones>);
+			this._Solicitudes = new EntitySet<Solicitudes>(new Action<Solicitudes>(this.attach_Solicitudes), new Action<Solicitudes>(this.detach_Solicitudes));
 			this._Prescripciones = default(EntityRef<Prescripciones>);
-			this._Solicitudes = default(EntityRef<Solicitudes>);
 			OnCreated();
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDEmpresa", DbType="Int NOT NULL", IsPrimaryKey=true)]
-        [Required(ErrorMessage = "El campo de Identificacion de Empresa es Obligatorio")]
 		public int IDEmpresa
 		{
 			get
@@ -1286,7 +1229,7 @@ namespace HealthCare.Models
 			{
 				if ((this._IDEmpresa != value))
 				{
-					if ((this._Prescripciones.HasLoadedOrAssignedValue || this._Solicitudes.HasLoadedOrAssignedValue))
+					if (this._Prescripciones.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -1468,6 +1411,19 @@ namespace HealthCare.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Empresas_Solicitudes", Storage="_Solicitudes", ThisKey="IDEmpresa", OtherKey="IDEmpresa")]
+		public EntitySet<Solicitudes> Solicitudes
+		{
+			get
+			{
+				return this._Solicitudes;
+			}
+			set
+			{
+				this._Solicitudes.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Prescripciones_Empresas", Storage="_Prescripciones", ThisKey="IDEmpresa", OtherKey="IDEmpresa", IsForeignKey=true)]
 		public Prescripciones Prescripciones
 		{
@@ -1502,40 +1458,6 @@ namespace HealthCare.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Solicitudes_Empresas", Storage="_Solicitudes", ThisKey="IDEmpresa", OtherKey="idEmpresa", IsForeignKey=true)]
-		public Solicitudes Solicitudes
-		{
-			get
-			{
-				return this._Solicitudes.Entity;
-			}
-			set
-			{
-				Solicitudes previousValue = this._Solicitudes.Entity;
-				if (((previousValue != value) 
-							|| (this._Solicitudes.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Solicitudes.Entity = null;
-						previousValue.Empresas = null;
-					}
-					this._Solicitudes.Entity = value;
-					if ((value != null))
-					{
-						value.Empresas = this;
-						this._IDEmpresa = value.idEmpresa;
-					}
-					else
-					{
-						this._IDEmpresa = default(int);
-					}
-					this.SendPropertyChanged("Solicitudes");
-				}
-			}
-		}
-		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -1555,6 +1477,18 @@ namespace HealthCare.Models
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
+		
+		private void attach_Solicitudes(Solicitudes entity)
+		{
+			this.SendPropertyChanging();
+			entity.Empresas = this;
+		}
+		
+		private void detach_Solicitudes(Solicitudes entity)
+		{
+			this.SendPropertyChanging();
+			entity.Empresas = null;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Solicitudes")]
@@ -1563,152 +1497,155 @@ namespace HealthCare.Models
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
-		private int _IdCliente;
+		private int _IDCliente;
 		
-		private int _idEmpresa;
+		private int _IDEmpresa;
 		
-		private System.DateTime _hora;
+		private System.TimeSpan _Hora;
 		
-		private int _estado;
+		private int _Estado;
 		
-		private EntityRef<Clientes> _Clientes;
+		private int _IDSolicitud;
 		
 		private EntitySet<Prescripciones> _Prescripciones;
 		
 		private EntityRef<Empresas> _Empresas;
 		
+		private EntityRef<Clientes> _Clientes;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnIdClienteChanging(int value);
-    partial void OnIdClienteChanged();
-    partial void OnidEmpresaChanging(int value);
-    partial void OnidEmpresaChanged();
-    partial void OnhoraChanging(System.DateTime value);
-    partial void OnhoraChanged();
-    partial void OnestadoChanging(int value);
-    partial void OnestadoChanged();
+    partial void OnIDClienteChanging(int value);
+    partial void OnIDClienteChanged();
+    partial void OnIDEmpresaChanging(int value);
+    partial void OnIDEmpresaChanged();
+    partial void OnHoraChanging(System.TimeSpan value);
+    partial void OnHoraChanged();
+    partial void OnEstadoChanging(int value);
+    partial void OnEstadoChanged();
+    partial void OnIDSolicitudChanging(int value);
+    partial void OnIDSolicitudChanged();
     #endregion
 		
 		public Solicitudes()
 		{
-			this._Clientes = default(EntityRef<Clientes>);
 			this._Prescripciones = new EntitySet<Prescripciones>(new Action<Prescripciones>(this.attach_Prescripciones), new Action<Prescripciones>(this.detach_Prescripciones));
 			this._Empresas = default(EntityRef<Empresas>);
+			this._Clientes = default(EntityRef<Clientes>);
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdCliente", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int IdCliente
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDCliente", DbType="Int NOT NULL")]
+		public int IDCliente
 		{
 			get
 			{
-				return this._IdCliente;
+				return this._IDCliente;
 			}
 			set
 			{
-				if ((this._IdCliente != value))
+				if ((this._IDCliente != value))
 				{
-					this.OnIdClienteChanging(value);
-					this.SendPropertyChanging();
-					this._IdCliente = value;
-					this.SendPropertyChanged("IdCliente");
-					this.OnIdClienteChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idEmpresa", DbType="Int NOT NULL")]
-		public int idEmpresa
-		{
-			get
-			{
-				return this._idEmpresa;
-			}
-			set
-			{
-				if ((this._idEmpresa != value))
-				{
-					this.OnidEmpresaChanging(value);
-					this.SendPropertyChanging();
-					this._idEmpresa = value;
-					this.SendPropertyChanged("idEmpresa");
-					this.OnidEmpresaChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_hora", DbType="Date NOT NULL")]
-		public System.DateTime hora
-		{
-			get
-			{
-				return this._hora;
-			}
-			set
-			{
-				if ((this._hora != value))
-				{
-					this.OnhoraChanging(value);
-					this.SendPropertyChanging();
-					this._hora = value;
-					this.SendPropertyChanged("hora");
-					this.OnhoraChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_estado", CanBeNull=false)]
-		public int estado
-		{
-			get
-			{
-				return this._estado;
-			}
-			set
-			{
-				if ((this._estado != value))
-				{
-					this.OnestadoChanging(value);
-					this.SendPropertyChanging();
-					this._estado = value;
-					this.SendPropertyChanged("estado");
-					this.OnestadoChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Solicitudes_Clientes", Storage="_Clientes", ThisKey="IdCliente", OtherKey="SS", IsUnique=true, IsForeignKey=false)]
-		public Clientes Clientes
-		{
-			get
-			{
-				return this._Clientes.Entity;
-			}
-			set
-			{
-				Clientes previousValue = this._Clientes.Entity;
-				if (((previousValue != value) 
-							|| (this._Clientes.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
+					if (this._Clientes.HasLoadedOrAssignedValue)
 					{
-						this._Clientes.Entity = null;
-						previousValue.Solicitudes = null;
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
-					this._Clientes.Entity = value;
-					if ((value != null))
-					{
-						value.Solicitudes = this;
-					}
-					this.SendPropertyChanged("Clientes");
+					this.OnIDClienteChanging(value);
+					this.SendPropertyChanging();
+					this._IDCliente = value;
+					this.SendPropertyChanged("IDCliente");
+					this.OnIDClienteChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Solicitudes_Prescripciones", Storage="_Prescripciones", ThisKey="IdCliente", OtherKey="IDCliente")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDEmpresa", DbType="Int NOT NULL")]
+		public int IDEmpresa
+		{
+			get
+			{
+				return this._IDEmpresa;
+			}
+			set
+			{
+				if ((this._IDEmpresa != value))
+				{
+					if (this._Empresas.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnIDEmpresaChanging(value);
+					this.SendPropertyChanging();
+					this._IDEmpresa = value;
+					this.SendPropertyChanged("IDEmpresa");
+					this.OnIDEmpresaChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Hora", DbType="Time NOT NULL")]
+		public System.TimeSpan Hora
+		{
+			get
+			{
+				return this._Hora;
+			}
+			set
+			{
+				if ((this._Hora != value))
+				{
+					this.OnHoraChanging(value);
+					this.SendPropertyChanging();
+					this._Hora = value;
+					this.SendPropertyChanged("Hora");
+					this.OnHoraChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Estado", DbType="Int NOT NULL")]
+		public int Estado
+		{
+			get
+			{
+				return this._Estado;
+			}
+			set
+			{
+				if ((this._Estado != value))
+				{
+					this.OnEstadoChanging(value);
+					this.SendPropertyChanging();
+					this._Estado = value;
+					this.SendPropertyChanged("Estado");
+					this.OnEstadoChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDSolicitud", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int IDSolicitud
+		{
+			get
+			{
+				return this._IDSolicitud;
+			}
+			set
+			{
+				if ((this._IDSolicitud != value))
+				{
+					this.OnIDSolicitudChanging(value);
+					this.SendPropertyChanging();
+					this._IDSolicitud = value;
+					this.SendPropertyChanged("IDSolicitud");
+					this.OnIDSolicitudChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Solicitudes_Prescripciones", Storage="_Prescripciones", ThisKey="IDCliente,IDEmpresa", OtherKey="IDCliente,IDEmpresa")]
 		public EntitySet<Prescripciones> Prescripciones
 		{
 			get
@@ -1721,7 +1658,7 @@ namespace HealthCare.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Solicitudes_Empresas", Storage="_Empresas", ThisKey="idEmpresa", OtherKey="IDEmpresa", IsUnique=true, IsForeignKey=false)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Empresas_Solicitudes", Storage="_Empresas", ThisKey="IDEmpresa", OtherKey="IDEmpresa", IsForeignKey=true)]
 		public Empresas Empresas
 		{
 			get
@@ -1738,14 +1675,53 @@ namespace HealthCare.Models
 					if ((previousValue != null))
 					{
 						this._Empresas.Entity = null;
-						previousValue.Solicitudes = null;
+						previousValue.Solicitudes.Remove(this);
 					}
 					this._Empresas.Entity = value;
 					if ((value != null))
 					{
-						value.Solicitudes = this;
+						value.Solicitudes.Add(this);
+						this._IDEmpresa = value.IDEmpresa;
+					}
+					else
+					{
+						this._IDEmpresa = default(int);
 					}
 					this.SendPropertyChanged("Empresas");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Clientes_Solicitudes", Storage="_Clientes", ThisKey="IDCliente", OtherKey="SS", IsForeignKey=true)]
+		public Clientes Clientes
+		{
+			get
+			{
+				return this._Clientes.Entity;
+			}
+			set
+			{
+				Clientes previousValue = this._Clientes.Entity;
+				if (((previousValue != value) 
+							|| (this._Clientes.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Clientes.Entity = null;
+						previousValue.Solicitudes.Remove(this);
+					}
+					this._Clientes.Entity = value;
+					if ((value != null))
+					{
+						value.Solicitudes.Add(this);
+						this._IDCliente = value.SS;
+					}
+					else
+					{
+						this._IDCliente = default(int);
+					}
+					this.SendPropertyChanged("Clientes");
 				}
 			}
 		}

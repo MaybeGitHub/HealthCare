@@ -15,99 +15,130 @@
     <title>Bienvenido</title>
 </head>
 <body>
-    <center>
-        <div id="Principal">
-            <h1><u>Principal</u></h1>
-            <input type="button" value="Domestico" id="btn_Domestico" />
-            <input type="button" value="Mascotas" id="btn_Mascotas" />
-            <input type="button" value="Salud" id="btn_Salud" />
-            <input type="button" value="Bienestar" id="btn_Bienestar" />
-        </div>
-        <div hidden="hidden" id="Domestico">
-            <h1><u>Domestico</u></h1>
-            <input type="button" value="Labores Domesticas" id="btn_Domestico_Labores Domesticas" />
-            <input type="button" value="Cocina" id="btn_Domestico_Cocina" />
-        </div>
-        <div hidden="hidden" id="Mascotas">
-            <h1><u>Mascotas</u></h1>
-            <input type="button" value="Consulta de Mascotas Comunes" id="btn_Mascotas_Comunes" />
-            <input type="button" value="Consulta de Mascotas Exoticas" id="btn_Mascotas_Exoticas" />
-            <input type="button" value="Cuidados Cosmeticos" id="btn_Mascotas_Cuidados Cosmeticos" />
-            <input type="button" value="Cuidados Especiales" id="btn_Mascotas_Cuidados Especiales" />
-        </div>
-        <div hidden="hidden" id="Salud">
-            <h1><u>Salud</u></h1>
-            <input type="button" value="Medicina General" id="btn_Salud_Medicina General" />
-            <input type="button" value="Farmacia" id="btn_Salud_Farmacia" />
-            <input type="button" value="Tratamientos" id="btn_Salud_Tratamientos" />
-            <input type="button" value="Rehabilitacion" id="btn_Salud_Rehabilitacion" />
-            <input type="button" value="Especialistas" id="btn_Salud_Especialistas" />
-        </div>
-        <div hidden="hidden" id="Bienestar">
-            <h1><u>Bienestar</u></h1>
-            <input type="button" value="Cosmetica" id="btn_Bienestar_Cosmetica" />
-            <input type="button" value="Ocio" id="btn_Bienestar_Ocio" />
-        </div>
-        <input type="button" value="Volver" id="btn_Volver" hidden="hidden" />        
-    </center> 
-    <br />
+    <p id="cont">Las solicitudes se refrescarán en 60 segundos</p>
+    <fieldset id="solicitudes_pedidas">
+        <legend id="legend_Pedidos">Solicitudes Pedidas</legend>
+        <div id="pedidos" style='background-color:lightgreen'></div>
+    </fieldset>
+    <fieldset id="solicitudes_proceso">
+        <legend id="legend_Proceso">Solicitudes en Proceso</legend>
+        <div id="procesos" style='background-color:yellow'></div>
+    </fieldset>
+    <fieldset id="solicitudes_terminadas">
+        <legend id="legend_Cementerio">Solicitudes Terminadas</legend>
+        <div id="cementerio" style='background-color:indianred'></div>
+    </fieldset>
+    <br />    
+    <script>
+        var cual;
+        rellenarCamposSolicitudes();
 
-    <p id="sector">Ningun sector seleccionado</p>
-    <form method="post" action="/Home/solicitudServicio">
-        <input type="hidden" name="IDEmpresa" id="IDEmpresa" />
-        <input type="hidden" name="IDCliente" value="@Model.IDEmpresa" />
-        <input type="hidden" name="prescripcion" id="prescripcion" value="false" />
-        <ul id="lista"></ul>
-
-        <br />       
-
-        <div id="prescripciones"></div>
-        <script>
-            var cual;
-            $("#Principal > input").each(function (pos, el) {
-                el.onclick = function () {
-                    cual = el.id.split("_")[1];
-                    $("#sector").text(cual);
-                    $("#Principal").attr("hidden", "hidden");
-                    $("#" + cual).attr("hidden", null);
-                    $("#btn_Volver").attr("hidden", null);
-                };
-            })
-
-            $("#btn_Volver").on("click", function () {
-                $("#lista").empty();
-                $("#Principal").attr("hidden", null);
-                $("#btn_Volver").attr("hidden", "hidden");
-                $("#" + cual).attr("hidden", "hidden");
-                $("#sector").text("Ningun sector seleccionado");
-            })
-
-            var especifico;
-
-            $("input").not("#Principal > input").not("#btn_Volver").not("#btn_Prescripciones").each(function (pos, el) {
-                el.onclick = function () {
-                    $("#lista").empty();
-                    especifico = el.id.split("_")[2];
-                    $("#sector").text(cual + " : " + especifico);
-                    $.ajax({
-                        url: "http://localhost:18500/Home/obtenerEmpresas?sector=" + cual + "&especializacion=" + especifico
-                    }).done(function (data) {
-                        var json = JSON.parse(data)
-                        if (json.length > 0) {
-                            json.forEach(function (el, pos, ar) {
-                                $("#lista").append("<input type='submit' value='Nombre : " + el.Nombre + "   con valoracion : " + el.Valoracion + "' id=" + el.IDEmpresa + " />")
+        function rellenarCampoPedidos() {
+            $.ajax({
+                url: "http://localhost:18500/Empresas/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=1"
+            }).done((data) => {
+                var json = JSON.parse(data);
+                if (json.length > 0) {
+                    $("#legend_Pedidos").text("Solicitudes Pedidas - " + json.length);
+                    json.forEach((el, pos, ar) => {
+                        if ($("#campoPedidos" + pos).length == 0) {
+                            $("#pedidos").append("<div id='campoPedidos" + pos + "'>");
+                            $("#campoPedidos" + pos).append("<fieldset><legend>Cliente " + el.Nombre + " a las " + el.Hora + "</legend>Direccion: " + el.Direccion + "<br/>Telefono: " + el.Telefono + "<br>Productos: " + el.Items + "</fieldset>");
+                            $("#campoPedidos" + pos).append("<input type='button' id='btn_si" + pos + "' value='Aceptar'/><input type='button' id='btn_no" + pos + "' value='Rechazar'/>")
+                            $("#pedidos").append("</div>");
+                            $("#btn_si" + pos).on("click", () => {
+                                $.ajax({
+                                    url: "http://localhost:18500/Empresas/cambiarEstadoSolicitud?idEmpresa=" + @Model.IDEmpresa + "&idCliente=" + el.IDCliente + "&estado=1"
+                                }).done((dat) => {
+                                    if (dat == 1) {
+                                        alert("La solicitud del cliente " + el.Nombre + " ha sido aceptada, para concetar la hora, llame al numero " + el.Telefono);                                    
+                                        $("#pedidos").empty();
+                                        rellenarCamposSolicitudes();
+                                    } else {
+                                        alert("Ha fallado la opcion, porfavor, repita de nuevo");
+                                    }                                
+                                })
                             })
-
-                            $("#lista > input").on("click", function(el) {
-                                $("#IDEmpresa").val(el.target.id)
-                            })
-                        } else {
-                            $("#lista").append("<li>No hay empresas aun registradas en este campo. Lo sentimos</li>");
-                        }
-                    });
+                        }                                                
+                    })
+                } else {
+                    $("#legend_Pedidos").text("Solicitudes Pedidas");
                 }
-            })            
-        </script>
-    </form>
+            })
+        }
+
+        function rellenarCampoProceso() {
+            $.ajax({
+                url: "http://localhost:18500/Empresas/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=2"
+            }).done((data) => {
+                var json = JSON.parse(data);
+                if (json.length > 0) {
+                    $("#legend_Proceso").text("Solicitudes en Proceso -- "  + json.length);
+                    json.forEach((el, pos, ar) => {
+                        if($("#campoProcesos" + pos).length == 0){
+                            $("#procesos").append("<div id='campoProcesos" + pos + "'>");
+                            $("#campoProcesos" + pos).append("<fieldset><legend>Cliente " + el.Nombre + " a las " + el.Hora + "</legend>Direccion: " + el.Direccion + "<br/>Telefono: " + el.Telefono + "<br>Productos: " + el.Items + "</fieldset>");
+                            $("#campoProcesos" + pos).append("<input type='button' id='btn_finalizar" + pos + "' value='Finalizar Pedido'/>")
+                            $("#procesos").append("</div>");
+                            $("#btn_finalizar" + pos).on("click", () => {
+                                $.ajax({
+                                    url: "http://localhost:18500/Empresas/cambiarEstadoSolicitud?idEmpresa=" + @Model.IDEmpresa + "&idCliente=" + el.IDCliente + "&estado=2"
+                                }).done((dat) => {
+                                    if (dat == 1) {
+                                        alert("El pedido ha sido Finalizado");
+                                        $("#procesos").empty();
+                                        rellenarCamposSolicitudes();
+                                    } else {
+                                        alert("Ha fallado la opcion, porfavor, repita de nuevo");
+                                    }
+                                })
+                            })
+                            
+                        }
+                     })
+                } else {
+                    $("#legend_Proceso").text("Solicitudes en Proceso");
+                }
+            })
+        }
+
+        function rellenarCampoCementerio() {
+            $.ajax({
+                url: "http://localhost:18500/Empresas/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=3"
+            }).done((data) => {
+                var json = JSON.parse(data);
+                if (json.length > 0) {
+                    $("#legend_Cementerio").text("Solicitudes Terminadas -- " + json.length);
+                    json.forEach((el, pos, ar) => {
+                        if ($("#campo" + pos).length == 0) {
+                            $("#cementerio").append("<fieldset id='campo" + pos + "'><legend>Cliente " + el.Nombre + " a las " + el.Hora + "</legend>Direccion: " + el.Direccion + "<br/>Telefono: " + el.Telefono + "<br>Productos: " + el.Items);
+                            $("#cementerio").append("</fieldset>")
+                        }                        
+                    })
+                } else {
+                    $("#legend_Cementerio").text("Solicitudes Terminadas");
+                }
+            })
+        }
+
+        function rellenarCamposSolicitudes() {
+            rellenarCampoPedidos();
+            rellenarCampoProceso();
+            rellenarCampoCementerio();
+        }
+
+        var cont = 60;
+        setInterval(() => {
+            cont = cont - 1;
+            if (cont == 0) {                
+                cont = 60;
+                $("#cont").text("Las solicitudes se refrescarán en " + cont + " segundos");
+                rellenarCamposSolicitudes();
+            } else {
+                $("#cont").text("Las solicitudes se refrescarán en " + cont + " segundos");
+            }
+        }, 1000);
+
+    </script>    
 </body>
 </html>

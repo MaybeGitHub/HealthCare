@@ -29,6 +29,11 @@ namespace HealthCare.Controllers
             return View();
         }
 
+        public ViewResult Bienvenido(int SS)
+        {
+            return View(db.getCliente(SS));
+        }
+
         public string obtenerEmpresas(string sector, string especializacion)
         {
             string json = "[";
@@ -83,7 +88,7 @@ namespace HealthCare.Controllers
         [HttpPost]
         public ViewResult solicitudServicio(int IDCliente, int IDEmpresa, bool prescripcion)
         {
-            Solicitudes solicitud = new Solicitudes { IdCliente = IDCliente, idEmpresa = IDEmpresa, hora = DateTime.Now, estado = 0 };
+            Solicitudes solicitud = new Solicitudes { IDCliente = IDCliente, IDEmpresa = IDEmpresa, Hora = DateTime.Now.TimeOfDay };
             solicitud.Clientes = db.getCliente(IDCliente);
             solicitud.Empresas = db.getEmpresa(IDEmpresa);
             if (prescripcion)

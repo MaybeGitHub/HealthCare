@@ -58,6 +58,20 @@ namespace HealthCare.Controllers
             return db.Direcciones.Single(x => x.IDDueño == empresa.IDEmpresa);
         }
 
+        public int cambiarEstadoSolicitud(int idEmpresa, int idCliente, int estado)
+        {
+            Solicitudes s = db.Solicitudes.Single(x => x.IDEmpresa == idEmpresa && x.Estado == estado && x.IDCliente == idCliente);
+            if(s.Estado < 3) s.Estado = estado + 1;
+            try {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (InvalidOperationException)
+            {
+                return 0;
+            }                
+        }
+
         public Prescripciones getPrescripcion(int idPrescripcion)
         {
             return db.Prescripciones.Single(x => x.IDPrescripcion == idPrescripcion);
@@ -66,13 +80,21 @@ namespace HealthCare.Controllers
         public List<Prescripciones> getPrescripciones(Clientes cliente)
         {
             return db.Prescripciones.Where(x => x.IDCliente == cliente.SS).ToList();
+        }
+
+        public List<Prescripciones> getPrescripciones(Clientes cliente, Empresas empresa)
+        {
+            return db.Prescripciones.Where(x => x.IDCliente == cliente.SS && x.IDEmpresa == empresa.IDEmpresa).ToList();
         }        
 
         public List<Items> getItems(Prescripciones prescripcion)
         {
             return db.Items.Where(x => x.IDPrescripcion == prescripcion.IDPrescripcion).ToList();
         }
-        
 
+        public List<Solicitudes> getSolicitudes(int IDEmpresa, int estado)
+        {
+            return db.Solicitudes.Where(x => x.IDEmpresa == IDEmpresa && x.Estado == estado).ToList();
+        }
     }
 }
