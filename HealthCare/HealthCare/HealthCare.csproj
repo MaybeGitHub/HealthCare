@@ -203,6 +203,7 @@
     <Content Include="Views\Empresas\Login.cshtml" />
     <Content Include="Views\Empresas\Bienvenido.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Clientes\Terminar.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

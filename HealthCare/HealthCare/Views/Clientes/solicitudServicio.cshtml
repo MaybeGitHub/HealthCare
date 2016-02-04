@@ -71,7 +71,8 @@
         <center>
             ESTAS DE ACUERDO
             <form id="form" method="post" action="/Clientes/Bienvenido">
-                <input type="hidden" name="SS" value="@Model.Clientes.SS" />               
+                <input type="hidden" name="SS" value="@Model.Clientes.SS" />  
+                <input type="hidden" name="IDEmpresa" id="IDEmpresa"/>             
                 <input type="submit" id="btn_no" value="No" />
                 <input type="submit" id="btn_si" value="Si" />
             </form>
@@ -79,6 +80,7 @@
     </div>
     <script>
         $("#btn_si").on("click", () => {
+            $("#IDEmpresa").val(@Model.Empresas.IDEmpresa);
             $("#form").attr("action", "/Clientes/Terminar");
         })
     </script>

@@ -58,20 +58,6 @@ namespace HealthCare.Controllers
             return db.Direcciones.Single(x => x.IDDueño == empresa.IDEmpresa);
         }
 
-        public int cambiarEstadoSolicitud(int idEmpresa, int idCliente, int estado)
-        {
-            Solicitudes s = db.Solicitudes.Single(x => x.IDEmpresa == idEmpresa && x.Estado == estado && x.IDCliente == idCliente);
-            if(s.Estado < 3) s.Estado = estado + 1;
-            try {
-                db.SubmitChanges();
-                return 1;
-            }
-            catch (InvalidOperationException)
-            {
-                return 0;
-            }                
-        }
-
         public Prescripciones getPrescripcion(int idPrescripcion)
         {
             return db.Prescripciones.Single(x => x.IDPrescripcion == idPrescripcion);
@@ -95,6 +81,33 @@ namespace HealthCare.Controllers
         public List<Solicitudes> getSolicitudes(int IDEmpresa, int estado)
         {
             return db.Solicitudes.Where(x => x.IDEmpresa == IDEmpresa && x.Estado == estado).ToList();
+        }
+
+        public void setSolicitud(int SS, int IDEmpresa)
+        {
+            Solicitudes solicitud = new Solicitudes();            
+            solicitud.Hora = DateTime.Now.TimeOfDay;            
+            solicitud.Estado = 1;
+            solicitud.IDCliente = SS;
+            solicitud.IDEmpresa = IDEmpresa;
+            solicitud.IDSolicitud = db.Solicitudes.Count();
+            db.Solicitudes.InsertOnSubmit(solicitud);
+            db.SubmitChanges();
+        }
+
+        public int cambiarEstadoSolicitud(int idEmpresa, int idCliente, int estado)
+        {
+            Solicitudes s = db.Solicitudes.Single(x => x.IDEmpresa == idEmpresa && x.Estado == estado && x.IDCliente == idCliente);
+            if (s.Estado < 3) s.Estado = estado + 1;
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (InvalidOperationException)
+            {
+                return 0;
+            }
         }
     }
 }

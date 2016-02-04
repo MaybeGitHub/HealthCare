@@ -30,8 +30,26 @@ namespace HealthCare.Controllers
         }
 
         public ViewResult Bienvenido(int SS)
-        {
+        {            
             return View(db.getCliente(SS));
+        }
+
+        public ViewResult solicitudServicio(int IDCliente, int IDEmpresa, bool prescripcion)
+        {
+            Solicitudes solicitud = new Solicitudes { IDCliente = IDCliente, IDEmpresa = IDEmpresa, Hora = DateTime.Now.TimeOfDay };
+            solicitud.Clientes = db.getCliente(IDCliente);
+            solicitud.Empresas = db.getEmpresa(IDEmpresa);
+            if (prescripcion)
+            {
+                solicitud.Prescripciones.AddRange(db.getPrescripciones(db.getCliente(IDCliente)));
+            }
+            return View(solicitud);
+        }
+
+        public ViewResult Terminar(int SS, int IDEmpresa)
+        {
+            db.setSolicitud(SS, IDEmpresa);
+            return View();
         }
 
         public string obtenerEmpresas(string sector, string especializacion)
@@ -85,17 +103,6 @@ namespace HealthCare.Controllers
             return json;
         }
 
-        [HttpPost]
-        public ViewResult solicitudServicio(int IDCliente, int IDEmpresa, bool prescripcion)
-        {
-            Solicitudes solicitud = new Solicitudes { IDCliente = IDCliente, IDEmpresa = IDEmpresa, Hora = DateTime.Now.TimeOfDay };
-            solicitud.Clientes = db.getCliente(IDCliente);
-            solicitud.Empresas = db.getEmpresa(IDEmpresa);
-            if (prescripcion)
-            {
-                solicitud.Prescripciones.AddRange(db.getPrescripciones(db.getCliente(IDCliente)));
-            }
-            return View(solicitud);
-        }
+        
     }
 }

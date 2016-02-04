@@ -24,6 +24,7 @@ namespace HealthCare.Controllers
             Empresas e = db.getEmpresa(empresa.IDEmpresa);
             if (ModelState.IsValid && e != null)
             {
+
                 return View("Bienvenido", e);
             }
             else
