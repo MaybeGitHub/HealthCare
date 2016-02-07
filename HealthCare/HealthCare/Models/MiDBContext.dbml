@@ -10,6 +10,7 @@
       <Column Name="Email" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Association Name="Clientes_Direcciones" Member="Direcciones" ThisKey="SS" OtherKey="IDDueño" Type="Direcciones" Cardinality="One" />
       <Association Name="Clientes_Solicitudes" Member="Solicitudes" ThisKey="SS" OtherKey="IDCliente" Type="Solicitudes" />
+      <Association Name="Clientes_Pedidos" Member="Pedidos" ThisKey="SS" OtherKey="IDCliente" Type="Pedidos" />
     </Type>
   </Table>
   <Table Name="dbo.Direcciones" Member="Direcciones">
@@ -38,8 +39,9 @@
       <Column Name="Sector" Member="Subcategoria" Storage="_Sector" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="Empresas_Direcciones" Member="Direcciones" ThisKey="IDEmpresa" OtherKey="IDDueño" Type="Direcciones" Cardinality="One" />
       <Association Name="Empresas_Solicitudes" Member="Solicitudes" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Solicitudes" />
-      <Association Name="Empresas_Item" Member="Items" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Items" />
+      <Association Name="Empresas_Items" Member="Items" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Items" />
       <Association Name="Empresas_PosiblesItem" Member="PosiblesItems" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="PosiblesItem" />
+      <Association Name="Empresas_Pedidos" Member="Pedidos" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Pedidos" />
     </Type>
   </Table>
   <Table Name="dbo.Solicitudes" Member="Solicitudes">
@@ -50,6 +52,7 @@
       <Column Name="Estado" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="IDSolicitud" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Association Name="Solicitudes_Items" Member="Items" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Items" />
+      <Association Name="Solicitudes_Pedidos" Member="Pedidos" ThisKey="IDSolicitud" OtherKey="IDSolicitud" Type="Pedidos" />
       <Association Name="Empresas_Solicitudes" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
       <Association Name="Clientes_Solicitudes" Member="Clientes" ThisKey="IDCliente" OtherKey="SS" Type="Clientes" IsForeignKey="true" />
     </Type>
@@ -60,7 +63,8 @@
       <Column Name="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Precio" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="IDEmpresa" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Empresas_Item" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
+      <Association Name="Items_Pedidos" Member="Pedidos" ThisKey="IDItem" OtherKey="IDItem" Type="Pedidos" />
+      <Association Name="Empresas_Items" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
       <Association Name="Solicitudes_Items" Member="Solicitudes" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Solicitudes" IsForeignKey="true" />
     </Type>
   </Table>
@@ -69,7 +73,7 @@
       <Column Name="Categoria" Member="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Empresas" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Color" Type="System.String" DbType="NChar(10) NOT NULL" CanBeNull="false" />
-      <Association Name="Categoria_Subcategoria" Member="Subcategorias" ThisKey="Nombre" OtherKey="Categoria" Type="Subcategorias" />
+      <Association Name="Categorias_Subcategorias" Member="Subcategorias" ThisKey="Nombre" OtherKey="Categoria" Type="Subcategorias" />
     </Type>
   </Table>
   <Table Name="dbo.Subcategorias" Member="Subcategorias">
@@ -78,7 +82,7 @@
       <Column Name="Subcategoria" Member="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Color" Type="System.String" DbType="NChar(10) NOT NULL" CanBeNull="false" />
       <Column Name="Empresas" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Categoria_Subcategoria" Member="Categorias" ThisKey="Categoria" OtherKey="Nombre" Type="Categorias" IsForeignKey="true" />
+      <Association Name="Categorias_Subcategorias" Member="Categorias" ThisKey="Categoria" OtherKey="Nombre" Type="Categorias" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.PosiblesItems" Member="PosiblesItems">
@@ -87,6 +91,19 @@
       <Column Name="IDEmpresa" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Precio" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="Empresas_PosiblesItem" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Pedidos" Member="Pedidos">
+    <Type Name="Pedidos">
+      <Column Name="IDPedido" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="IDEmpresa" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IDItem" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IDCliente" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Member="IDSolicitud" Type="System.Int32" CanBeNull="false" />
+      <Association Name="Empresas_Pedidos" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
+      <Association Name="Items_Pedidos" Member="Items" ThisKey="IDItem" OtherKey="IDItem" Type="Items" IsForeignKey="true" />
+      <Association Name="Clientes_Pedidos" Member="Clientes" ThisKey="IDCliente" OtherKey="SS" Type="Clientes" IsForeignKey="true" />
+      <Association Name="Solicitudes_Pedidos" Member="Solicitudes" ThisKey="IDSolicitud" OtherKey="IDSolicitud" Type="Solicitudes" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

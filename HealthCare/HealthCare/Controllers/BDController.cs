@@ -64,15 +64,25 @@ namespace HealthCare.Controllers
             return db.Solicitudes.Where(x => x.IDEmpresa == IDEmpresa && x.Estado == estado).ToList();
         }
 
-        public void setSolicitud(int ss, int IDEmpresa)
+        public void setSolicitud(int ss, int IDEmpresa, int IDItem)
         {            
-            Solicitudes solicitud = new Solicitudes();            
-            solicitud.Hora = DateTime.Now.ToString();            
+            Solicitudes solicitud = new Solicitudes();
+            solicitud.Hora = DateTime.Now.ToString();
             solicitud.Estado = 1;
             solicitud.IDCliente = ss;
             solicitud.IDEmpresa = IDEmpresa;
             solicitud.IDSolicitud = db.Solicitudes.Count();
             db.Solicitudes.InsertOnSubmit(solicitud);
+
+            Pedidos pedido = new Pedidos();
+            pedido.IDCliente = ss;
+            pedido.IDEmpresa = IDEmpresa;
+            pedido.IDItem = IDItem;
+            pedido.IDPedido = db.Pedidos.Count();
+            pedido.IDSolicitud = solicitud.IDSolicitud;
+
+            db.Pedidos.InsertOnSubmit(pedido);
+
             db.SubmitChanges();
         }
 

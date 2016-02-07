@@ -19,7 +19,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th style="text-align:center; background-color:Highlight" colspan="4">Datos del Cliente</th>
+                    <th style="text-align:center; background-color:Highlight" colspan="4">Bolsa de la Compra</th>
                 </tr>
                 <tr>
                     <th style="text-align:center">Empresa</th>
@@ -35,16 +35,16 @@
                     for(int i = 0; i < listaEmpresas.Count; i++)
                     {
                         <tr>
-                            <td id="@listaEmpresas[i].IDEmpresa">@listaEmpresas[i].Nombre</td>
-                            <td>@listaItems[i].Nombre</td>
-                            <td>@listaItems[i].Precio€</td>
+                            <td id="@listaEmpresas[i].IDEmpresa" style="text-align:center">@listaEmpresas[i].Nombre</td>
+                            <td id="@listaItems[i].IDItem" style="text-align:center">@listaItems[i].Nombre</td>
+                            <td style="text-align:center">@listaItems[i].Precio€</td>
                         </tr>  
                         cont += listaItems[i].Precio;
                     }
                 }               
             </tbody>
             <tfoot>
-                <tr><td>TOTAL: <span style="margin-left:10px">@cont</span></td></tr> 
+                <tr><td></td><td></td><td style="text-align:center">TOTAL: <span style="margin-left:10px">@cont €</span></td></tr> 
             </tfoot>             
         </table>        
         <center>
@@ -54,19 +54,19 @@
         </center>
     </div>
     <script>
-        var IDEmpresa;
-        var IDCliente = @Model.cliente.SS
+        var empresa;
+        var item;
+        var cliente = @Model.cliente.SS;        
         $("#btn_si").on("click", () => {
-            $("thbody tr").each((pos, el)=>{
-                IDEmpresa = el.children("td")[0].attr("id");
+            $("tbody tr").each((pos, el)=>{
+                empresa = $(el).children("td")[0].id;
+                item = $(el).children("td")[1].id;
                 $.post(
                 "/Datos/Solicitud",
-                {"IDCliente": id},
-                (data)=>{
-                    alert("Tu solicitud ha sido realizada con exito. Se pondrán en contacto con usted lo antes posible al telefono " + @Model.cliente.Telefono);
-                    location.href = "/Clientes/Bienvenido";
-                });
+                {"IDEmpresa": empresa, "IDCliente":cliente, "IDItem": item}
+                );
             });
+            location.href = "/Clientes/Bienvenido";
         })
         $("#btn_no").on("click", () => {
             location.href = "/Clientes/Bienvenido";

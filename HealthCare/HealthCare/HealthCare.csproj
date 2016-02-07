@@ -206,7 +206,6 @@
     <Content Include="Views\Clientes\Solicitud.cshtml" />
     <Content Include="Views\Empresas\Login.cshtml" />
     <Content Include="Views\Empresas\Bienvenido.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

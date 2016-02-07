@@ -54,6 +54,9 @@ namespace HealthCare.Models
     partial void InsertPosiblesItem(PosiblesItem instance);
     partial void UpdatePosiblesItem(PosiblesItem instance);
     partial void DeletePosiblesItem(PosiblesItem instance);
+    partial void InsertPedidos(Pedidos instance);
+    partial void UpdatePedidos(Pedidos instance);
+    partial void DeletePedidos(Pedidos instance);
     #endregion
 		
 		public MiDBContextDataContext() : 
@@ -149,6 +152,14 @@ namespace HealthCare.Models
 				return this.GetTable<PosiblesItem>();
 			}
 		}
+		
+		public System.Data.Linq.Table<Pedidos> Pedidos
+		{
+			get
+			{
+				return this.GetTable<Pedidos>();
+			}
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Clientes")]
@@ -173,6 +184,8 @@ namespace HealthCare.Models
 		
 		private EntitySet<Solicitudes> _Solicitudes;
 		
+		private EntitySet<Pedidos> _Pedidos;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -195,6 +208,7 @@ namespace HealthCare.Models
 		{
 			this._Direcciones = default(EntityRef<Direcciones>);
 			this._Solicitudes = new EntitySet<Solicitudes>(new Action<Solicitudes>(this.attach_Solicitudes), new Action<Solicitudes>(this.detach_Solicitudes));
+			this._Pedidos = new EntitySet<Pedidos>(new Action<Pedidos>(this.attach_Pedidos), new Action<Pedidos>(this.detach_Pedidos));
 			OnCreated();
 		}
 		
@@ -360,6 +374,19 @@ namespace HealthCare.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Clientes_Pedidos", Storage="_Pedidos", ThisKey="SS", OtherKey="IDCliente")]
+		public EntitySet<Pedidos> Pedidos
+		{
+			get
+			{
+				return this._Pedidos;
+			}
+			set
+			{
+				this._Pedidos.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -387,6 +414,18 @@ namespace HealthCare.Models
 		}
 		
 		private void detach_Solicitudes(Solicitudes entity)
+		{
+			this.SendPropertyChanging();
+			entity.Clientes = null;
+		}
+		
+		private void attach_Pedidos(Pedidos entity)
+		{
+			this.SendPropertyChanging();
+			entity.Clientes = this;
+		}
+		
+		private void detach_Pedidos(Pedidos entity)
 		{
 			this.SendPropertyChanging();
 			entity.Clientes = null;
@@ -731,6 +770,8 @@ namespace HealthCare.Models
 		
 		private EntitySet<PosiblesItem> _PosiblesItems;
 		
+		private EntitySet<Pedidos> _Pedidos;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -759,6 +800,7 @@ namespace HealthCare.Models
 			this._Solicitudes = new EntitySet<Solicitudes>(new Action<Solicitudes>(this.attach_Solicitudes), new Action<Solicitudes>(this.detach_Solicitudes));
 			this._Items = new EntitySet<Items>(new Action<Items>(this.attach_Items), new Action<Items>(this.detach_Items));
 			this._PosiblesItems = new EntitySet<PosiblesItem>(new Action<PosiblesItem>(this.attach_PosiblesItems), new Action<PosiblesItem>(this.detach_PosiblesItems));
+			this._Pedidos = new EntitySet<Pedidos>(new Action<Pedidos>(this.attach_Pedidos), new Action<Pedidos>(this.detach_Pedidos));
 			OnCreated();
 		}
 		
@@ -964,7 +1006,7 @@ namespace HealthCare.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Empresas_Item", Storage="_Items", ThisKey="IDEmpresa", OtherKey="IDEmpresa")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Empresas_Items", Storage="_Items", ThisKey="IDEmpresa", OtherKey="IDEmpresa")]
 		public EntitySet<Items> Items
 		{
 			get
@@ -987,6 +1029,19 @@ namespace HealthCare.Models
 			set
 			{
 				this._PosiblesItems.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Empresas_Pedidos", Storage="_Pedidos", ThisKey="IDEmpresa", OtherKey="IDEmpresa")]
+		public EntitySet<Pedidos> Pedidos
+		{
+			get
+			{
+				return this._Pedidos;
+			}
+			set
+			{
+				this._Pedidos.Assign(value);
 			}
 		}
 		
@@ -1045,6 +1100,18 @@ namespace HealthCare.Models
 			this.SendPropertyChanging();
 			entity.Empresas = null;
 		}
+		
+		private void attach_Pedidos(Pedidos entity)
+		{
+			this.SendPropertyChanging();
+			entity.Empresas = this;
+		}
+		
+		private void detach_Pedidos(Pedidos entity)
+		{
+			this.SendPropertyChanging();
+			entity.Empresas = null;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Solicitudes")]
@@ -1064,6 +1131,8 @@ namespace HealthCare.Models
 		private int _IDSolicitud;
 		
 		private EntitySet<Items> _Items;
+		
+		private EntitySet<Pedidos> _Pedidos;
 		
 		private EntityRef<Empresas> _Empresas;
 		
@@ -1088,6 +1157,7 @@ namespace HealthCare.Models
 		public Solicitudes()
 		{
 			this._Items = new EntitySet<Items>(new Action<Items>(this.attach_Items), new Action<Items>(this.detach_Items));
+			this._Pedidos = new EntitySet<Pedidos>(new Action<Pedidos>(this.attach_Pedidos), new Action<Pedidos>(this.detach_Pedidos));
 			this._Empresas = default(EntityRef<Empresas>);
 			this._Clientes = default(EntityRef<Clientes>);
 			OnCreated();
@@ -1214,6 +1284,19 @@ namespace HealthCare.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Solicitudes_Pedidos", Storage="_Pedidos", ThisKey="IDSolicitud", OtherKey="IDSolicitud")]
+		public EntitySet<Pedidos> Pedidos
+		{
+			get
+			{
+				return this._Pedidos;
+			}
+			set
+			{
+				this._Pedidos.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Empresas_Solicitudes", Storage="_Empresas", ThisKey="IDEmpresa", OtherKey="IDEmpresa", IsForeignKey=true)]
 		public Empresas Empresas
 		{
@@ -1313,6 +1396,18 @@ namespace HealthCare.Models
 			this.SendPropertyChanging();
 			entity.Solicitudes = null;
 		}
+		
+		private void attach_Pedidos(Pedidos entity)
+		{
+			this.SendPropertyChanging();
+			entity.Solicitudes = this;
+		}
+		
+		private void detach_Pedidos(Pedidos entity)
+		{
+			this.SendPropertyChanging();
+			entity.Solicitudes = null;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Items")]
@@ -1328,6 +1423,8 @@ namespace HealthCare.Models
 		private double _Precio;
 		
 		private int _IDEmpresa;
+		
+		private EntitySet<Pedidos> _Pedidos;
 		
 		private EntityRef<Empresas> _Empresas;
 		
@@ -1349,6 +1446,7 @@ namespace HealthCare.Models
 		
 		public Items()
 		{
+			this._Pedidos = new EntitySet<Pedidos>(new Action<Pedidos>(this.attach_Pedidos), new Action<Pedidos>(this.detach_Pedidos));
 			this._Empresas = default(EntityRef<Empresas>);
 			this._Solicitudes = default(EntityRef<Solicitudes>);
 			OnCreated();
@@ -1438,7 +1536,20 @@ namespace HealthCare.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Empresas_Item", Storage="_Empresas", ThisKey="IDEmpresa", OtherKey="IDEmpresa", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Items_Pedidos", Storage="_Pedidos", ThisKey="IDItem", OtherKey="IDItem")]
+		public EntitySet<Pedidos> Pedidos
+		{
+			get
+			{
+				return this._Pedidos;
+			}
+			set
+			{
+				this._Pedidos.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Empresas_Items", Storage="_Empresas", ThisKey="IDEmpresa", OtherKey="IDEmpresa", IsForeignKey=true)]
 		public Empresas Empresas
 		{
 			get
@@ -1524,6 +1635,18 @@ namespace HealthCare.Models
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_Pedidos(Pedidos entity)
+		{
+			this.SendPropertyChanging();
+			entity.Items = this;
+		}
+		
+		private void detach_Pedidos(Pedidos entity)
+		{
+			this.SendPropertyChanging();
+			entity.Items = null;
 		}
 	}
 	
@@ -1619,7 +1742,7 @@ namespace HealthCare.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Categoria_Subcategoria", Storage="_Subcategorias", ThisKey="Nombre", OtherKey="Categoria")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Categorias_Subcategorias", Storage="_Subcategorias", ThisKey="Nombre", OtherKey="Categoria")]
 		public EntitySet<Subcategorias> Subcategorias
 		{
 			get
@@ -1785,7 +1908,7 @@ namespace HealthCare.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Categoria_Subcategoria", Storage="_Categorias", ThisKey="Categoria", OtherKey="Nombre", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Categorias_Subcategorias", Storage="_Categorias", ThisKey="Categoria", OtherKey="Nombre", IsForeignKey=true)]
 		public Categorias Categorias
 		{
 			get
@@ -1966,6 +2089,328 @@ namespace HealthCare.Models
 						this._IDEmpresa = default(int);
 					}
 					this.SendPropertyChanged("Empresas");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Pedidos")]
+	public partial class Pedidos : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _IDPedido;
+		
+		private System.Nullable<int> _IDEmpresa;
+		
+		private System.Nullable<int> _IDItem;
+		
+		private System.Nullable<int> _IDCliente;
+		
+		private int _IDSolicitud;
+		
+		private EntityRef<Empresas> _Empresas;
+		
+		private EntityRef<Items> _Items;
+		
+		private EntityRef<Clientes> _Clientes;
+		
+		private EntityRef<Solicitudes> _Solicitudes;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIDPedidoChanging(int value);
+    partial void OnIDPedidoChanged();
+    partial void OnIDEmpresaChanging(System.Nullable<int> value);
+    partial void OnIDEmpresaChanged();
+    partial void OnIDItemChanging(System.Nullable<int> value);
+    partial void OnIDItemChanged();
+    partial void OnIDClienteChanging(System.Nullable<int> value);
+    partial void OnIDClienteChanged();
+    partial void OnIDSolicitudChanging(int value);
+    partial void OnIDSolicitudChanged();
+    #endregion
+		
+		public Pedidos()
+		{
+			this._Empresas = default(EntityRef<Empresas>);
+			this._Items = default(EntityRef<Items>);
+			this._Clientes = default(EntityRef<Clientes>);
+			this._Solicitudes = default(EntityRef<Solicitudes>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDPedido", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int IDPedido
+		{
+			get
+			{
+				return this._IDPedido;
+			}
+			set
+			{
+				if ((this._IDPedido != value))
+				{
+					this.OnIDPedidoChanging(value);
+					this.SendPropertyChanging();
+					this._IDPedido = value;
+					this.SendPropertyChanged("IDPedido");
+					this.OnIDPedidoChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDEmpresa", DbType="Int")]
+		public System.Nullable<int> IDEmpresa
+		{
+			get
+			{
+				return this._IDEmpresa;
+			}
+			set
+			{
+				if ((this._IDEmpresa != value))
+				{
+					if (this._Empresas.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnIDEmpresaChanging(value);
+					this.SendPropertyChanging();
+					this._IDEmpresa = value;
+					this.SendPropertyChanged("IDEmpresa");
+					this.OnIDEmpresaChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDItem", DbType="Int")]
+		public System.Nullable<int> IDItem
+		{
+			get
+			{
+				return this._IDItem;
+			}
+			set
+			{
+				if ((this._IDItem != value))
+				{
+					if (this._Items.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnIDItemChanging(value);
+					this.SendPropertyChanging();
+					this._IDItem = value;
+					this.SendPropertyChanged("IDItem");
+					this.OnIDItemChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDCliente", DbType="Int")]
+		public System.Nullable<int> IDCliente
+		{
+			get
+			{
+				return this._IDCliente;
+			}
+			set
+			{
+				if ((this._IDCliente != value))
+				{
+					if (this._Clientes.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnIDClienteChanging(value);
+					this.SendPropertyChanging();
+					this._IDCliente = value;
+					this.SendPropertyChanged("IDCliente");
+					this.OnIDClienteChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDSolicitud")]
+		public int IDSolicitud
+		{
+			get
+			{
+				return this._IDSolicitud;
+			}
+			set
+			{
+				if ((this._IDSolicitud != value))
+				{
+					if (this._Solicitudes.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnIDSolicitudChanging(value);
+					this.SendPropertyChanging();
+					this._IDSolicitud = value;
+					this.SendPropertyChanged("IDSolicitud");
+					this.OnIDSolicitudChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Empresas_Pedidos", Storage="_Empresas", ThisKey="IDEmpresa", OtherKey="IDEmpresa", IsForeignKey=true)]
+		public Empresas Empresas
+		{
+			get
+			{
+				return this._Empresas.Entity;
+			}
+			set
+			{
+				Empresas previousValue = this._Empresas.Entity;
+				if (((previousValue != value) 
+							|| (this._Empresas.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Empresas.Entity = null;
+						previousValue.Pedidos.Remove(this);
+					}
+					this._Empresas.Entity = value;
+					if ((value != null))
+					{
+						value.Pedidos.Add(this);
+						this._IDEmpresa = value.IDEmpresa;
+					}
+					else
+					{
+						this._IDEmpresa = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("Empresas");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Items_Pedidos", Storage="_Items", ThisKey="IDItem", OtherKey="IDItem", IsForeignKey=true)]
+		public Items Items
+		{
+			get
+			{
+				return this._Items.Entity;
+			}
+			set
+			{
+				Items previousValue = this._Items.Entity;
+				if (((previousValue != value) 
+							|| (this._Items.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Items.Entity = null;
+						previousValue.Pedidos.Remove(this);
+					}
+					this._Items.Entity = value;
+					if ((value != null))
+					{
+						value.Pedidos.Add(this);
+						this._IDItem = value.IDItem;
+					}
+					else
+					{
+						this._IDItem = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("Items");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Clientes_Pedidos", Storage="_Clientes", ThisKey="IDCliente", OtherKey="SS", IsForeignKey=true)]
+		public Clientes Clientes
+		{
+			get
+			{
+				return this._Clientes.Entity;
+			}
+			set
+			{
+				Clientes previousValue = this._Clientes.Entity;
+				if (((previousValue != value) 
+							|| (this._Clientes.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Clientes.Entity = null;
+						previousValue.Pedidos.Remove(this);
+					}
+					this._Clientes.Entity = value;
+					if ((value != null))
+					{
+						value.Pedidos.Add(this);
+						this._IDCliente = value.SS;
+					}
+					else
+					{
+						this._IDCliente = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("Clientes");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Solicitudes_Pedidos", Storage="_Solicitudes", ThisKey="IDSolicitud", OtherKey="IDSolicitud", IsForeignKey=true)]
+		public Solicitudes Solicitudes
+		{
+			get
+			{
+				return this._Solicitudes.Entity;
+			}
+			set
+			{
+				Solicitudes previousValue = this._Solicitudes.Entity;
+				if (((previousValue != value) 
+							|| (this._Solicitudes.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Solicitudes.Entity = null;
+						previousValue.Pedidos.Remove(this);
+					}
+					this._Solicitudes.Entity = value;
+					if ((value != null))
+					{
+						value.Pedidos.Add(this);
+						this._IDSolicitud = value.IDSolicitud;
+					}
+					else
+					{
+						this._IDSolicitud = default(int);
+					}
+					this.SendPropertyChanged("Solicitudes");
 				}
 			}
 		}

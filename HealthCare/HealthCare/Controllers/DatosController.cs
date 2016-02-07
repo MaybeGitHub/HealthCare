@@ -87,11 +87,9 @@ namespace HealthCare.Controllers
             
         }
 
-        public int Solicitud(int ss, int IDEmpresa)
-        {
-            List<Empresas> listaEmpresas = ViewBag["Empresas"];
-            List<Items> listaItems = ViewBag["Items"];            
-            db.setSolicitud(ss, IDEmpresa);
+        public int Solicitud(int IDEmpresa, int IDCliente, int IDItem)
+        {            
+            db.setSolicitud(IDCliente, IDEmpresa, IDItem);
             return 1;
         }
         
