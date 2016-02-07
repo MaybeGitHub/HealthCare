@@ -13,23 +13,23 @@
     <script src="~/Scripts/jquery-1.10.2.js"></script>
     <title>Bienvenido</title>
 </head>
-<body>
-    <p id="cont">Las solicitudes se refrescarán en 30 segundos</p>
-    <div class="container">
+<body>    
+    <p id="cont">Las solicitudes se refrescarán en 30 segundos</p>    
+    <div class="container" style="text-align:center">
         @{
             string[] campos = { "Espera", "Proceso", "Terminadas" };
             foreach (string s in campos)
-            { 
-                <table class="table" style="text-align:center">
-                @{
-                    string color = "";
-                    switch (s)
-                    {
-                        case "Espera": color = "lightblue"; break;
-                        case "Proceso": color = "#F7D358"; break;
-                        case "Terminadas": color = "#FA5858"; break;
+            {
+                <table class="table">
+                    @{
+                        string color = "";
+                        switch (s)
+                        {
+                            case "Espera": color = "lightblue"; break;
+                            case "Proceso": color = "#F7D358"; break;
+                            case "Terminadas": color = "#FA5858"; break;
+                        }
                     }
-                }
                     <thead style="background-color:@color">
                         <tr>
                             @{
@@ -40,8 +40,8 @@
                                 }
                                 texto += s;
                             }
-                            <th id="head_@s" colspan="6" style="text-align:center">@texto</th>
-                        </tr>                  
+                            <th id="head_@s" colspan="6" style="text-align:center">@texto <span class="badge" id="badge_@s">0</span></th>
+                        </tr>
                         <tr>
                             <th style="text-align:center">Cliente</th>
                             <th style="text-align:center">Hora</th>
@@ -55,103 +55,135 @@
                                         <th style="text-align:center">Aceptar Pedido</th> break;
                                     case "Proceso":
                                         <th style="text-align:center">Finalizar Pedido</th> break;
+                                    case "Terminadas":
+                                        <th style="text-align:center">Borrar Pedido</th> break;
                                 }
                             }
 
                         </tr>
                     </thead>
                     <tbody id="tbody_@s"></tbody>
-                </table>  
+                </table>
             }
         }
     </div>
-        
+    
+
     <script>
         rellenarCamposSolicitudes();
 
         function rellenarCampoPedidos() {
+            $("#head_Espera").off("click");
             $.ajax({
-                url: "http://localhost:18500/Empresas/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=1"
+                  url: "/Empresas/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=1"
             }).done((data) => {
-                var json = JSON.parse(data);               
-                json.forEach((el, pos, ar) => {
-                    if ($("#pedido" + pos).length == 0) {
-                        $("#tbody_Espera").append("<tr class='success' id='pedido" + pos + "'>");
-                        $("#pedido" + pos).append("<td> " + el.Nombre + "</td>");
-                        $("#pedido" + pos).append("<td>" + el.Hora + "</td>");
-                        $("#pedido" + pos).append("<td>"  + el.Telefono + "</td>");
-                        $("#pedido" + pos).append("<td>" + el.Direccion + "</td>");
-                        $("#pedido" + pos).append("<td>" + el.Items + "</td>");
-                        $("#pedido" + pos).append("<td><button id='btn_si" + pos + "'>Aceptar</button><button style='margin-left:5px' id='btn_no" + pos + "'>Rechazar</button> </td>")
-                        $("#tbody_Espera").append("</tr>");
-                        $("#btn_si" + pos).on("click", () => {
-                            $.ajax({
-                                url: "http://localhost:18500/Empresas/cambiarEstadoSolicitud?idEmpresa=" + @Model.IDEmpresa + "&idCliente=" + el.IDCliente + "&estado=1"
-                            }).done((dat) => {
-                                if (dat == 1) {
-                                    alert("La solicitud del cliente " + el.Nombre + " ha sido aceptada, para concetar la hora, llame al numero " + el.Telefono);
-                                    $("#tbody_Espera").empty();
-                                    rellenarCamposSolicitudes();
-                                } else {
-                                    alert("Ha fallado la opcion, porfavor, repita de nuevo");
-                                }
-                            })
-                        })
-                    }
+                $("#head_Espera").on("click", () => {
+                    $("#tbody_Espera").fadeToggle("slow");
                 })
+                var json = JSON.parse(data);
+                if (json.length > 0) {
+                    json.forEach((el, pos, ar) => {
+                        $("#badge_Espera").text(ar.length);
+                        if ($("#pedido" + pos).length == 0) {
+                            $("#tbody_Espera").append("<tr class='success' id='pedido" + pos + "'>");
+                            $("#pedido" + pos).append("<td> " + el.Nombre + "</td>");
+                            $("#pedido" + pos).append("<td>" + el.Hora + "</td>");
+                            $("#pedido" + pos).append("<td>" + el.Telefono + "</td>");
+                            $("#pedido" + pos).append("<td>" + el.Direccion + "</td>");
+                            $("#pedido" + pos).append("<td>" + el.Items + "</td>");
+                            $("#pedido" + pos).append("<td><button class='btn btn-info' id='btn_si" + pos + "'>Aceptar</button><button class='btn btn-danger' style='margin-left:5px' id='btn_no" + pos + "'>Rechazar</button> </td>")
+                            $("#tbody_Espera").append("</tr>");
+                            $("#btn_si" + pos).on("click", () => {
+                                $.ajax({
+                                    url: "/Empresas/cambiarEstadoSolicitud?idEmpresa=" + @Model.IDEmpresa + "&idCliente=" + el.IDCliente + "&estado=1"
+                                }).done((dat) => {
+                                    if (dat == 1) {
+                                        alert("La solicitud del cliente " + el.Nombre + " ha sido aceptada, para concetar la hora, llame al numero " + el.Telefono);
+                                        $("#tbody_Espera").empty();
+                                        rellenarCamposSolicitudes();
+                                    } else {
+                                        alert("Ha fallado la opcion, porfavor, repita de nuevo");
+                                    }
+                                })
+                            })
+                        }
+                    })
+                } else {
+                    $("#badge_Espera").text(0);
+                }
             })
         }
 
         function rellenarCampoProceso() {
+            $("#head_Proceso").off("click");
             $.ajax({
-                url: "http://localhost:18500/Empresas/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=2"
+                url: "/Empresas/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=2"
             }).done((data) => {
-                var json = JSON.parse(data);
-                json.forEach((el, pos, ar) => {
-                    if($("#proceso" + pos).length == 0){
-                        $("#tbody_Proceso").append("<tr style='background-color:#F3E2A9' id='proceso" + pos + "'>");
-                        $("#proceso" + pos).append("<td> " + el.Nombre + "</td>");
-                        $("#proceso" + pos).append("<td>" + el.Hora + "</td>");
-                        $("#proceso" + pos).append("<td>" + el.Telefono + "</td>");
-                        $("#proceso" + pos).append("<td>" + el.Direccion + "</td>");
-                        $("#proceso" + pos).append("<td>" + el.Items + "</td>");
-                        $("#proceso" + pos).append("<td><button id='btn_Finalizar" + pos + "'>Finalizar</button></td>")
-                        $("#tbody_Proceso").append("</tr>");
-                        $("#btn_Finalizar" + pos).on("click", () => {
-                            $.ajax({
-                                url: "http://localhost:18500/Empresas/cambiarEstadoSolicitud?idEmpresa=" + @Model.IDEmpresa + "&idCliente=" + el.IDCliente + "&estado=2"
-                            }).done((dat) => {
-                                if (dat == 1) {
-                                    alert("El pedido ha sido Finalizado");
-                                    $("#tbody_Proceso").empty();
-                                    rellenarCamposSolicitudes();
-                                } else {
-                                    alert("Ha fallado la opcion, porfavor, repita de nuevo");
-                                }
-                            })
-                        })
-                    }
+                $("#head_Proceso").on("click", () => {
+                    $("#tbody_Proceso").fadeToggle("slow");
                 })
+                var json = JSON.parse(data);
+                if (json.length > 0) {
+                    json.forEach((el, pos, ar) => {
+                        if ($("#proceso" + pos).length == 0) {
+                            $("#badge_Proceso").text(ar.length);
+                            $("#tbody_Proceso").append("<tr style='background-color:#F3E2A9' id='proceso" + pos + "'>");
+                            $("#proceso" + pos).append("<td> " + el.Nombre + "</td>");
+                            $("#proceso" + pos).append("<td>" + el.Hora + "</td>");
+                            $("#proceso" + pos).append("<td>" + el.Telefono + "</td>");
+                            $("#proceso" + pos).append("<td>" + el.Direccion + "</td>");
+                            $("#proceso" + pos).append("<td>" + el.Items + "</td>");
+                            $("#proceso" + pos).append("<td><button class='btn btn-warning' id='btn_Finalizar" + pos + "'>Finalizar</button></td>")
+                            $("#tbody_Proceso").append("</tr>");
+                            $("#btn_Finalizar" + pos).on("click", () => {
+                                $.ajax({
+                                    url: "/Empresas/cambiarEstadoSolicitud?idEmpresa=" + @Model.IDEmpresa + "&idCliente=" + el.IDCliente + "&estado=2"
+                                }).done((dat) => {
+                                    if (dat == 1) {
+                                        alert("El pedido ha sido Finalizado");
+                                        $("#tbody_Proceso").empty();
+                                        rellenarCamposSolicitudes();
+                                    } else {
+                                        alert("Ha fallado la opcion, porfavor, repita de nuevo");
+                                    }
+                                })
+                            })
+                        }
+                    })
+                } else {
+                    $("#badge_Proceso").text(0);
+                }
             })
         }        
 
         function rellenarCampoTerminadas() {
+            $("#head_Terminadas").off("click");
             $.ajax({
-                url: "http://localhost:18500/Empresas/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=3"
+                url: "/Empresas/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=3"
             }).done((data) => {
-                var json = JSON.parse(data);                    
-                json.forEach((el, pos, ar) => {
-                    if ($("#terminado" + pos).length == 0) {
-                        $("#tbody_Terminadas").append("<tr style='background-color:#F5A9A9' id='terminado" + pos + "'>");
-                        $("#terminado" + pos).append("<td> " + el.Nombre + "</td>");
-                        $("#terminado" + pos).append("<td>" + el.Hora + "</td>");
-                        $("#terminado" + pos).append("<td>" + el.Telefono + "</td>");
-                        $("#terminado" + pos).append("<td>" + el.Direccion + "</td>");
-                        $("#terminado" + pos).append("<td>" + el.Items + "</td>");
-                        $("#tbody_Terminadas").append("</tr>");
-                    }
-                })                
+                var json = JSON.parse(data);
+                $("#head_Terminadas").on("click", () => {
+                    $("#tbody_Terminadas").fadeToggle("slow");
+                })
+                if(json.length > 0){
+                    json.forEach((el, pos, ar) => {
+                        if ($("#terminado" + pos).length == 0) {
+                            $("#badge_Terminadas").text(ar.length);
+                            $("#tbody_Terminadas").append("<tr style='background-color:#F5A9A9' id='terminado" + pos + "'>");
+                            $("#terminado" + pos).append("<td> " + el.Nombre + "</td>");
+                            $("#terminado" + pos).append("<td>" + el.Hora + "</td>");
+                            $("#terminado" + pos).append("<td>" + el.Telefono + "</td>");
+                            $("#terminado" + pos).append("<td>" + el.Direccion + "</td>");
+                            $("#terminado" + pos).append("<td>" + el.Items + "</td>");
+                            $("#terminado" + pos).append("<td><button class='btn btn-danger' id='btn_Borrar" + pos + "'>Borrar</button></td>")
+                            $("#tbody_Terminadas").append("</tr>");
+                        }
+                    }) 
+                } else {
+                    $("#badge_Terminadas").text(0);
+                }
             })
+                
         }
 
         function rellenarCamposSolicitudes() {

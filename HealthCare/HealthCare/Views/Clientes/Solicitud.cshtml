@@ -1,0 +1,76 @@
+﻿@model HealthCare.Models.Pre_Solicitud
+@using HealthCare.Models
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>solicitudServicio</title>
+    <link rel="stylesheet" href="~/Content/bootstrap-theme.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+</head>
+<body>
+    <div class="container"> 
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="text-align:center; background-color:Highlight" colspan="4">Datos del Cliente</th>
+                </tr>
+                <tr>
+                    <th style="text-align:center">Empresa</th>
+                    <th style="text-align:center">Producto</th>
+                    <th style="text-align:center">Precio</th>
+                </tr>
+            </thead>
+            <tbody>                
+                @{ 
+                    List<Empresas> listaEmpresas = Model.listaEmpresas;
+                    List<Items> listaItems = Model.listaItems;
+                    double cont = 0;
+                    for(int i = 0; i < listaEmpresas.Count; i++)
+                    {
+                        <tr>
+                            <td id="@listaEmpresas[i].IDEmpresa">@listaEmpresas[i].Nombre</td>
+                            <td>@listaItems[i].Nombre</td>
+                            <td>@listaItems[i].Precio€</td>
+                        </tr>  
+                        cont += listaItems[i].Precio;
+                    }
+                }               
+            </tbody>
+            <tfoot>
+                <tr><td>TOTAL: <span style="margin-left:10px">@cont</span></td></tr> 
+            </tfoot>             
+        </table>        
+        <center>
+            <p class="text-warning">¿ Enviar Solicitudes ?</p>                          
+            <button class="btn btn-danger" id="btn_no">Volver</button>
+            <button class="btn btn-success" id="btn_si" style="margin-left:10px">Aceptar</button>           
+        </center>
+    </div>
+    <script>
+        var IDEmpresa;
+        var IDCliente = @Model.cliente.SS
+        $("#btn_si").on("click", () => {
+            $("thbody tr").each((pos, el)=>{
+                IDEmpresa = el.children("td")[0].attr("id");
+                $.post(
+                "/Datos/Solicitud",
+                {"IDCliente": id},
+                (data)=>{
+                    alert("Tu solicitud ha sido realizada con exito. Se pondrán en contacto con usted lo antes posible al telefono " + @Model.cliente.Telefono);
+                    location.href = "/Clientes/Bienvenido";
+                });
+            });
+        })
+        $("#btn_no").on("click", () => {
+            location.href = "/Clientes/Bienvenido";
+        })
+    </script>
+</body>
+</html>

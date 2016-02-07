@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Categorias>
+  <Categoria color="#BDBDBD" id="Inicio">
+    <SubCategoria color="#F7D358">Domestico</SubCategoria>
+    <SubCategoria color="#AC58FA">Mascotas</SubCategoria>
+    <SubCategoria color="#5FB404">Salud</SubCategoria>
+    <SubCategoria color="#819FF7">Bienestar</SubCategoria>
+  </Categoria>
+  <Categoria color="#F7D358" id="Domestico">
+    <SubCategoria color="#F2F5A9">Labores Domesticas</SubCategoria>
+    <SubCategoria color="#F2F5A9">Cocina</SubCategoria>
+  </Categoria>
+  <Categoria color="#AC58FA" id="Mascotas">
+    <SubCategoria color="#D0A9F5">Comunes</SubCategoria>
+    <SubCategoria color="#D0A9F5">Exóticas</SubCategoria>
+    <SubCategoria color="#D0A9F5">Esteticien</SubCategoria>
+  </Categoria>
+  <Categoria color="#5FB404" id="Salud">
+    <SubCategoria color="#BCF5A9">Medicina General</SubCategoria>
+    <SubCategoria color="#BCF5A9">Farmacia</SubCategoria>
+    <SubCategoria color="#BCF5A9">Atencion Sanitaria</SubCategoria>
+    <SubCategoria color="#BCF5A9">Especialistas</SubCategoria>    
+  </Categoria>
+  <Categoria color="#819FF7" id="Bienestar">
+    <SubCategoria color="#A9D0F5">Peluqueria</SubCategoria>
+    <SubCategoria color="#A9D0F5">Esteticien</SubCategoria>
+    <SubCategoria color="#A9D0F5">Ocio</SubCategoria>
+  </Categoria>
+</Categorias>

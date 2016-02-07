@@ -1,5 +1,5 @@
 ﻿@model HealthCare.Models.Clientes
-
+@using System.Web
 <!DOCTYPE html>
 
 <html>
@@ -10,171 +10,143 @@
     <script src="~/Scripts/jquery-1.10.2.js"></script>
     <title>Bienvenido</title>
 </head>
-<body>
-    <center>
-        <div id="Principal">
-            <h1><u>Principal</u></h1>
-            <input type="button" value="Domestico" id="btn_Domestico" />
-            <input type="button" value="Mascotas" id="btn_Mascotas" />
-            <input type="button" value="Salud" id="btn_Salud" />
-            <input type="button" value="Bienestar" id="btn_Bienestar" />
-        </div>
-        <div hidden="hidden" id="Domestico">
-            <h1><u>Domestico</u></h1>
-            <input type="button" value="Labores Domesticas" id="btn_Domestico_Labores Domesticas" />
-            <input type="button" value="Cocina" id="btn_Domestico_Cocina" />
-        </div>
-        <div hidden="hidden" id="Mascotas">
-            <h1><u>Mascotas</u></h1>
-            <input type="button" value="Consulta de Mascotas Comunes" id="btn_Mascotas_Comunes" />
-            <input type="button" value="Consulta de Mascotas Exoticas" id="btn_Mascotas_Exoticas" />
-            <input type="button" value="Cuidados Cosmeticos" id="btn_Mascotas_Cuidados Cosmeticos" />
-            <input type="button" value="Cuidados Especiales" id="btn_Mascotas_Cuidados Especiales" />
-        </div>
-        <div hidden="hidden" id="Salud">
-            <h1><u>Salud</u></h1>
-            <input type="button" value="Medicina General" id="btn_Salud_Medicina General" />
-            <input type="button" value="Farmacia" id="btn_Salud_Farmacia" />
-            <input type="button" value="Atención Sanitaria" id="btn_Salud_Atencion Sanitaria" />
-            <input type="button" value="Especialistas" id="btn_Salud_Especialistas" />
-        </div>
-        <div hidden="hidden" id="Bienestar">
-            <h1><u>Bienestar</u></h1>
-            <input type="button" value="Peluqueria" id="btn_Bienestar_Cosmetica" />
-            <input type="button" value="Esteticien" id="btn_Bienestar_Esteticien" />
-            <input type="button" value="Ocio" id="btn_Bienestar_Ocio" />
-        </div>
-        <input type="button" value="Volver" id="btn_Volver" hidden="hidden" />        
-    </center> 
-    <br />
+<body>   
+    <div style="float:right; width:15%;" class="container-fluid text-center">        
+        <table class="table">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                        <button class="btn btn-primary" id="btn_carrito" style="margin-right:5% ; float:right"><span class="glyphicon glyphicon-shopping-cart" style="margin-right:5px;"></span>BOLSA DE LA COMPRA</button>
+                    </th>
+                </tr>
+                <tr >
+                    <th>Producto</th>
+                    <th>Empresa</th>
+                </tr>
+            </thead>
+            <tbody id="tbody_Bolsa"></tbody>
+            <tfoot>
+                <tr></tr>
+            </tfoot>
+        </table>
+        <button id="terminar_Compra" class="btn btn-success">TERMINAR COMPRA</button>
+    </div> 
+    <div class="container" id="body" style="text-align:center">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="btn" width="100%" display="table-cell" style="text-align:center; background-color:#BDBDBD" id="categoria">Inicio</th>
+                </tr>
+            </thead>
+            <thead>
+                <tr id="subcategorias"></tr>
+            </thead>  
+            <tbody id="body_Empresas"></tbody>         
+        </table> 
+        <button class='btn hidden' style="background-color:#BDBDBD; width:50%" id='btn_Inicio'>Inicio</button>
+    </div>
 
-    <p id="sector">Ningun sector seleccionado</p>
-    <form method="post" action="/Clientes/solicitudServicio">
-        <input type="hidden" name="IDEmpresa" id="IDEmpresa" />
-        <input type="hidden" name="IDCliente" value="@Model.SS" />
-        <input type="hidden" name="prescripcion" id="prescripcion" value="false" />
-        <ul id="lista"></ul>
 
-        <br />
-        @{
-            int cuantos = Model.Prescripciones.Where(x => x.IDCliente == Model.SS).Count();
-            string salida = "";
-            if (cuantos == 0)
-            {
-                salida = "No tiene prescripciones a la espera";
-            }
-            else
-            {
-                salida = "Tiene " + cuantos + (cuantos == 1 ? " prescripción" : " prescripciones") + " a la espera";
-            }
+    <script>
+        dibujarCategoria("Inicio");        
+
+        $("#categoria").add("#body_Empresas > tr").attr("colspan", $("#subcategorias > th").length);
+        $("#terminar_Compra").on("click", () => {
+
+            var items = "";
+            $("#tbody_Bolsa").children("tr").each((pos, el) => {
+                if (pos == 0) {
+                    items += el.id.split("_")[1]
+                } else {
+                    items += ":" + el.id.split("_")[1];
+                }
+            });
+
+            var empresas = "";
+            $("#tbody_Bolsa").children("tr").each((pos, el) => {
+                if (pos == 0) {
+                    empresas += el.id.split("_")[2]
+                } else {
+                    empresas += ":" + el.id.split("_")[2];
+                }
+            });
+            $.post("/Clientes/Solicitud", { "Items": items, "Empresas": empresas }).done((data) => { $("body").html(data)}) ;
+        })
+        function dibujarCategoria(elemento) {
+            $("#body_Empresas").empty();
+            $.ajax({
+                url: "/Datos/Categorias?categoria=" + elemento
+            }).done((data) => {
+                if (data != "null") {
+                    var json = JSON.parse(data);
+                    $("#categoria").text(json.Nombre).css("background-color", json.Color);
+                    dibujarSubcategorias();
+                } else {
+                    dibujarEmpresas($("#categoria").text(), elemento);
+                }                
+            });            
         }
 
-        <input type="button" value="@salida" id="btn_Prescripciones" />
-
-        <div id="prescripciones"></div>
-        <script>
-            var cual;
-            $("#Principal > input").each(function (pos, el) {
-                el.onclick = function () {
-                    cual = el.id.split("_")[1];
-                    $("#sector").text(cual);
-                    $("#Principal").attr("hidden", "hidden");
-                    $("#" + cual).attr("hidden", null);
-                    $("#btn_Volver").attr("hidden", null);
-                };
-            })
-
-            $("#btn_Volver").on("click", function () {
-                $("#lista").empty();
-                $("#Principal").attr("hidden", null);
-                $("#btn_Volver").attr("hidden", "hidden");
-                $("#" + cual).attr("hidden", "hidden");
-                $("#sector").text("Ningun sector seleccionado");
-            })
-
-            var especifico;
-
-            $("input").not("#Principal > input").not("#btn_Volver").not("#btn_Prescripciones").each(function (pos, el) {
-                el.onclick = function () {
-                    $("#lista").empty();
-                    especifico = el.id.split("_")[2];
-                    $("#sector").text(cual + " : " + especifico);
-                    $.ajax({
-                        url: "http://localhost:18500/Clientes/obtenerEmpresas?sector=" + cual + "&especializacion=" + especifico
-                    }).done(function (data) {
-                        var json = JSON.parse(data)
-                        if (json.length > 0) {
-                            json.forEach(function (el, pos, ar) {
-                                $("#lista").append("<input type='submit' value='Nombre : " + el.Nombre + "   con valoracion : " + el.Valoracion + "' id=" + el.IDEmpresa + " />")
-                            })
-
-                            $("#lista > input").on("click", function(el) {
-                                $("#IDEmpresa").val(el.target.id)
-                            })
-                        } else {
-                            $("#lista").append("<li>No hay empresas aun registradas en este campo. Lo sentimos</li>");
-                        }
+        function dibujarSubcategorias() {
+            $("#subcategorias").empty();
+            $.ajax({
+                url: "/Datos/Subcategorias?categoria=" + $("#categoria").text()
+            }).done((data) => {                
+                var json = JSON.parse(data);
+                json.forEach((el, pos, ar) => {
+                    var tamañoCampo = ((100 / ar.length) - 5) + "%";
+                    $("#subcategorias").append("<th  class='btn' display='table-cell' width='" + tamañoCampo + "' style='text-align:center; margin:10px; background-color: " + el.Color + "'>" + el.Nombre + "</th>");
+                })
+                $("#subcategorias th").on("click", (ev) => {                    
+                    $("#btn_Inicio").attr("class", "btn").off("click").on("click", () => {
+                        $("#btn_Inicio").attr("class", "btn hidden");
+                        dibujarCategoria("Inicio");                        
                     });
-                }
-            })
+                    dibujarCategoria(ev.target.innerHTML);
+                });
+            });
+        }
 
-            var timerON = false;
-
-            $("#btn_Prescripciones").on("click", () => {
-                if(!timerON){
-                    timerON = true;
-                    var cont = 10;
-                    var timer = setInterval(function(){
-                        cont = cont - 1;
-                        if(cont == 0) {
-                            $("#prescripciones").empty();
-                            clearInterval(timer);
-                            timerON = false;
-                        }else{
-                            $("#cont").text("Este desplegable se contraera en " + cont + " segundos");
-                        }
-                    }, 1000);
+        function dibujarEmpresas(categoria, subcategoria) {            
+            $.ajax({
+                url: "/Datos/Empresas?categoria=" + categoria + "&subcategoria=" + subcategoria
+            }).done((data) => {
+                var json = JSON.parse(data);
+                if (json.length > 0) {
+                    json.forEach((el, pos, ar) => {
+                        $("#body_Empresas").append("<tr id='row_empresa" + pos + "'><td id='empresa" + pos + "' style='background-color:#E6E6E6; margin:10px' class='btn' display='table-cell' width='85%'><span style='float:left; margin-left:5%' class='badge'>" + el.Valoracion + "</span><span id='nombre_empresa" + pos + "'>" + el.Nombre + "</span><span style='float:right; margin-right:5%' class='badge'>" + el.Valoracion + "</span></tr>");
+                        $("#empresa" + pos).on("click", () => {
+                            dibujarItems(el.IDEmpresa, pos);
+                        });
+                    })
+                    $("#body_Empresas tr").attr("colspan", json.length);
                 }
+            });
+        }
 
-                if($("fieldset").length == 0){
-                    $.ajax({
-                        url: "http://localhost:18500/Clientes/obtenerPrescripciones?ss=" + @Model.SS.ToString()
-                    }).done((data) => {
-                            var json = JSON.parse(data);
-                            if(json.length > 0){
-                                json.forEach((el,pos,ar) => {
-                                    $("#prescripciones").append("<fieldset id='" + el.IDPrescripcion + "'><legend>ID Prescripcion : " + el.IDPrescripcion + "</legend>");
-                                    $.ajax({
-                                        url: "http://localhost:18500/Clientes/obtenerItems?id=" + el.IDPrescripcion
-                                    }).done((dataItem) => {
-                                        var jsonItem = JSON.parse(dataItem);
-                                        jsonItem.forEach((ele,posi,arr) => {
-                                            $("#" + el.IDPrescripcion ).append("Nombre: " + ele.Nombre + "<br/>Tipo: " + ele.Tipo + "<br/>Detalles : " + ele.Detalles + "<br/><br/>");
-                                        })
-                                    })
-                                    $("#" + el.IDPrescripcion ).append("</fieldset>");
-                                })
-                                $.ajax({
-                                    url: "http://localhost:18500/Clientes/obtenerEmpresas?sector=salud&especializacion=Farmacia"
-                                }).done((dataEmpresas) => {
-                                    var jsonEmpresas = JSON.parse(dataEmpresas);
-                                    $("#prescripciones").append("<select id='selectEmpresas'>");
-                                    jsonEmpresas.forEach((elem, posic, arra) => {
-                                        $("#selectEmpresas").append("<option value='" + elem.IDEmpresa + "'>" + elem.Nombre + "</option>");
-                                    })
-                                    $("#prescripciones").append("</select><br/><br/>"
-                                       + "<input type='submit' id='btn_solicitar' value='Solicitar Envio'/><br/><br/>"
-                                       + "<p id='cont'>Este desplegable se contraera en 10 segundos</p>");
-                                    $("#btn_solicitar").on("click", () => {
-                                        $("#IDEmpresa").val($("#selectEmpresas").val());
-                                        $("#prescripcion").val("true");
-                                    })
-                                })
-                            }
-                        })
+        function dibujarItems(IDEmpresa, posicion) {
+            $("#caja_lista").remove();
+            $.ajax({
+                url: "/Datos/Items?IDEmpresa=" + IDEmpresa
+            }).done((data) => {
+                var json = JSON.parse(data);
+                $("#row_empresa" + posicion).after("<div id='caja_lista'>");
+                $("#caja_lista").append("<label for='item'>Productos:</label><br>");
+                $("#caja_lista").append("<select id='item' style='width:50%'>");
+                if (json.length > 0) {
+                    json.forEach((el, pos, ar) => {
+                        $("#item").append("<option value='" + el.IDItem + "'>" + el.Nombre + " - " + el.Precio + "<span style='margin-left:5px'>€</span></option>");
+                    });
+                } else {
+                    $("#item").append("<option>Sin productos</option>");
                 }
-            })
-        </script>
-    </form>
+                $("#caja_lista").append("</select><button class='btn btn-default' style='margin-left:10px' id='compra'>Comprar</button></div>");
+                $("#compra").on("click", () => {
+                    $("#row_" + $("#item").val()).remove();
+                    $("#tbody_Bolsa").append("<tr id='row_" + $("#item").val() + "_" + $("#nombre_empresa" + posicion).text() + "'><td id='elemento_" + $("#item").val() + "'>" + $("#item").text() + "</td><td>" + $("#nombre_empresa" + posicion).text() + "</td></tr>");
+                })
+            })       
+        }
+    </script>
 </body>
 </html>

@@ -7,10 +7,11 @@ using System.Web;
 using System.Web.Mvc;
 
 namespace HealthCare.Controllers
-{
+{    
     public class EmpresasController : Controller
     {
         private BDController db = new BDController();
+        private DatosController dc = new DatosController();
 
         [HttpGet]
         public ViewResult Login()
@@ -40,14 +41,13 @@ namespace HealthCare.Controllers
             foreach (Solicitudes s in db.getSolicitudes(IDEmpresa, estado))
             {
                 string items = "";
-                items += "\"";
-                foreach (Prescripciones p in db.getPrescripciones(s.Clientes, s.Empresas))
+                items += "\"";                
+                foreach(Items i in s.Items)
                 {
-                    foreach(Items i in p.Items)
-                    {
-                        items += i.Nombre + " ";  
-                    }
+                    items += i.Nombre + ", ";  
                 }
+               
+                if ( s.Items.Count != 0 ) items = items.Substring(0, items.Length - 2);
                 items += "\"";
                 json += "{\"Nombre\":\"" + s.Clientes.Nombre + "\",\"Direccion\":\"" + s.Clientes.Direcciones.Calle + " " + s.Clientes.Direcciones.Numero + "\",\"Hora\":\"" + s.Hora + "\",\"Telefono\":" + s.Clientes.Telefono + ",\"IDCliente\":" + s.IDCliente + ",\"Items\":" + items + "},";
             }

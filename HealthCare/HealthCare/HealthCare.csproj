@@ -128,6 +128,9 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Categorias.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -169,11 +172,12 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\BDController.cs" />
     <Compile Include="Controllers\ClientesController.cs" />
+    <Compile Include="Controllers\DatosController.cs" />
     <Compile Include="Controllers\EmpresasController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Pre_Solicitud.cs" />
     <Compile Include="Models\MiDBContext.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -199,11 +203,10 @@
     <Content Include="Views\Clientes\Login.cshtml" />
     <Content Include="Views\Clientes\Bienvenido.cshtml" />
     <Content Include="Scripts\jquery-1.9.1.min.map" />
-    <Content Include="Views\Clientes\solicitudServicio.cshtml" />
+    <Content Include="Views\Clientes\Solicitud.cshtml" />
     <Content Include="Views\Empresas\Login.cshtml" />
     <Content Include="Views\Empresas\Bienvenido.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Clientes\Terminar.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -214,6 +217,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="obj\Debug\TempPE\" />
+    <Folder Include="Views\Datos\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />

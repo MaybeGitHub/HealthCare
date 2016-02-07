@@ -20,32 +20,33 @@ namespace HealthCare.Controllers
         }
 
         public Clientes getCliente(int SS)
-        {
-            try
-            {
-                return db.Clientes.Single(x => x.SS == SS);
-            }
-            catch(InvalidOperationException)
-            {
-                return null;
-            }            
+        {            
+            return db.Clientes.SingleOrDefault(x => x.SS == SS);                      
         }
 
         public Empresas getEmpresa(int iDEmpresa)
-        {
-            try
-            {
-                return db.Empresas.Single(x => x.IDEmpresa == iDEmpresa);
-            }catch(InvalidOperationException)
-            {
-                return null;
-            }
-            
+        {            
+            return db.Empresas.SingleOrDefault(x => x.IDEmpresa == iDEmpresa);                      
         }
 
-        public List<Empresas> getEmpresas(string sector, string especializacion)
+        public Empresas getEmpresa(string nombreEmpresa)
         {
-            return db.Empresas.Where(x => x.Sector == sector && x.Especializacion == especializacion).ToList();
+            return db.Empresas.SingleOrDefault(x => x.Nombre == nombreEmpresa);
+        }
+
+        public List<Empresas> getEmpresas(string categoria, string subcategoria)
+        {
+            return db.Empresas.Where(x => x.Categoria == categoria && x.Subcategoria == subcategoria).ToList();
+        }
+
+        public Categorias getCategoria(string categoria)
+        {
+            return db.Categorias.SingleOrDefault(x => x.Nombre == categoria);
+        }
+
+        public List<Subcategorias> getSubcategorias(string categoria)
+        {
+            return db.Subcategorias.Where(x => x.Categoria == categoria).OrderBy(x => x.Nombre).ToList();
         }
 
         public Direcciones getDireccion(Clientes cliente)
@@ -56,39 +57,19 @@ namespace HealthCare.Controllers
         public Direcciones getDireccion(Empresas empresa)
         {
             return db.Direcciones.Single(x => x.IDDueño == empresa.IDEmpresa);
-        }
-
-        public Prescripciones getPrescripcion(int idPrescripcion)
-        {
-            return db.Prescripciones.Single(x => x.IDPrescripcion == idPrescripcion);
-        }
-
-        public List<Prescripciones> getPrescripciones(Clientes cliente)
-        {
-            return db.Prescripciones.Where(x => x.IDCliente == cliente.SS).ToList();
-        }
-
-        public List<Prescripciones> getPrescripciones(Clientes cliente, Empresas empresa)
-        {
-            return db.Prescripciones.Where(x => x.IDCliente == cliente.SS && x.IDEmpresa == empresa.IDEmpresa).ToList();
         }        
-
-        public List<Items> getItems(Prescripciones prescripcion)
-        {
-            return db.Items.Where(x => x.IDPrescripcion == prescripcion.IDPrescripcion).ToList();
-        }
 
         public List<Solicitudes> getSolicitudes(int IDEmpresa, int estado)
         {
             return db.Solicitudes.Where(x => x.IDEmpresa == IDEmpresa && x.Estado == estado).ToList();
         }
 
-        public void setSolicitud(int SS, int IDEmpresa)
-        {
+        public void setSolicitud(int ss, int IDEmpresa)
+        {            
             Solicitudes solicitud = new Solicitudes();            
-            solicitud.Hora = DateTime.Now.TimeOfDay;            
+            solicitud.Hora = DateTime.Now.ToString();            
             solicitud.Estado = 1;
-            solicitud.IDCliente = SS;
+            solicitud.IDCliente = ss;
             solicitud.IDEmpresa = IDEmpresa;
             solicitud.IDSolicitud = db.Solicitudes.Count();
             db.Solicitudes.InsertOnSubmit(solicitud);
@@ -108,6 +89,16 @@ namespace HealthCare.Controllers
             {
                 return 0;
             }
+        }
+
+        public List<Items> getItems(int IDEmpresa)
+        {
+            return db.Items.Where(x => x.IDEmpresa == IDEmpresa).ToList();
+        }
+
+        public Items getItem(int IDItem)
+        {
+            return db.Items.SingleOrDefault(x => x.IDItem == IDItem);
         }
     }
 }

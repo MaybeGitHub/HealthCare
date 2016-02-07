@@ -11,6 +11,7 @@ namespace HealthCare.Controllers
     public class ClientesController : Controller
     {
         private BDController db = new BDController();
+        private DatosController dc = new DatosController();
 
         [HttpGet]
         public ViewResult Login()
@@ -19,90 +20,33 @@ namespace HealthCare.Controllers
         }
 
         [HttpPost]
-        public ViewResult Login(Clientes cliente)
+        public RedirectToRouteResult Login(Clientes cliente)
         {
             Clientes c = db.getCliente(cliente.SS);
             if (ModelState.IsValid && c != null)
             {
-                return View("Bienvenido", c);
+                Session["ss"] = c.SS;
+                return RedirectToAction("Bienvenido");
             }
-            return View();
+            return RedirectToAction("Login");
         }
 
-        public ViewResult Bienvenido(int SS)
+        public ViewResult Bienvenido()
         {            
-            return View(db.getCliente(SS));
+            return View(db.getCliente((int)Session["ss"]));
         }
 
-        public ViewResult solicitudServicio(int IDCliente, int IDEmpresa, bool prescripcion)
-        {
-            Solicitudes solicitud = new Solicitudes { IDCliente = IDCliente, IDEmpresa = IDEmpresa, Hora = DateTime.Now.TimeOfDay };
-            solicitud.Clientes = db.getCliente(IDCliente);
-            solicitud.Empresas = db.getEmpresa(IDEmpresa);
-            if (prescripcion)
-            {
-                solicitud.Prescripciones.AddRange(db.getPrescripciones(db.getCliente(IDCliente)));
-            }
-            return View(solicitud);
+        public PartialViewResult Solicitud(string Items, string Empresas)
+        {            
+            List<string> listaEmpresas = Empresas.Split(':').ToList();
+            List<string> listaItems = Items.Split(':').ToList();
+
+            Pre_Solicitud ps = new Pre_Solicitud();
+            ps.cliente = db.getCliente((int)Session["ss"]);
+            foreach (string s in listaEmpresas) ps.listaEmpresas.Add(db.getEmpresa(s));
+            foreach (string s in listaItems) ps.listaItems.Add(db.getItem(int.Parse(s)));
+            
+            return PartialView(ps);
         }
-
-        public ViewResult Terminar(int SS, int IDEmpresa)
-        {
-            db.setSolicitud(SS, IDEmpresa);
-            return View();
-        }
-
-        public string obtenerEmpresas(string sector, string especializacion)
-        {
-            string json = "[";
-            foreach (Empresas e in db.getEmpresas(sector, especializacion))
-            {
-                json += "{\"Nombre\":\"" + e.Nombre + "\",\"Valoracion\":" + e.Valoracion + ",\"IDEmpresa\":" + e.IDEmpresa + "},";
-            }
-
-            if (json.Length > 1)
-            {
-                json = json.Substring(0, json.Length - 1);
-            }
-
-            json += "]";
-            return json;
-        }
-
-        public string obtenerPrescripciones(string ss)
-        {
-            string json = "[";
-            foreach (Prescripciones p in db.getPrescripciones(db.getCliente(int.Parse(ss))))
-            {
-                json += "{\"IDPrescripcion\":\"" + p.IDPrescripcion + "\"},";
-            }
-
-            if (json.Length > 1)
-            {
-                json = json.Substring(0, json.Length - 1);
-            }
-
-            json += "]";
-            return json;
-        }
-
-        public string obtenerItems(string id)
-        {
-            string json = "[";
-            foreach (Items i in db.getItems(db.getPrescripcion(int.Parse(id))))
-            {
-                json += "{\"Nombre\":\"" + i.Nombre + "\",\"Tipo\":\"" + i.Tipo + "\",\"Detalles\":\"" + i.Detalles + "\"},";
-            }
-
-            if (json.Length > 1)
-            {
-                json = json.Substring(0, json.Length - 1);
-            }
-
-            json += "]";
-            return json;
-        }
-
-        
     }
 }
