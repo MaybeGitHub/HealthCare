@@ -61,7 +61,12 @@ namespace HealthCare.Controllers
 
         public List<Solicitudes> getSolicitudes(int IDEmpresa, int estado)
         {
-            return db.Solicitudes.Where(x => x.IDEmpresa == IDEmpresa && x.Estado == estado).ToList();
+            return db.Solicitudes.Where(x => x.IDEmpresa == IDEmpresa && x.Estado == estado && x.Oculto == false).ToList();
+        }
+
+        public Solicitudes getSolicitud(int IDSolicitud)
+        {
+            return db.Solicitudes.SingleOrDefault(x => x.IDSolicitud == IDSolicitud);
         }
 
         public void setSolicitud(int ss, int IDEmpresa, int IDItem)
@@ -71,14 +76,12 @@ namespace HealthCare.Controllers
             solicitud.Estado = 1;
             solicitud.IDCliente = ss;
             solicitud.IDEmpresa = IDEmpresa;
-            solicitud.IDSolicitud = db.Solicitudes.Count();
             db.Solicitudes.InsertOnSubmit(solicitud);
 
             Pedidos pedido = new Pedidos();
             pedido.IDCliente = ss;
             pedido.IDEmpresa = IDEmpresa;
             pedido.IDItem = IDItem;
-            pedido.IDPedido = db.Pedidos.Count();
             pedido.IDSolicitud = solicitud.IDSolicitud;
 
             db.Pedidos.InsertOnSubmit(pedido);
@@ -99,6 +102,13 @@ namespace HealthCare.Controllers
             {
                 return 0;
             }
+        }
+
+        public void borrarSolicitud(int IDSolicitud)
+        {
+            Solicitudes solicitud = getSolicitud(IDSolicitud);
+            solicitud.Oculto = true;            
+            db.SubmitChanges();
         }
 
         public List<Items> getItems(int IDEmpresa)

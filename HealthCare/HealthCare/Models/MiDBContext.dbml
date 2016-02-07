@@ -50,7 +50,8 @@
       <Column Name="IDEmpresa" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Hora" Type="System.String" CanBeNull="false" />
       <Column Name="Estado" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="IDSolicitud" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="IDSolicitud" AutoSync="Never" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Member="Oculto" Type="System.Boolean" CanBeNull="false" />
       <Association Name="Solicitudes_Items" Member="Items" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Items" />
       <Association Name="Solicitudes_Pedidos" Member="Pedidos" ThisKey="IDSolicitud" OtherKey="IDSolicitud" Type="Pedidos" />
       <Association Name="Empresas_Solicitudes" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
@@ -59,7 +60,7 @@
   </Table>
   <Table Name="dbo.Items" Member="Items">
     <Type Name="Items">
-      <Column Name="IDItem" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="IDItem" AutoSync="Never" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Precio" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="IDEmpresa" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
@@ -95,11 +96,11 @@
   </Table>
   <Table Name="dbo.Pedidos" Member="Pedidos">
     <Type Name="Pedidos">
-      <Column Name="IDPedido" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="IDPedido" AutoSync="Never" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="IDEmpresa" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="IDItem" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="IDCliente" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Member="IDSolicitud" Type="System.Int32" CanBeNull="false" />
+      <Column Name="IDSolicitud" Type="System.Int32" CanBeNull="false" />
       <Association Name="Empresas_Pedidos" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
       <Association Name="Items_Pedidos" Member="Items" ThisKey="IDItem" OtherKey="IDItem" Type="Items" IsForeignKey="true" />
       <Association Name="Clientes_Pedidos" Member="Clientes" ThisKey="IDCliente" OtherKey="SS" Type="Clientes" IsForeignKey="true" />

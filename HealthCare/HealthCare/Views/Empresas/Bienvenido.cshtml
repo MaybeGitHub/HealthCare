@@ -75,7 +75,7 @@
         function rellenarCampoPedidos() {
             $("#head_Espera").off("click");
             $.ajax({
-                  url: "/Empresas/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=1"
+                  url: "/Datos/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=1"
             }).done((data) => {
                 $("#head_Espera").on("click", () => {
                     $("#tbody_Espera").fadeToggle("slow");
@@ -95,7 +95,7 @@
                             $("#tbody_Espera").append("</tr>");
                             $("#btn_si" + pos).on("click", () => {
                                 $.ajax({
-                                    url: "/Empresas/cambiarEstadoSolicitud?idEmpresa=" + @Model.IDEmpresa + "&idCliente=" + el.IDCliente + "&estado=1"
+                                    url: "/Datos/cambiarEstadoSolicitud?idEmpresa=" + @Model.IDEmpresa + "&idCliente=" + el.IDCliente + "&estado=1"
                                 }).done((dat) => {
                                     if (dat == 1) {
                                         alert("La solicitud del cliente " + el.Nombre + " ha sido aceptada, para concetar la hora, llame al numero " + el.Telefono);
@@ -117,7 +117,7 @@
         function rellenarCampoProceso() {
             $("#head_Proceso").off("click");
             $.ajax({
-                url: "/Empresas/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=2"
+                url: "/Datos/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=2"
             }).done((data) => {
                 $("#head_Proceso").on("click", () => {
                     $("#tbody_Proceso").fadeToggle("slow");
@@ -137,7 +137,7 @@
                             $("#tbody_Proceso").append("</tr>");
                             $("#btn_Finalizar" + pos).on("click", () => {
                                 $.ajax({
-                                    url: "/Empresas/cambiarEstadoSolicitud?idEmpresa=" + @Model.IDEmpresa + "&idCliente=" + el.IDCliente + "&estado=2"
+                                    url: "/Datos/cambiarEstadoSolicitud?idEmpresa=" + @Model.IDEmpresa + "&idCliente=" + el.IDCliente + "&estado=2"
                                 }).done((dat) => {
                                     if (dat == 1) {
                                         alert("El pedido ha sido Finalizado");
@@ -159,7 +159,7 @@
         function rellenarCampoTerminadas() {
             $("#head_Terminadas").off("click");
             $.ajax({
-                url: "/Empresas/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=3"
+                url: "/Datos/obtenerSolicitudes?IDEmpresa=" + @Model.IDEmpresa + "&estado=3"
             }).done((data) => {
                 var json = JSON.parse(data);
                 $("#head_Terminadas").on("click", () => {
@@ -177,13 +177,21 @@
                             $("#terminado" + pos).append("<td>" + el.Items + "</td>");
                             $("#terminado" + pos).append("<td><button class='btn btn-danger' id='btn_Borrar" + pos + "'>Borrar</button></td>")
                             $("#tbody_Terminadas").append("</tr>");
-                        }
+                            $("#btn_Borrar" + pos).on("click", () => {
+                                $.ajax({
+                                    url: "/Datos/BorrarSolicitud?IDSolicitud=" + el.IDSolicitud
+                                }).done(() => {
+                                    alert("La solicitud ha sido borrada con exito");
+                                    $("#tbody_Terminadas").empty();
+                                    rellenarCamposSolicitudes();
+                                })
+                            });
+                        }                        
                     }) 
                 } else {
                     $("#badge_Terminadas").text(0);
                 }
-            })
-                
+            })                
         }
 
         function rellenarCamposSolicitudes() {
@@ -196,12 +204,10 @@
         setInterval(() => {
             cont = cont - 1;
             if (cont == 0) {
-                cont = 30;
-                $("#cont").text("Las solicitudes se refrescarán en " + cont + " segundos");
+                cont = 30;                
                 rellenarCamposSolicitudes();
-            } else {
-                $("#cont").text("Las solicitudes se refrescarán en " + cont + " segundos");
             }
+            $("#cont").text("Las solicitudes se refrescarán en " + cont + " segundos");            
         }, 1000);
 
     </script>    

@@ -844,9 +844,9 @@ namespace HealthCare.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="Subcategoria", Storage= "_Subcategoria", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string Subcategoria
-        {
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="Subcategoria", Storage="_Subcategoria", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string Categoria
+		{
 			get
 			{
 				return this._Subcategoria;
@@ -858,7 +858,7 @@ namespace HealthCare.Models
 					this.OnCategoriaChanging(value);
 					this.SendPropertyChanging();
 					this._Subcategoria = value;
-					this.SendPropertyChanged("Subcategoria");
+					this.SendPropertyChanged("Categoria");
 					this.OnCategoriaChanged();
 				}
 			}
@@ -944,9 +944,9 @@ namespace HealthCare.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="Categoria", Storage= "_Categoria", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string Categoria
-        {
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="Categoria", Storage="_Categoria", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string Subcategoria
+		{
 			get
 			{
 				return this._Categoria;
@@ -958,7 +958,7 @@ namespace HealthCare.Models
 					this.OnSubcategoriaChanging(value);
 					this.SendPropertyChanging();
 					this._Categoria = value;
-					this.SendPropertyChanged("Categoria");
+					this.SendPropertyChanged("Subcategoria");
 					this.OnSubcategoriaChanged();
 				}
 			}
@@ -1130,6 +1130,8 @@ namespace HealthCare.Models
 		
 		private int _IDSolicitud;
 		
+		private bool _Oculto;
+		
 		private EntitySet<Items> _Items;
 		
 		private EntitySet<Pedidos> _Pedidos;
@@ -1152,6 +1154,8 @@ namespace HealthCare.Models
     partial void OnEstadoChanged();
     partial void OnIDSolicitudChanging(int value);
     partial void OnIDSolicitudChanged();
+    partial void OnOcultoChanging(bool value);
+    partial void OnOcultoChanged();
     #endregion
 		
 		public Solicitudes()
@@ -1251,7 +1255,7 @@ namespace HealthCare.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDSolicitud", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDSolicitud", DbType="Int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
 		public int IDSolicitud
 		{
 			get
@@ -1267,6 +1271,26 @@ namespace HealthCare.Models
 					this._IDSolicitud = value;
 					this.SendPropertyChanged("IDSolicitud");
 					this.OnIDSolicitudChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Oculto")]
+		public bool Oculto
+		{
+			get
+			{
+				return this._Oculto;
+			}
+			set
+			{
+				if ((this._Oculto != value))
+				{
+					this.OnOcultoChanging(value);
+					this.SendPropertyChanging();
+					this._Oculto = value;
+					this.SendPropertyChanged("Oculto");
+					this.OnOcultoChanged();
 				}
 			}
 		}
@@ -1452,7 +1476,7 @@ namespace HealthCare.Models
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDItem", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDItem", DbType="Int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
 		public int IDItem
 		{
 			get
@@ -1682,7 +1706,7 @@ namespace HealthCare.Models
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="Nombre", Storage="_Nombre", DbType="NVarChar(50) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="Categoria", Storage="_Nombre", DbType="NVarChar(50) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
 		public string Nombre
 		{
 			get
@@ -1848,7 +1872,7 @@ namespace HealthCare.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="Nombre", Storage="_Nombre", DbType="NVarChar(50) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="Subcategoria", Storage="_Nombre", DbType="NVarChar(50) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
 		public string Nombre
 		{
 			get
@@ -2163,7 +2187,7 @@ namespace HealthCare.Models
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDPedido", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IDPedido", DbType="Int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
 		public int IDPedido
 		{
 			get
