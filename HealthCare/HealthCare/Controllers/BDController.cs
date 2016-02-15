@@ -42,6 +42,12 @@ namespace HealthCare.Controllers
             db.SubmitChanges();
         }
 
+        public void setCliente(Clientes cliente)
+        {
+            db.Clientes.InsertOnSubmit(cliente);
+            db.SubmitChanges();
+        }
+
         private int getIDEmpresa()
         {
             int idObtenido = new Random().Next(1, Int32.MaxValue);

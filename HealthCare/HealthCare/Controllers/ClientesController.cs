@@ -36,9 +36,17 @@ namespace HealthCare.Controllers
             return View(db.getCliente((int)Session["ss"]));
         }
 
+        [HttpGet]
         public ViewResult Registro()
         {
             return View();
+        }
+
+        [HttpPost]
+        public ViewResult Registro(Clientes cliente)
+        {
+            db.setCliente(cliente);
+            return View("Login");
         }
 
         public PartialViewResult Solicitud(string Items, string Empresas)

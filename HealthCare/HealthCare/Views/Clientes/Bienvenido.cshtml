@@ -31,7 +31,7 @@
         </table>
         <button id="terminar_Compra" class="btn btn-success">TERMINAR COMPRA</button>
     </div> 
-    <div class="container" id="body" style="text-align:center; width:40%">
+    <div class="container" id="body" style="text-align:center; width:60%">
         <table class="table">
             <thead>
                 <tr>
@@ -143,12 +143,14 @@
                         $("#item").append("<option value='" + el.IDItem + "'>" + el.Nombre + " - " + el.Precio + "<span style='margin-left:5px'>€</span></option>");
                     });
                 } else {
-                    $("#item").append("<option>Sin productos</option>");
+                    $("#item").append("<option value='0'>Sin productos</option>");
                 }
                 $("#caja_lista").append("</select><button class='btn btn-default' style='margin-left:10px' id='compra'>Comprar</button></div>");
                 $("#compra").on("click", () => {
-                    $("#row_" + $("#item").val()).remove();
-                    $("#tbody_Bolsa").append("<tr id='row_" + $("#item").val() + "_" + $("#nombre_empresa" + posicion).text() + "'><td id='elemento_" + $("#item").val() + "'>" + $("#item").text() + "</td><td>" + $("#nombre_empresa" + posicion).text() + "</td></tr>");
+                    if ($("#item").val() != "0") {
+                        $("#row_" + $("#item").val()).remove();
+                        $("#tbody_Bolsa").append("<tr id='row_" + $("#item").val() + "_" + $("#nombre_empresa" + posicion).text() + "'><td id='elemento_" + $("#item").val() + "'>" + $("#item").text() + "</td><td>" + $("#nombre_empresa" + posicion).text() + "</td></tr>");
+                    }
                 })
             })       
         }
