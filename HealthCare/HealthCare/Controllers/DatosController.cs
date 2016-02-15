@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 
 namespace HealthCare.Controllers
@@ -128,6 +129,44 @@ namespace HealthCare.Controllers
         public void borrarSolicitud(int IDSolicitud)
         {
             db.borrarSolicitud(IDSolicitud);
+        }
+
+        private void enviarEmail(Clientes cliente)
+        {
+            try
+            {
+                WebMail.SmtpServer = "smtp.gmail.com";
+                WebMail.SmtpPort = 587;
+                WebMail.EnableSsl = true;
+                WebMail.UserName = "proyectos.clase.net@gmail.com";
+                WebMail.Password = "solosequenosenada";
+                WebMail.From = "proyectos.clase.net@gmail.com";
+                WebMail.Send(cliente.Email, "RSVP Notification", "Aun por implementar");
+                ViewBag.Email = "An Email was sent succesfully to our organizator.";
+            }
+            catch (Exception)
+            {
+                ViewBag.Email = "Sorry - we couldn't send the email to confirm your RSVP";
+            }
+        }
+
+        public void enviarEmail(Empresas empresa)
+        {
+            try
+            {
+                WebMail.SmtpServer = "smtp.gmail.com";
+                WebMail.SmtpPort = 587;
+                WebMail.EnableSsl = true;
+                WebMail.UserName = "proyectos.clase.net@gmail.com";
+                WebMail.Password = "solosequenosenada";
+                WebMail.From = "proyectos.clase.net@gmail.com";
+                WebMail.Send(empresa.Email, "Numero de identificacion de la empresa", "Su empresa ha quedado registrada en la categoria: " + empresa.Categoria + "/" + empresa.Subcategoria + ". Se le ha asignado el siguiente numero de identificacion: " + empresa.IDEmpresa + " \n Debera usar este numero para acceder a su portal. \n Gracias por confiar en HealthCare y Bienvenido");
+                ViewBag.Email = "An Email was sent succesfully to our organizator.";
+            }
+            catch (Exception)
+            {
+                ViewBag.Email = "Sorry - we couldn't send the email to confirm your RSVP";
+            }
         }
     }
 }

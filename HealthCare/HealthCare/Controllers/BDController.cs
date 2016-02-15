@@ -34,6 +34,24 @@ namespace HealthCare.Controllers
             return db.Empresas.SingleOrDefault(x => x.Nombre == nombreEmpresa);
         }
 
+        public void setEmpresa(Empresas empresa)
+        {
+            empresa.IDEmpresa = getIDEmpresa();
+            if (empresa.Descripcion == null) empresa.Descripcion = "";
+            db.Empresas.InsertOnSubmit(empresa);
+            db.SubmitChanges();
+        }
+
+        private int getIDEmpresa()
+        {
+            int idObtenido = new Random().Next(1, Int32.MaxValue);
+            while (db.Empresas.Where(x => x.IDEmpresa == idObtenido).Count() != 0)
+            {
+                idObtenido = new Random().Next(1, Int32.MaxValue);
+            }
+            return idObtenido;
+        }
+
         public List<Empresas> getEmpresas(string categoria, string subcategoria)
         {
             return db.Empresas.Where(x => x.Categoria == categoria && x.Subcategoria == subcategoria).ToList();

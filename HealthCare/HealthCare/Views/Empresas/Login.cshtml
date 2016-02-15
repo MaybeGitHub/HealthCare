@@ -15,25 +15,32 @@
     <script src="~/Scripts/jquery-1.10.2.js"></script>
 </head>
 <body>
-    <center>
-        <br /><input type="button" id="cliente" value="Soy Cliente" />
-        <input type="button" id="empresa" value="Soy Empresa" style="margin-left:10px" />
-
-        <div>
-            <form method="post" action="/Empresas/Login">               
-                <fieldset>
-                    <legend style="text-align:center">Empresa</legend>
-                    <label>Nº Identificacion de Empresa:</label>@Html.TextBoxFor(x => x.IDEmpresa, "style = 'margin-left:10px'")
-                </fieldset>
-                @Html.ValidationSummary()
-                <input type="submit" value="Entrar" />
-            </form>
-        </div>
-    </center>
+    <div class="container center-block text-center align" style="width:30%">
+        <form method="post" action="/Empresas/Login">
+            <table class="table">
+                <thead>
+                    <tr><th colspan="2" class="text-center h1" style="background-color:#4B088A; color:white">Bienvenido a HealthCare</th></tr>
+                    <tr>
+                        <td><input class="btn btn-default" type="button" id="Clientes" value="Soy Cliente" /></td>
+                        <td><input class="btn btn-default" type="button" id="Empresas" value="Soy Empresa" /></td>
+                    </tr>
+                    <tr><th colspan="2" class="text-center" style="background-color:#BCF5A9">Empresas</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="2">Nº Identificacion</td></tr>
+                    <tr><td colspan="2">@Html.TextBoxFor(x => x.IDEmpresa)</td></tr>
+                    <tr>                       
+                        <td><a class="btn btn-primary" href="~/Empresas/Registro">Registrarse</a></td>
+                        <td><input class="btn btn-success" type="submit" value="Entrar" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
     <script>
-        $("#cliente").add("#empresa").on("click", (ev) => {
-            location.href = "/" + ev.target.value.split(" ")[1] + "s/Login";
+        $("#Clientes").add("#Empresas").on("click", (ev) => {
+            location.href = "/" + ev.target.id + "/Login";
         })
-    </script>
+    </script>    
 </body>
 </html>

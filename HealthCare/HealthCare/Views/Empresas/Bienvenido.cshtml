@@ -86,12 +86,13 @@
                         $("#badge_Espera").text(ar.length);
                         if ($("#pedido" + pos).length == 0) {
                             $("#tbody_Espera").append("<tr class='success' id='pedido" + pos + "'>");
-                            $("#pedido" + pos).append("<td> " + el.Nombre + "</td>");
-                            $("#pedido" + pos).append("<td>" + el.Hora + "</td>");
-                            $("#pedido" + pos).append("<td>" + el.Telefono + "</td>");
-                            $("#pedido" + pos).append("<td>" + el.Direccion + "</td>");
-                            $("#pedido" + pos).append("<td>" + el.Items + "</td>");
-                            $("#pedido" + pos).append("<td><button class='btn btn-info' id='btn_si" + pos + "'>Aceptar</button><button class='btn btn-danger' style='margin-left:5px' id='btn_no" + pos + "'>Rechazar</button> </td>")
+                            $("#pedido" + pos)
+                                .append("<td> " + el.Nombre + "</td>")
+                                .append("<td>" + el.Hora + "</td>")
+                                .append("<td>" + el.Telefono + "</td>")
+                                .append("<td>" + el.Direccion + "</td>")
+                                .append("<td>" + el.Items + "</td>")
+                                .append("<td><button class='btn btn-info' id='btn_si" + pos + "'>Aceptar</button><button class='btn btn-danger' style='margin-left:5px' id='btn_no" + pos + "'>Rechazar</button> </td>");
                             $("#tbody_Espera").append("</tr>");
                             $("#btn_si" + pos).on("click", () => {
                                 $.ajax({
@@ -128,12 +129,13 @@
                         if ($("#proceso" + pos).length == 0) {
                             $("#badge_Proceso").text(ar.length);
                             $("#tbody_Proceso").append("<tr style='background-color:#F3E2A9' id='proceso" + pos + "'>");
-                            $("#proceso" + pos).append("<td> " + el.Nombre + "</td>");
-                            $("#proceso" + pos).append("<td>" + el.Hora + "</td>");
-                            $("#proceso" + pos).append("<td>" + el.Telefono + "</td>");
-                            $("#proceso" + pos).append("<td>" + el.Direccion + "</td>");
-                            $("#proceso" + pos).append("<td>" + el.Items + "</td>");
-                            $("#proceso" + pos).append("<td><button class='btn btn-warning' id='btn_Finalizar" + pos + "'>Finalizar</button></td>")
+                            $("#proceso" + pos)
+                                .append("<td> " + el.Nombre + "</td>")
+                                .append("<td>" + el.Hora + "</td>")
+                                .append("<td>" + el.Telefono + "</td>")
+                                .append("<td>" + el.Direccion + "</td>")
+                                .append("<td>" + el.Items + "</td>")
+                                .append("<td><button class='btn btn-warning' id='btn_Finalizar" + pos + "'>Finalizar</button></td>");
                             $("#tbody_Proceso").append("</tr>");
                             $("#btn_Finalizar" + pos).on("click", () => {
                                 $.ajax({
@@ -170,12 +172,13 @@
                         if ($("#terminado" + pos).length == 0) {
                             $("#badge_Terminadas").text(ar.length);
                             $("#tbody_Terminadas").append("<tr style='background-color:#F5A9A9' id='terminado" + pos + "'>");
-                            $("#terminado" + pos).append("<td> " + el.Nombre + "</td>");
-                            $("#terminado" + pos).append("<td>" + el.Hora + "</td>");
-                            $("#terminado" + pos).append("<td>" + el.Telefono + "</td>");
-                            $("#terminado" + pos).append("<td>" + el.Direccion + "</td>");
-                            $("#terminado" + pos).append("<td>" + el.Items + "</td>");
-                            $("#terminado" + pos).append("<td><button class='btn btn-danger' id='btn_Borrar" + pos + "'>Borrar</button></td>")
+                            $("#terminado" + pos)
+                                .append("<td> " + el.Nombre + "</td>")
+                                .append("<td>" + el.Hora + "</td>")
+                                .append("<td>" + el.Telefono + "</td>")
+                                .append("<td>" + el.Direccion + "</td>")
+                                .append("<td>" + el.Items + "</td>")
+                                .append("<td><button class='btn btn-danger' id='btn_Borrar" + pos + "'>Borrar</button></td>");
                             $("#tbody_Terminadas").append("</tr>");
                             $("#btn_Borrar" + pos).on("click", () => {
                                 $.ajax({

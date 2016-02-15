@@ -31,11 +31,11 @@
         </table>
         <button id="terminar_Compra" class="btn btn-success">TERMINAR COMPRA</button>
     </div> 
-    <div class="container" id="body" style="text-align:center">
+    <div class="container" id="body" style="text-align:center; width:40%">
         <table class="table">
             <thead>
                 <tr>
-                    <th class="btn" width="100%" display="table-cell" style="text-align:center; background-color:#BDBDBD" id="categoria">Inicio</th>
+                    <th class="panel panel-heading" width="100%" display="table-cell" style="text-align:center; background-color:#BDBDBD" id="categoria">Inicio</th>
                 </tr>
             </thead>
             <thead>
@@ -51,27 +51,31 @@
         dibujarCategoria("Inicio");        
 
         $("#categoria").add("#body_Empresas > tr").attr("colspan", $("#subcategorias > th").length);
+
         $("#terminar_Compra").on("click", () => {
+            if ($("#tbody_Bolsa").children("tr").length > 0) {
+                var items = "";
+                $("#tbody_Bolsa").children("tr").each((pos, el) => {
+                    if (pos == 0) {
+                        items += el.id.split("_")[1]
+                    } else {
+                        items += ":" + el.id.split("_")[1];
+                    }
+                });
 
-            var items = "";
-            $("#tbody_Bolsa").children("tr").each((pos, el) => {
-                if (pos == 0) {
-                    items += el.id.split("_")[1]
-                } else {
-                    items += ":" + el.id.split("_")[1];
-                }
-            });
+                var empresas = "";
+                $("#tbody_Bolsa").children("tr").each((pos, el) => {
+                    if (pos == 0) {
+                        empresas += el.id.split("_")[2]
+                    } else {
+                        empresas += ":" + el.id.split("_")[2];
+                    }
+                });
 
-            var empresas = "";
-            $("#tbody_Bolsa").children("tr").each((pos, el) => {
-                if (pos == 0) {
-                    empresas += el.id.split("_")[2]
-                } else {
-                    empresas += ":" + el.id.split("_")[2];
-                }
-            });
-            $.post("/Clientes/Solicitud", { "Items": items, "Empresas": empresas }).done((data) => { $("body").html(data)}) ;
+                $.post("/Clientes/Solicitud", { "Items": items, "Empresas": empresas }).done((data) => { $("body").html(data) });
+            }
         })
+
         function dibujarCategoria(elemento) {
             $("#body_Empresas").empty();
             $.ajax({
@@ -114,7 +118,7 @@
                 var json = JSON.parse(data);
                 if (json.length > 0) {
                     json.forEach((el, pos, ar) => {
-                        $("#body_Empresas").append("<tr id='row_empresa" + pos + "'><td id='empresa" + pos + "' style='background-color:#E6E6E6; margin:10px' class='btn' display='table-cell' width='85%'><span style='float:left; margin-left:5%' class='badge'>" + el.Valoracion + "</span><span id='nombre_empresa" + pos + "'>" + el.Nombre + "</span><span style='float:right; margin-right:5%' class='badge'>" + el.Valoracion + "</span></tr>");
+                        $("#body_Empresas").append("<tr id='row_empresa" + pos + "'><td id='empresa" + pos + "' style='background-color:#E6E6E6; margin:10px' class='btn' display='table-cell' width='85%'><span id='nombre_empresa" + pos + "'>" + el.Nombre + "</span><span style='float:rigth; margin-left:5%' class='badge'>" + el.Valoracion + "</span></tr>");
                         $("#empresa" + pos).on("click", () => {
                             dibujarItems(el.IDEmpresa, pos);
                         });
@@ -131,8 +135,9 @@
             }).done((data) => {
                 var json = JSON.parse(data);
                 $("#row_empresa" + posicion).after("<div id='caja_lista'>");
-                $("#caja_lista").append("<label for='item'>Productos:</label><br>");
-                $("#caja_lista").append("<select id='item' style='width:50%'>");
+                $("#caja_lista")
+                    .append("<label for='item'>Productos:</label><br>")
+                    .append("<select id='item' style='width:50%'>");
                 if (json.length > 0) {
                     json.forEach((el, pos, ar) => {
                         $("#item").append("<option value='" + el.IDItem + "'>" + el.Nombre + " - " + el.Precio + "<span style='margin-left:5px'>€</span></option>");

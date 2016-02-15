@@ -33,5 +33,19 @@ namespace HealthCare.Controllers
                 return View();
             }
         }
+
+        [HttpGet]
+        public ViewResult Registro()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ViewResult Registro(Empresas empresa)
+        {
+            db.setEmpresa(empresa);
+            dc.enviarEmail(empresa);
+            return View("Login");
+        }
     }
 }

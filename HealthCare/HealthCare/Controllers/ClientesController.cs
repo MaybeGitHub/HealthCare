@@ -36,6 +36,11 @@ namespace HealthCare.Controllers
             return View(db.getCliente((int)Session["ss"]));
         }
 
+        public ViewResult Registro()
+        {
+            return View();
+        }
+
         public PartialViewResult Solicitud(string Items, string Empresas)
         {            
             List<string> listaEmpresas = Empresas.Split(':').ToList();

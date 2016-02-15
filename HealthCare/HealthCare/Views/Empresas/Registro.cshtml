@@ -1,0 +1,86 @@
+﻿@model HealthCare.Models.Empresas
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Registro</title>
+    <link rel="stylesheet" href="~/Content/bootstrap-theme.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="panel panel-success">
+            <div class="panel-heading text-center"><h4>Bienvenido al Registro</h4></div>
+            <div class="panel-body">
+                @using (Html.BeginForm())
+                {
+                    <div class="form-group">
+                        <label>Nombre:</label>
+                        @Html.TextBoxFor(x => x.Nombre, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        <label>Telefono:</label>
+                        @Html.TextBoxFor(x => x.Telefono, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        <label>Categoria:</label>
+                        @Html.DropDownListFor(x => x.Categoria, new[]
+                        {
+                            new SelectListItem { Text = "Bienestar", Value = "Bienestar" },
+                            new SelectListItem { Text = "Domestico", Value = "Domestico" },
+                            new SelectListItem { Text = "Mascotas", Value = "Mascotas" },
+                            new SelectListItem { Text = "Salud", Value = "Salud" }
+                        }, "Elige una categoria", new { @class = "form-control", @id = "categorias" })
+                    </div>
+                    <div class="form-group">
+                        <label>Subcategoria:</label>
+                        @Html.DropDownListFor(x => x.Subcategoria, Enumerable.Empty<SelectListItem>()
+                        , "Elige una subcategoria", new { @class = "form-control", @id = "subcategorias" })
+                    </div>
+                    <div class="form-group">
+                        <label>Descripcion:</label>
+                        @Html.TextAreaFor(x => x.Descripcion, new { @class = "form-control" })
+                    </div>
+                    <div class="text-center">
+                        <div style="width:50%; float:left">
+                            <a href="/Clientes/Login">Volver</a>
+                        </div>
+                        <div style="width:50%; float:right">
+                            <input class="btn btn-success" type="submit" value="Registrarse" />
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>    
+    <script>
+        function cargarSubcategorias(categoria) {
+            $("#subcategorias").empty();
+            $("#subcategorias").append("<option>Elige una subcategoria</option>");
+            $.ajax({
+                url: "/Datos/Subcategorias?categoria=" + $("#categorias").val()
+            }).done((data) => {
+                var json = JSON.parse(data);
+                $(json).each((pos, el) => {
+                    $("#subcategorias").append("<option value='" + el.Nombre + "'>" + el.Nombre + "</option>");
+                });
+            });
+        };
+
+        $("#categorias").change((ev) => {
+            cargarSubcategorias(ev.target.value);
+        });
+    </script>
+</body>
+</html>
