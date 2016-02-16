@@ -15,43 +15,46 @@
     <script src="~/Scripts/jquery-1.10.2.js"></script>
 </head>
 <body>
-    <div class="container"> 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th style="text-align:center; background-color:Highlight" colspan="4">Bolsa de la Compra</th>
-                </tr>
-                <tr>
-                    <th style="text-align:center">Empresa</th>
-                    <th style="text-align:center">Producto</th>
-                    <th style="text-align:center">Precio</th>
-                </tr>
-            </thead>
-            <tbody>                
-                @{ 
-                    List<Empresas> listaEmpresas = Model.listaEmpresas;
-                    List<Items> listaItems = Model.listaItems;
-                    double cont = 0;
-                    for(int i = 0; i < listaEmpresas.Count; i++)
-                    {
-                        <tr>
-                            <td id="@listaEmpresas[i].IDEmpresa" style="text-align:center">@listaEmpresas[i].Nombre</td>
-                            <td id="@listaItems[i].IDItem" style="text-align:center">@listaItems[i].Nombre</td>
-                            <td style="text-align:center">@listaItems[i].Precio€</td>
-                        </tr>  
-                        cont += listaItems[i].Precio;
+    <div class="container">
+        @using (Html.BeginForm("Empresas/Bienvenido"))
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style="text-align:center; background-color:Highlight" colspan="4">Bolsa de la Compra</th>
+                    </tr>
+                    <tr>
+                        <th style="text-align:center">Empresa</th>
+                        <th style="text-align:center">Producto</th>
+                        <th style="text-align:center">Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        List<Empresas> listaEmpresas = Model.listaEmpresas;
+                        List<Items> listaItems = Model.listaItems;
+                        double cont = 0;
+                        for (int i = 0; i < listaEmpresas.Count; i++)
+                        {
+                            <tr>
+                                <td id="@listaEmpresas[i].IDEmpresa" style="text-align:center">@listaEmpresas[i].Nombre</td>
+                                <td id="@listaItems[i].IDItem" style="text-align:center">@listaItems[i].Nombre</td>
+                                <td style="text-align:center">@listaItems[i].Precio€</td>
+                            </tr>
+                            cont += listaItems[i].Precio;
+                        }
                     }
-                }               
-            </tbody>
-            <tfoot>
-                <tr><td></td><td></td><td style="text-align:center">TOTAL: <span style="margin-left:10px">@cont €</span></td></tr> 
-            </tfoot>             
-        </table>        
-        <center>
-            <p class="text-warning">¿ Enviar Solicitudes ?</p>                          
-            <button class="btn btn-danger" id="btn_no">Volver</button>
-            <button class="btn btn-success" id="btn_si" style="margin-left:10px">Aceptar</button>           
-        </center>
+                </tbody>
+                <tfoot>
+                    <tr><td></td><td></td><td style="text-align:center">TOTAL: <span style="margin-left:10px">@cont €</span></td></tr>
+                </tfoot>
+            </table>
+            <center>
+                <p class="text-warning">¿ Enviar Solicitudes ?</p>
+                <button class="btn btn-danger" id="btn_no">Volver</button>
+                <button class="btn btn-success" id="btn_si" style="margin-left:10px">Aceptar</button>
+            </center>
+        }
     </div>
     <script>
         var empresa;
@@ -66,10 +69,6 @@
                 {"IDEmpresa": empresa, "IDCliente":cliente, "IDItem": item}
                 );
             });
-            location.href = "/Clientes/Bienvenido";
-        })
-        $("#btn_no").on("click", () => {
-            location.href = "/Clientes/Bienvenido";
         })
     </script>
 </body>

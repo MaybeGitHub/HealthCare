@@ -17,7 +17,12 @@ namespace HealthCare
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Clientes", action = "Login", id = UrlParameter.Optional }
-            );           
+            );
+
+            routes.MapRoute(
+                name: "Cliente",
+                url: "{controller}/{action}/{id}"
+            );
         }
     }
 }

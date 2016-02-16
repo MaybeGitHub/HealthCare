@@ -1,0 +1,22 @@
+﻿@using HealthCare.Models
+@{
+    ViewBag.Title = "Items";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <ul style="list-style:none">
+        @if (Model.Count != 0)
+        {
+            foreach (Items item in Model)
+            {
+                <li><a href="/Clientes/Comprar/@item.IDItem">@item.Nombre</a></li>
+            }
+        }
+        else
+        {
+            <li>Esta empresa aun no tiene productos asignados</li>
+        }
+
+    </ul>
+

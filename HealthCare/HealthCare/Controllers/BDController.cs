@@ -19,6 +19,11 @@ namespace HealthCare.Controllers
             db = new MiDBContextDataContext(ConfigurationManager.ConnectionStrings["miConexion"].ConnectionString);
         }
 
+        public dynamic getCategorias()
+        {
+            return db.Categorias.ToList();
+        }
+
         public Clientes getCliente(int SS)
         {            
             return db.Clientes.SingleOrDefault(x => x.SS == SS);                      
@@ -58,9 +63,9 @@ namespace HealthCare.Controllers
             return idObtenido;
         }
 
-        public List<Empresas> getEmpresas(string categoria, string subcategoria)
+        public List<Empresas> getEmpresas(string subcategoria)
         {
-            return db.Empresas.Where(x => x.Categoria == categoria && x.Subcategoria == subcategoria).ToList();
+            return db.Empresas.Where(x=> x.Subcategoria == subcategoria).ToList();
         }
 
         public Categorias getCategoria(string categoria)
@@ -94,15 +99,18 @@ namespace HealthCare.Controllers
         }
 
         public void setSolicitud(int ss, int IDEmpresa, int IDItem)
-        {            
+        {                 
             Solicitudes solicitud = new Solicitudes();
+            solicitud.IDSolicitud = db.Solicitudes.Count() + 1;
             solicitud.Hora = DateTime.Now.ToString();
             solicitud.Estado = 1;
             solicitud.IDCliente = ss;
             solicitud.IDEmpresa = IDEmpresa;
+            
             db.Solicitudes.InsertOnSubmit(solicitud);
 
             Pedidos pedido = new Pedidos();
+            pedido.IDPedido = db.Pedidos.Count() + 1;
             pedido.IDCliente = ss;
             pedido.IDEmpresa = IDEmpresa;
             pedido.IDItem = IDItem;
@@ -135,9 +143,9 @@ namespace HealthCare.Controllers
             db.SubmitChanges();
         }
 
-        public List<Items> getItems(int IDEmpresa)
+        public List<Items> getItems(int idEmpresa)
         {
-            return db.Items.Where(x => x.IDEmpresa == IDEmpresa).ToList();
+            return db.Items.Where(x => x.IDEmpresa == idEmpresa).ToList();
         }
 
         public Items getItem(int IDItem)

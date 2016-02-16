@@ -1,0 +1,53 @@
+﻿@using HealthCare.Models
+@{
+    ViewBag.Title = "Cesta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <th colspan="3" class="text-center">@ViewBag.title</th>
+            </tr>
+            <tr>
+                <td width="33%">Nombre</td>
+                <td width="33%">Empresa</td>
+                <td width="33%">Precio</td>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count != 0)
+            {
+                foreach (Items item in Model)
+                {
+                    <tr>
+                        <td width="33%">@item.Nombre</td>
+                        <td width="33%">@item.Empresas.Nombre</td>
+                        <td width="33%"><label name="precio">@item.Precio</label><label style="margin-left:2px">€</label></td>
+                    </tr>
+                }                
+                <tr>
+                    <td colspan="3"><br /><label>Total <label style="margin-left:10px" id="total"></label><label style="margin-left:2px">€</label></label></td>
+                </tr>
+                <tr>                    
+                    <td colspan="3" style="border:none"><a href="/Clientes/Terminar" class="btn btn-warning">Terminar Compra</a></td>                    
+                </tr>
+            }
+            else
+            {
+                <tr><td colspan="3">Tu cesta esta vacia</td></tr>
+            }                   
+        </tbody>
+    </table>    
+</div> 
+<script>
+
+    var total = 0;
+    $("label[name='precio']").each((pos, el)=>{
+        total += parseFloat(el.innerHTML.replace(',','.'));
+    })
+
+    $("#total").text(total);
+</script>
+

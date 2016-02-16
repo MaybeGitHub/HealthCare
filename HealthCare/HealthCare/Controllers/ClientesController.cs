@@ -11,55 +11,98 @@ namespace HealthCare.Controllers
     public class ClientesController : Controller
     {
         private BDController db = new BDController();
-        private DatosController dc = new DatosController();
+        private DatosController dc = new DatosController();        
 
-        [HttpGet]
-        public ViewResult Login()
+        public ViewResult Login(Clientes cliente)
         {
-            return View();
-        }
-
-        [HttpPost]
-        public RedirectToRouteResult Login(Clientes cliente)
-        {
+            Session.Remove("cliente");
+            Session.Remove("cesta");
             Clientes c = db.getCliente(cliente.SS);
             if (ModelState.IsValid && c != null)
             {
-                Session["ss"] = c.SS;
-                return RedirectToAction("Bienvenido");
+                Session["cliente"] = cliente.SS;
+                Session["cesta"] = new List<string>();
+                return View("Categorias", dc.cargarCategorias());
             }
-            return RedirectToAction("Login");
+            else
+            {
+                Session["zona"] = "Clientes";
+                return View("Login");
+            }            
         }
 
-        public ViewResult Bienvenido()
+        public ViewResult Categorias()
         {            
-            return View(db.getCliente((int)Session["ss"]));
+            Session.Remove("categoria");
+            Session.Remove("subcategoria");
+            Session.Remove("empresa");
+            return View(dc.cargarCategorias());
         }
 
-        [HttpGet]
-        public ViewResult Registro()
+        public ViewResult Registro(Clientes cliente)
         {
+            Session.Remove("cliente");
+            Session.Remove("cesta");
+            Clientes c = db.getCliente(cliente.SS);
+            if (ModelState.IsValid && c != null)
+            {
+                db.setCliente(cliente);
+                return View("Login");
+            }
+            else
+            {              
+                return View();
+            }            
+        }        
+
+        public ViewResult Subcategorias(string id)
+        {
+            Session["categoria"] = id;
+            Session.Remove("subcategoria");
+            return View(dc.Subcategorias(id));                    
+        }
+
+        public ViewResult Empresas(string id)
+        {
+            Session["subcategoria"] = id;
+            Session.Remove("empresa");
+            return View(dc.Empresas(id));
+        }
+
+        public ViewResult Items(string id)
+        {
+            Empresas e = dc.Empresa(id);
+            Session["empresa"] = e.Nombre;
+            return View(dc.Items(e.IDEmpresa));
+        }
+
+        public ViewResult Comprar(string id)
+        {
+            List<string> cesta = Session["cesta"] as List<string>;
+            cesta.Add(id);
+            Session["cesta"] = cesta;
             return View();
         }
 
-        [HttpPost]
-        public ViewResult Registro(Clientes cliente)
+        public ViewResult Cesta()
         {
-            db.setCliente(cliente);
-            return View("Login");
+            List<string> cesta = Session["cesta"] as List<string>;
+            List<Items> items = new List<Items>();
+            cesta.ForEach(x => items.Add(dc.Item(int.Parse(x))));
+            return View(items);
         }
 
-        public PartialViewResult Solicitud(string Items, string Empresas)
-        {            
+        public ViewResult Solicitud(string Items, string Empresas, int ss)
+        {
             List<string> listaEmpresas = Empresas.Split(':').ToList();
             List<string> listaItems = Items.Split(':').ToList();
 
             Pre_Solicitud ps = new Pre_Solicitud();
-            ps.cliente = db.getCliente((int)Session["ss"]);
+            ps.cliente = db.getCliente(ss);
             foreach (string s in listaEmpresas) ps.listaEmpresas.Add(db.getEmpresa(s));
             foreach (string s in listaItems) ps.listaItems.Add(db.getItem(int.Parse(s)));
-            
-            return PartialView(ps);
+
+            return View(ps);
         }
     }
 }

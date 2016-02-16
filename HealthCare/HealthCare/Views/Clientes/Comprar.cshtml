@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "Items";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid center-block">
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <td colspan="2">Su producto ha sido enviado correctamente a la cesta</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="2">¿ Desea seguir comprando ?</td>
+            </tr>
+            <tr>
+                <td><a href="/Clientes/Terminar" class="btn btn-warning">Terminar Compra</a></td>
+                <td><a href="/Clientes/Items/@Session["empresa"]" class="btn btn-success">Seguir Comprando</a></td>
+            </tr>
+        </tbody>
+    </table>    
+</div>
+

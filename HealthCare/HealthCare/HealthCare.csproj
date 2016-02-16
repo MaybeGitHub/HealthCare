@@ -131,6 +131,7 @@
     <Content Include="Content\Categorias.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Content\Layout.css" />
     <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -183,6 +184,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MiDBContext.dbml</DependentUpon>
     </Compile>
+    <Compile Include="Models\Producto.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
@@ -201,13 +203,19 @@
     <Content Include="obj\Debug\HealthCare.csprojResolveAssemblyReference.cache" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Clientes\Login.cshtml" />
-    <Content Include="Views\Clientes\Bienvenido.cshtml" />
+    <Content Include="Views\Clientes\Categorias.cshtml" />
     <Content Include="Scripts\jquery-1.9.1.min.map" />
     <Content Include="Views\Clientes\Solicitud.cshtml" />
     <Content Include="Views\Empresas\Login.cshtml" />
-    <Content Include="Views\Empresas\Bienvenido.cshtml" />
+    <Content Include="Views\Empresas\Main.cshtml" />
     <Content Include="Views\Empresas\Registro.cshtml" />
     <Content Include="Views\Clientes\Registro.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Clientes\Subcategorias.cshtml" />
+    <Content Include="Views\Clientes\Empresas.cshtml" />
+    <Content Include="Views\Clientes\Items.cshtml" />
+    <Content Include="Views\Clientes\Comprar.cshtml" />
+    <Content Include="Views\Clientes\Cesta.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

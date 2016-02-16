@@ -1,0 +1,23 @@
+﻿@using HealthCare.Models
+@{
+    ViewBag.Title = "Empresas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <ul style="list-style:none">        
+        @if(Model.Count != 0)
+        {
+            foreach (Empresas emp in Model){
+                <li><a href="/Clientes/Items/@emp.Nombre">@emp.Nombre</a></li>
+            }
+        }
+        else
+        {
+            <li>No hay empresas aun registradas en esta subcategoria</li>
+        }
+
+    </ul>
+</div>
+
+

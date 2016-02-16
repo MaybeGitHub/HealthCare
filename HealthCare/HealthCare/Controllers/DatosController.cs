@@ -13,80 +13,25 @@ namespace HealthCare.Controllers
     {
         private BDController db = new BDController();
 
-        public string Categorias(string categoria)
-        { 
-            Categorias c = db.getCategoria(categoria);
-            if(c != null)
-            {
-                string salida = "{'Nombre':'" + c.Nombre + "','Color':'" + c.Color + "'}";
-                return salida.Replace("'", "\"");
-            }
-            else
-            {
-                return "null";
-            }
-            
+        public dynamic cargarCategorias()
+        {
+            return db.getCategorias();            
         }
 
-        public string Subcategorias(string categoria)
+        public dynamic Subcategorias(string categoria)
         {
-            string json = "[";
-            List<Subcategorias> lista = db.getSubcategorias(categoria);
-            foreach (Subcategorias s in lista)
-            {
-                json += "{'Nombre':'" + s.Nombre + "','Color':'" + s.Color + "'},";
-            }
-
-            if (json.Length > 1)
-            {
-                json = json.Substring(0, json.Length - 1);
-            }
-
-            json += "]";
-            return json.Replace("'", "\"");
+            return db.getSubcategorias(categoria);
         }
 
-        public string Empresas(string categoria, string subcategoria)
+        public dynamic Empresas(string subcategoria)
         {
-            string json = "[";
-            List<Empresas> lista = db.getEmpresas(categoria, subcategoria).OrderByDescending(x => x.Valoracion).ToList();
-            foreach (Empresas e in lista)
-            {
-                json += "{'Nombre':'" + e.Nombre + "','Valoracion':" + e.Valoracion + ",'IDEmpresa':" + e.IDEmpresa + "},";
-            }
-
-            if (json.Length > 1)
-            {
-                json = json.Substring(0, json.Length - 1);
-            }
-
-            json += "]";
-            return json.Replace("'", "\"");
+            return db.getEmpresas(subcategoria);
         }        
 
-        public string Items(int IDEmpresa)
+        public Empresas Empresa(string nombre)
         {
-            string json = "[";
-            List<Items> lista = db.getItems(IDEmpresa);
-            if(lista == null)
-            {
-                lista = new List<Items>();
-            }
-            
-            foreach (Items i in lista)
-            {
-                json += "{'Nombre':'" + i.Nombre + "','IDItem':" + i.IDItem + ",'Precio':'" + i.Precio + "'},";
-            }
-
-            if (json.Length > 1)
-            {
-                json = json.Substring(0, json.Length - 1);
-            }
-
-            json += "]";
-            return json.Replace("'", "\"");
-            
-        }
+            return db.getEmpresa(nombre);
+        } 
 
         public int Solicitud(int IDEmpresa, int IDCliente, int IDItem)
         {            
@@ -119,6 +64,16 @@ namespace HealthCare.Controllers
 
             json += "]";
             return json.Replace("'", "\"");
+        }
+
+        public dynamic Items(int idEmpresa)
+        {
+            return db.getItems(idEmpresa);
+        }
+
+        public Items Item(int idItem)
+        {
+            return db.getItem(idItem);
         }
 
         public int cambiarEstadoSolicitud(int idEmpresa, int idCliente, int estado)

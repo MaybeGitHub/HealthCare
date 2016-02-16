@@ -1,0 +1,16 @@
+﻿@using HealthCare.Models
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <ul style="list-style:none">
+
+        @foreach (Categorias cat in Model)
+        {
+            <li><a href="~/Clientes/Subcategorias/@cat.Nombre">@cat.Nombre</a></li>
+        }
+            
+    </ul>       
+</div>      
+

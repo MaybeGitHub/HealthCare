@@ -1,0 +1,80 @@
+﻿@using HealthCare.Models
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/Content/bootstrap-theme.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link rel="stylesheet" href="~/Content/Layout.css" />
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+</head>
+<body>
+    <header>
+        <div class="text-center panel panel-title" id="titulo"><h1 class="h1">HealthCare</h1></div>
+        <div id="navegacion" class="text-center">
+           <table id="nav">
+            <tr>
+                <td style="width:50%">
+                    @using (Html.BeginForm("Login", "Clientes"))
+                    {
+                        if (Session["zona"] as string == "Clientes")
+                        {
+                            <button class="btn" style="background-color:#088A4B; color:white; width:50%">Zona Clientes</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-default" style="width:50%">Zona Clientes</button>
+                        }
+
+                    }                    
+                </td>
+                <td style="width:50%">
+                    @using (Html.BeginForm("Login", "Empresas"))
+                    {
+                        if (Session["zona"] as string == "Empresas")
+                        {
+                            <button id="Empresas" class="btn" style="background-color:#088A4B; color:white; width:50%">Zona Empresas</button>
+                        }
+                        else
+                        {
+                            <button id="Empresas" class="btn btn-default" style="width:50%">Zona Empresas</button>
+                        }
+                    }                                                       
+                </td>
+            </tr>
+            </table>
+        </div>
+    </header>
+    <main> 
+        <div id="main">
+            <div id="menu" class="panel">
+                <ul class="sidebar-nav" id="lista_principal">
+                    <li class="sidebar-brand">@Session["zona"].ToString()</li>
+                    <li>@Html.ActionLink("Acceso", "Login")</li>
+                    <li>@Html.ActionLink("Registro", "Registro")</li>
+                    <li>@Html.ActionLink("Recuperar Cuenta", "Recuperar")</li>                    
+                    @if (Session["cliente"] != null) { <li>@Html.ActionLink("Tu cesta", "Cesta")</li> }                
+                    @if (Session["cliente"] != null) { <li><a href="/Clientes/Categorias">Categorias</a></li> }
+                    <li><a href="/Clientes/Subcategorias/@Session["categoria"]">@Session["categoria"]</a></li>
+                    <li><a href="/Clientes/Empresas/@Session["subcategoria"]">@Session["subcategoria"]</a></li>
+                    <li><a href="/Clientes/Items/@Session["empresa"]">@Session["empresa"]</a></li>
+                </ul>
+            </div>
+            <div id="contenido" style="position:relative" class="panel">
+                <div id="centrado">@RenderBody()</div>
+            </div>
+        </div>    
+    </main>
+    <footer>
+        <div><p>ESTO ES EL FOOTER</p></div>
+    </footer>
+
+    <script>
+        $("#texto").keyup((ev) => {
+            $("#aviso").text("Quedan " + (140 - ev.target.value.length) + " caracteres");
+        });
+    </script>
+</body>
+</html>

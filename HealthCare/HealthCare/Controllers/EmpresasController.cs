@@ -13,39 +13,37 @@ namespace HealthCare.Controllers
         private BDController db = new BDController();
         private DatosController dc = new DatosController();
 
-        [HttpGet]
-        public ViewResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
         public ViewResult Login(Empresas empresa)
-        {
+        {            
             Empresas e = db.getEmpresa(empresa.IDEmpresa);
             if (ModelState.IsValid && e != null)
             {
-
-                return View("Bienvenido", e);
+                dc.cargarCategorias();
+                return View("Main", e);
             }
             else
             {
+                ViewBag.menu = "Acceso";
+                Session["zona"] = "Empresas";
                 return View();
             }
         }
 
-        [HttpGet]
-        public ViewResult Registro()
-        {
-            return View();
-        }
-
-        [HttpPost]
         public ViewResult Registro(Empresas empresa)
-        {
-            db.setEmpresa(empresa);
-            dc.enviarEmail(empresa);
-            return View("Login");
-        }
+        {            
+            Empresas e = db.getEmpresa(empresa.IDEmpresa);
+            if (ModelState.IsValid && e != null)
+            {
+                ViewBag.menu = "Acceso";
+                db.setEmpresa(empresa);
+                dc.enviarEmail(empresa);
+                return View("Login");
+            }
+            else
+            {
+                ViewBag.menu = "Registro";               
+                return View();                
+            }            
+        }        
     }
 }
