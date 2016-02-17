@@ -1,16 +1,17 @@
 ﻿@using HealthCare.Models
+
 @{
     ViewBag.Title = "Subcategorias";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container">
-    <ul style="list-style:none">
+<table>
+    @foreach (Subcategorias sub in Model)
+    {
+        <tr>
+            <td class="nombre">@sub.Nombre</td>
+            <td><a href="~/Clientes/Empresas/@sub.Nombre"><img style="float:left; width:100%" src="~/Content/Imagenes/@Session["categoria"]/Subcategorias/@(sub.Nombre).jpg" /></a></td>
+        </tr>       
+    }
+</table>
 
-        @foreach (Subcategorias sub in Model)
-        {
-            <li><a href="~/Clientes/Empresas/@sub.Nombre">@sub.Nombre</a></li>
-        }
-
-    </ul>
-</div>

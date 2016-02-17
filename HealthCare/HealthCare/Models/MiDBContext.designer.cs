@@ -45,18 +45,18 @@ namespace HealthCare.Models
     partial void InsertSolicitudes(Solicitudes instance);
     partial void UpdateSolicitudes(Solicitudes instance);
     partial void DeleteSolicitudes(Solicitudes instance);
-    partial void InsertCategorias(Categorias instance);
-    partial void UpdateCategorias(Categorias instance);
-    partial void DeleteCategorias(Categorias instance);
-    partial void InsertSubcategorias(Subcategorias instance);
-    partial void UpdateSubcategorias(Subcategorias instance);
-    partial void DeleteSubcategorias(Subcategorias instance);
     partial void InsertEmpresas(Empresas instance);
     partial void UpdateEmpresas(Empresas instance);
     partial void DeleteEmpresas(Empresas instance);
     partial void InsertPedidos(Pedidos instance);
     partial void UpdatePedidos(Pedidos instance);
     partial void DeletePedidos(Pedidos instance);
+    partial void InsertCategorias(Categorias instance);
+    partial void UpdateCategorias(Categorias instance);
+    partial void DeleteCategorias(Categorias instance);
+    partial void InsertSubcategorias(Subcategorias instance);
+    partial void UpdateSubcategorias(Subcategorias instance);
+    partial void DeleteSubcategorias(Subcategorias instance);
     #endregion
 		
 		public MiDBContextDataContext() : 
@@ -129,22 +129,6 @@ namespace HealthCare.Models
 			}
 		}
 		
-		public System.Data.Linq.Table<Categorias> Categorias
-		{
-			get
-			{
-				return this.GetTable<Categorias>();
-			}
-		}
-		
-		public System.Data.Linq.Table<Subcategorias> Subcategorias
-		{
-			get
-			{
-				return this.GetTable<Subcategorias>();
-			}
-		}
-		
 		public System.Data.Linq.Table<Empresas> Empresas
 		{
 			get
@@ -158,6 +142,22 @@ namespace HealthCare.Models
 			get
 			{
 				return this.GetTable<Pedidos>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Categorias> Categorias
+		{
+			get
+			{
+				return this.GetTable<Categorias>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Subcategorias> Subcategorias
+		{
+			get
+			{
+				return this.GetTable<Subcategorias>();
 			}
 		}
 	}
@@ -1451,319 +1451,6 @@ namespace HealthCare.Models
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Categorias")]
-	public partial class Categorias : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private string _Nombre;
-		
-		private int _Empresas;
-		
-		private string _Color;
-		
-		private EntitySet<Subcategorias> _Subcategorias;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnNombreChanging(string value);
-    partial void OnNombreChanged();
-    partial void OnEmpresasChanging(int value);
-    partial void OnEmpresasChanged();
-    partial void OnColorChanging(string value);
-    partial void OnColorChanged();
-    #endregion
-		
-		public Categorias()
-		{
-			this._Subcategorias = new EntitySet<Subcategorias>(new Action<Subcategorias>(this.attach_Subcategorias), new Action<Subcategorias>(this.detach_Subcategorias));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Nombre", DbType="VarChar(50) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
-		public string Nombre
-		{
-			get
-			{
-				return this._Nombre;
-			}
-			set
-			{
-				if ((this._Nombre != value))
-				{
-					this.OnNombreChanging(value);
-					this.SendPropertyChanging();
-					this._Nombre = value;
-					this.SendPropertyChanged("Nombre");
-					this.OnNombreChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Empresas", DbType="Int NOT NULL")]
-		public int Empresas
-		{
-			get
-			{
-				return this._Empresas;
-			}
-			set
-			{
-				if ((this._Empresas != value))
-				{
-					this.OnEmpresasChanging(value);
-					this.SendPropertyChanging();
-					this._Empresas = value;
-					this.SendPropertyChanged("Empresas");
-					this.OnEmpresasChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Color", DbType="NChar(10) NOT NULL", CanBeNull=false)]
-		public string Color
-		{
-			get
-			{
-				return this._Color;
-			}
-			set
-			{
-				if ((this._Color != value))
-				{
-					this.OnColorChanging(value);
-					this.SendPropertyChanging();
-					this._Color = value;
-					this.SendPropertyChanged("Color");
-					this.OnColorChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Categoria_Subcategoria", Storage="_Subcategorias", ThisKey="Nombre", OtherKey="Categoria")]
-		public EntitySet<Subcategorias> Subcategorias
-		{
-			get
-			{
-				return this._Subcategorias;
-			}
-			set
-			{
-				this._Subcategorias.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_Subcategorias(Subcategorias entity)
-		{
-			this.SendPropertyChanging();
-			entity.Categorias = this;
-		}
-		
-		private void detach_Subcategorias(Subcategorias entity)
-		{
-			this.SendPropertyChanging();
-			entity.Categorias = null;
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Subcategorias")]
-	public partial class Subcategorias : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private string _Categoria;
-		
-		private string _Nombre;
-		
-		private string _Color;
-		
-		private int _Empresas;
-		
-		private EntityRef<Categorias> _Categorias;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnCategoriaChanging(string value);
-    partial void OnCategoriaChanged();
-    partial void OnNombreChanging(string value);
-    partial void OnNombreChanged();
-    partial void OnColorChanging(string value);
-    partial void OnColorChanged();
-    partial void OnEmpresasChanging(int value);
-    partial void OnEmpresasChanged();
-    #endregion
-		
-		public Subcategorias()
-		{
-			this._Categorias = default(EntityRef<Categorias>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Categoria", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string Categoria
-		{
-			get
-			{
-				return this._Categoria;
-			}
-			set
-			{
-				if ((this._Categoria != value))
-				{
-					if (this._Categorias.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnCategoriaChanging(value);
-					this.SendPropertyChanging();
-					this._Categoria = value;
-					this.SendPropertyChanged("Categoria");
-					this.OnCategoriaChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Nombre", DbType="NVarChar(50) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
-		public string Nombre
-		{
-			get
-			{
-				return this._Nombre;
-			}
-			set
-			{
-				if ((this._Nombre != value))
-				{
-					this.OnNombreChanging(value);
-					this.SendPropertyChanging();
-					this._Nombre = value;
-					this.SendPropertyChanged("Nombre");
-					this.OnNombreChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Color", DbType="NChar(10) NOT NULL", CanBeNull=false)]
-		public string Color
-		{
-			get
-			{
-				return this._Color;
-			}
-			set
-			{
-				if ((this._Color != value))
-				{
-					this.OnColorChanging(value);
-					this.SendPropertyChanging();
-					this._Color = value;
-					this.SendPropertyChanged("Color");
-					this.OnColorChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Empresas", DbType="Int NOT NULL")]
-		public int Empresas
-		{
-			get
-			{
-				return this._Empresas;
-			}
-			set
-			{
-				if ((this._Empresas != value))
-				{
-					this.OnEmpresasChanging(value);
-					this.SendPropertyChanging();
-					this._Empresas = value;
-					this.SendPropertyChanged("Empresas");
-					this.OnEmpresasChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Categoria_Subcategoria", Storage="_Categorias", ThisKey="Categoria", OtherKey="Nombre", IsForeignKey=true)]
-		public Categorias Categorias
-		{
-			get
-			{
-				return this._Categorias.Entity;
-			}
-			set
-			{
-				Categorias previousValue = this._Categorias.Entity;
-				if (((previousValue != value) 
-							|| (this._Categorias.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Categorias.Entity = null;
-						previousValue.Subcategorias.Remove(this);
-					}
-					this._Categorias.Entity = value;
-					if ((value != null))
-					{
-						value.Subcategorias.Add(this);
-						this._Categoria = value.Nombre;
-					}
-					else
-					{
-						this._Categoria = default(string);
-					}
-					this.SendPropertyChanged("Categorias");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Empresas")]
 	public partial class Empresas : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -2435,6 +2122,271 @@ namespace HealthCare.Models
 						this._IDEmpresa = default(int);
 					}
 					this.SendPropertyChanged("Empresas");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Categorias")]
+	public partial class Categorias : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private string _Nombre;
+		
+		private int _Empresas;
+		
+		private EntitySet<Subcategorias> _Subcategorias;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnNombreChanging(string value);
+    partial void OnNombreChanged();
+    partial void OnEmpresasChanging(int value);
+    partial void OnEmpresasChanged();
+    #endregion
+		
+		public Categorias()
+		{
+			this._Subcategorias = new EntitySet<Subcategorias>(new Action<Subcategorias>(this.attach_Subcategorias), new Action<Subcategorias>(this.detach_Subcategorias));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Nombre", DbType="VarChar(50) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string Nombre
+		{
+			get
+			{
+				return this._Nombre;
+			}
+			set
+			{
+				if ((this._Nombre != value))
+				{
+					this.OnNombreChanging(value);
+					this.SendPropertyChanging();
+					this._Nombre = value;
+					this.SendPropertyChanged("Nombre");
+					this.OnNombreChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Empresas", DbType="Int NOT NULL")]
+		public int Empresas
+		{
+			get
+			{
+				return this._Empresas;
+			}
+			set
+			{
+				if ((this._Empresas != value))
+				{
+					this.OnEmpresasChanging(value);
+					this.SendPropertyChanging();
+					this._Empresas = value;
+					this.SendPropertyChanged("Empresas");
+					this.OnEmpresasChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Categorias_Subcategorias", Storage="_Subcategorias", ThisKey="Nombre", OtherKey="Categoria")]
+		public EntitySet<Subcategorias> Subcategorias
+		{
+			get
+			{
+				return this._Subcategorias;
+			}
+			set
+			{
+				this._Subcategorias.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Subcategorias(Subcategorias entity)
+		{
+			this.SendPropertyChanging();
+			entity.Categorias = this;
+		}
+		
+		private void detach_Subcategorias(Subcategorias entity)
+		{
+			this.SendPropertyChanging();
+			entity.Categorias = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Subcategorias")]
+	public partial class Subcategorias : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private string _Categoria;
+		
+		private string _Nombre;
+		
+		private int _Empresas;
+		
+		private EntityRef<Categorias> _Categorias;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnCategoriaChanging(string value);
+    partial void OnCategoriaChanged();
+    partial void OnNombreChanging(string value);
+    partial void OnNombreChanged();
+    partial void OnEmpresasChanging(int value);
+    partial void OnEmpresasChanged();
+    #endregion
+		
+		public Subcategorias()
+		{
+			this._Categorias = default(EntityRef<Categorias>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Categoria", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string Categoria
+		{
+			get
+			{
+				return this._Categoria;
+			}
+			set
+			{
+				if ((this._Categoria != value))
+				{
+					if (this._Categorias.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnCategoriaChanging(value);
+					this.SendPropertyChanging();
+					this._Categoria = value;
+					this.SendPropertyChanged("Categoria");
+					this.OnCategoriaChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Nombre", DbType="NVarChar(50) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string Nombre
+		{
+			get
+			{
+				return this._Nombre;
+			}
+			set
+			{
+				if ((this._Nombre != value))
+				{
+					this.OnNombreChanging(value);
+					this.SendPropertyChanging();
+					this._Nombre = value;
+					this.SendPropertyChanged("Nombre");
+					this.OnNombreChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Empresas", DbType="Int NOT NULL")]
+		public int Empresas
+		{
+			get
+			{
+				return this._Empresas;
+			}
+			set
+			{
+				if ((this._Empresas != value))
+				{
+					this.OnEmpresasChanging(value);
+					this.SendPropertyChanging();
+					this._Empresas = value;
+					this.SendPropertyChanged("Empresas");
+					this.OnEmpresasChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Categorias_Subcategorias", Storage="_Categorias", ThisKey="Categoria", OtherKey="Nombre", IsForeignKey=true)]
+		public Categorias Categorias
+		{
+			get
+			{
+				return this._Categorias.Entity;
+			}
+			set
+			{
+				Categorias previousValue = this._Categorias.Entity;
+				if (((previousValue != value) 
+							|| (this._Categorias.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Categorias.Entity = null;
+						previousValue.Subcategorias.Remove(this);
+					}
+					this._Categorias.Entity = value;
+					if ((value != null))
+					{
+						value.Subcategorias.Add(this);
+						this._Categoria = value.Nombre;
+					}
+					else
+					{
+						this._Categoria = default(string);
+					}
+					this.SendPropertyChanged("Categorias");
 				}
 			}
 		}

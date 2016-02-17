@@ -15,18 +15,19 @@ namespace HealthCare.Controllers
 
         public ViewResult Login(Clientes cliente)
         {
-            Session.Remove("cliente");
-            Session.Remove("cesta");
+            Session.Clear();
+            Session["zona"] = "Zona Clientes";
             Clientes c = db.getCliente(cliente.SS);
             if (ModelState.IsValid && c != null)
             {
                 Session["cliente"] = cliente.SS;
                 Session["cesta"] = new List<string>();
+                ViewBag.menu = "Inicio";
                 return View("Categorias", dc.cargarCategorias());
             }
             else
             {
-                Session["zona"] = "Clientes";
+                ViewBag.menu = "Acceso";
                 return View("Login");
             }            
         }
@@ -36,6 +37,8 @@ namespace HealthCare.Controllers
             Session.Remove("categoria");
             Session.Remove("subcategoria");
             Session.Remove("empresa");
+
+            ViewBag.menu = "Inicio";
             return View(dc.cargarCategorias());
         }
 
@@ -46,11 +49,13 @@ namespace HealthCare.Controllers
             Clientes c = db.getCliente(cliente.SS);
             if (ModelState.IsValid && c != null)
             {
+                ViewBag.menu = "Acceso";
                 db.setCliente(cliente);
                 return View("Login");
             }
             else
-            {              
+            {
+                ViewBag.menu = "Registro";
                 return View();
             }            
         }        
@@ -59,6 +64,8 @@ namespace HealthCare.Controllers
         {
             Session["categoria"] = id;
             Session.Remove("subcategoria");
+            Session.Remove("empresa");
+            ViewBag.menu = "Categoria";
             return View(dc.Subcategorias(id));                    
         }
 
@@ -66,6 +73,7 @@ namespace HealthCare.Controllers
         {
             Session["subcategoria"] = id;
             Session.Remove("empresa");
+            ViewBag.menu = "Subcategoria";
             return View(dc.Empresas(id));
         }
 
@@ -73,6 +81,7 @@ namespace HealthCare.Controllers
         {
             Empresas e = dc.Empresa(id);
             Session["empresa"] = e.Nombre;
+            ViewBag.menu = "Empresa";
             return View(dc.Items(e.IDEmpresa));
         }
 

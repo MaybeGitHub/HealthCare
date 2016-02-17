@@ -3,14 +3,14 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="container">
-    <ul style="list-style:none">
+  
 
-        @foreach (Categorias cat in Model)
-        {
-            <li><a href="~/Clientes/Subcategorias/@cat.Nombre">@cat.Nombre</a></li>
-        }
-            
-    </ul>       
-</div>      
-
+<table>
+    @foreach (Categorias cat in Model)
+    {
+        <tr>
+            <td class="nombre">@cat.Nombre</td>
+            <td><a href="~/Clientes/Subcategorias/@cat.Nombre"><img style="float:left" src="~/Content/Imagenes/@cat.Nombre/@(cat.Nombre).jpg" /></a></td>
+        </tr>
+    }
+</table>  

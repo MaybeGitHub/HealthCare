@@ -14,17 +14,19 @@ namespace HealthCare.Controllers
         private DatosController dc = new DatosController();
 
         public ViewResult Login(Empresas empresa)
-        {            
+        {
+            Session.Clear();
+            Session["zona"] = "Zona Empresas";
             Empresas e = db.getEmpresa(empresa.IDEmpresa);
             if (ModelState.IsValid && e != null)
             {
                 dc.cargarCategorias();
+                Session["Job"] = e.Nombre;
                 return View("Main", e);
             }
             else
             {
                 ViewBag.menu = "Acceso";
-                Session["zona"] = "Empresas";
                 return View();
             }
         }
@@ -44,6 +46,11 @@ namespace HealthCare.Controllers
                 ViewBag.menu = "Registro";               
                 return View();                
             }            
-        }        
+        }   
+        
+        public ViewResult Solicitudes(string id)
+        {
+            return View(db.getSolicitudes((int)Session["empresa"], int.Parse(id)));
+        }     
     }
 }

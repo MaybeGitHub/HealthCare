@@ -131,6 +131,13 @@
     <Content Include="Content\Categorias.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Content\Imagenes\Bienestar\Bienestar.jpg" />
+    <Content Include="Content\Imagenes\Bienestar\Subcategorias\Esteticien.jpg" />
+    <Content Include="Content\Imagenes\Bienestar\Subcategorias\Ocio.jpg" />
+    <Content Include="Content\Imagenes\Bienestar\Subcategorias\Peluqueria.jpg" />
+    <Content Include="Content\Imagenes\Domestico\Domestico.jpg" />
+    <Content Include="Content\Imagenes\Mascotas\Mascotas.jpg" />
+    <Content Include="Content\Imagenes\Salud\Salud.jpg" />
     <Content Include="Content\Layout.css" />
     <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -216,6 +223,8 @@
     <Content Include="Views\Clientes\Items.cshtml" />
     <Content Include="Views\Clientes\Comprar.cshtml" />
     <Content Include="Views\Clientes\Cesta.cshtml" />
+    <Content Include="Views\Clientes\Recuperar.cshtml" />
+    <Content Include="Views\Empresas\Solicitudes.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -225,6 +234,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\Imagenes\Domestico\Subcategorias\" />
+    <Folder Include="Content\Imagenes\Mascotas\Subcategorias\" />
+    <Folder Include="Content\Imagenes\Salud\Subcategorias\" />
     <Folder Include="obj\Debug\TempPE\" />
     <Folder Include="Views\Datos\" />
   </ItemGroup>

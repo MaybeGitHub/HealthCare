@@ -20,7 +20,12 @@ namespace HealthCare
             );
 
             routes.MapRoute(
-                name: "Cliente",
+                name: "Clientes",
+                url: "{controller}/{action}/{id}"
+            );
+
+            routes.MapRoute(
+                name: "Empresas",
                 url: "{controller}/{action}/{id}"
             );
         }
