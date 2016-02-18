@@ -1,0 +1,15 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if(ViewBag.error != null)
+{
+    <p>@ViewBag.error</p>
+}
+else
+{
+    <p>Enviado correctamente</p><br />
+    <a href="/Clientes/Login">OK</a>
+}
+

@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Items";
+    
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -16,7 +16,7 @@
                 <td colspan="2">¿ Desea seguir comprando ?</td>
             </tr>
             <tr>
-                <td><a href="/Clientes/Terminar" class="btn btn-warning">Terminar Compra</a></td>
+                <td><a href="/Clientes/Cesta" class="btn btn-warning">Ver Cesta</a></td>
                 <td><a href="/Clientes/Items/@Session["empresa"]" class="btn btn-success">Seguir Comprando</a></td>
             </tr>
         </tbody>

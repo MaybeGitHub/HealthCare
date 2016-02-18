@@ -182,16 +182,16 @@
     <Compile Include="Controllers\ClientesController.cs" />
     <Compile Include="Controllers\DatosController.cs" />
     <Compile Include="Controllers\EmpresasController.cs" />
+    <Compile Include="Controllers\PartialController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Pre_Solicitud.cs" />
+    <Compile Include="Models\Cesta.cs" />
     <Compile Include="Models\MiDBContext.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>MiDBContext.dbml</DependentUpon>
     </Compile>
-    <Compile Include="Models\Producto.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
@@ -225,6 +225,9 @@
     <Content Include="Views\Clientes\Cesta.cshtml" />
     <Content Include="Views\Clientes\Recuperar.cshtml" />
     <Content Include="Views\Empresas\Solicitudes.cshtml" />
+    <Content Include="Views\Clientes\Resumen.cshtml" />
+    <Content Include="Views\Clientes\Finalizar.cshtml" />
+    <Content Include="Views\Partial\Empresas.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

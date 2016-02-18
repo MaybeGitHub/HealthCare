@@ -21,7 +21,9 @@ namespace HealthCare.Controllers
             if (ModelState.IsValid && c != null)
             {
                 Session["cliente"] = cliente.SS;
-                Session["cesta"] = new List<string>();
+                Cesta cesta = new Cesta();
+                cesta.cliente = c;
+                Session["cesta"] = cesta;
                 ViewBag.menu = "Inicio";
                 return View("Categorias", dc.cargarCategorias());
             }
@@ -87,31 +89,36 @@ namespace HealthCare.Controllers
 
         public ViewResult Comprar(string id)
         {
-            List<string> cesta = Session["cesta"] as List<string>;
-            cesta.Add(id);
+            Cesta cesta = Session["cesta"] as Cesta;
+            cesta.listaItems.Add(db.getItem(int.Parse(id)));
             Session["cesta"] = cesta;
             return View();
         }
 
         public ViewResult Cesta()
         {
-            List<string> cesta = Session["cesta"] as List<string>;
-            List<Items> items = new List<Items>();
-            cesta.ForEach(x => items.Add(dc.Item(int.Parse(x))));
-            return View(items);
+            Cesta cesta = Session["cesta"] as Cesta;
+            cesta.listaItems.ForEach(x => cesta.listaEmpresas.Add(x.Empresas));
+            cesta.listaEmpresas = cesta.listaEmpresas.GroupBy(x => x.Nombre).Select(x => x.First()).ToList();
+            Session["cesta"] = cesta;
+            return View(cesta);
         }
 
-        public ViewResult Solicitud(string Items, string Empresas, int ss)
+        public ViewResult Resumen()
         {
-            List<string> listaEmpresas = Empresas.Split(':').ToList();
-            List<string> listaItems = Items.Split(':').ToList();
+            return View(Session["cesta"] as Cesta);
+        }
 
-            Pre_Solicitud ps = new Pre_Solicitud();
-            ps.cliente = db.getCliente(ss);
-            foreach (string s in listaEmpresas) ps.listaEmpresas.Add(db.getEmpresa(s));
-            foreach (string s in listaItems) ps.listaItems.Add(db.getItem(int.Parse(s)));
-
-            return View(ps);
+        public ViewResult Finalizar()
+        {            
+            try {
+                dc.enviarEmail(Session["cesta"] as Cesta);
+            }
+            catch
+            {
+                ViewBag.error = "No se han enviado los email correctamente";
+            }
+            return View();
         }
     }
 }
