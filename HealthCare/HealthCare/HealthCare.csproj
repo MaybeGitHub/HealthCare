@@ -182,7 +182,6 @@
     <Compile Include="Controllers\ClientesController.cs" />
     <Compile Include="Controllers\DatosController.cs" />
     <Compile Include="Controllers\EmpresasController.cs" />
-    <Compile Include="Controllers\PartialController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -214,8 +213,6 @@
     <Content Include="Scripts\jquery-1.9.1.min.map" />
     <Content Include="Views\Clientes\Solicitud.cshtml" />
     <Content Include="Views\Empresas\Login.cshtml" />
-    <Content Include="Views\Empresas\Main.cshtml" />
-    <Content Include="Views\Empresas\Registro.cshtml" />
     <Content Include="Views\Clientes\Registro.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Clientes\Subcategorias.cshtml" />
@@ -224,10 +221,14 @@
     <Content Include="Views\Clientes\Comprar.cshtml" />
     <Content Include="Views\Clientes\Cesta.cshtml" />
     <Content Include="Views\Clientes\Recuperar.cshtml" />
-    <Content Include="Views\Empresas\Solicitudes.cshtml" />
     <Content Include="Views\Clientes\Resumen.cshtml" />
     <Content Include="Views\Clientes\Finalizar.cshtml" />
-    <Content Include="Views\Partial\Empresas.cshtml" />
+    <Content Include="Views\Clientes\PartialEmpresas.cshtml" />
+    <Content Include="Views\Clientes\PartialItems.cshtml" />
+    <Content Include="Views\Empresas\SolicitudesEspera.cshtml" />
+    <Content Include="Views\Empresas\SolicitudesProceso.cshtml" />
+    <Content Include="Views\Empresas\SolicitudesTerminadas.cshtml" />
+    <Content Include="Views\Empresas\Registro.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

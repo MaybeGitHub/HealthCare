@@ -1,17 +1,28 @@
 ﻿@model HealthCare.Models.Clientes
-@{
-    
+
+@{    
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<body>
-    <div class="container" style="width:100%">
-        <form method="post" action="/Clientes/Login">
-            <div class="form-group">
-                <label>Nº Seguridad Social</label><br />
-                @Html.TextBoxFor(x => x.SS, new { @class = "form-control" })<br />
-                <input class="btn btn-success form-control" id="login" type="submit" value="Entrar" />
-            </div>
-        </form>
-    </div>
-</body>
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <td><label class="h2">Login Clientes</label></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>     
+                    <div style="margin-top: 9%; width:20%" class="center-block" >
+                        <form method="post" action="/Clientes/Login">
+                            <label>Nº Seguridad Social</label><br />
+                            @Html.TextBoxFor(x => x.SS, new { @class = "form-control" })<br />
+                            <input class="btn btn-success form-control" type="submit" value="Entrar" />
+                        </form>
+                    </div>                        
+                </td>
+            </tr>
+        </tbody>
+    </table>       
+</div>

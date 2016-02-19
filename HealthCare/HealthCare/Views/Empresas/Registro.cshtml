@@ -1,21 +1,20 @@
 ﻿@model HealthCare.Models.Empresas
 
 @{
-    
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <body>
-    <div class="container text-center">        
+    <div class="container text-center">
         <table class="columnasSeparadas" style="margin:0 auto">
             @using (Html.BeginForm())
-            {                
+            {
                 List<SelectListItem> lista = new List<SelectListItem>(new[] {
                             new SelectListItem { Text = "Bienestar", Value = "Bienestar" },
                             new SelectListItem { Text = "Domestico", Value = "Domestico" },
                             new SelectListItem { Text = "Mascotas", Value = "Mascotas" },
                             new SelectListItem { Text = "Salud", Value = "Salud" }
                 });
-                               
+
                 <tr>
                     <td><label>Nombre:</label></td>
                     <td><label>Telefono:</label></td>
@@ -26,24 +25,24 @@
                     <td>@Html.TextBoxFor(x => x.Nombre, new { @class = "form-control" })</td>
                     <td>@Html.TextBoxFor(x => x.Telefono, new { @class = "form-control" })</td>
                     <td>@Html.TextBoxFor(x => x.Email, new { @class = "form-control" })</td>
-                    <td colspan="2" rowspan="3" height="100%">@Html.TextAreaFor(x => x.Descripcion, new { @class = "form-control", @rows = "7", @maxlength = "140", @id="texto", @resize="none" })</td>
+                    <td colspan="2" rowspan="3" height="100%">@Html.TextAreaFor(x => x.Descripcion, new { @class = "form-control", @rows = "7", @maxlength = "140", @id = "texto", @resize = "none" })</td>
                 </tr>
                 <tr>
                     <td><label>Categoria:</label></td>
                     <td></td>
-                    <td><label>Subcategoria:</label></td>                    
+                    <td><label>Subcategoria:</label></td>
                 </tr>
                 <tr>
                     <td>@Html.DropDownListFor(x => x.Categoria, lista, "Elige una categoria", new { @class = "form-control", @id = "categorias" })</td>
                     <td></td>
                     <td>@Html.DropDownListFor(x => x.Subcategoria, Enumerable.Empty<SelectListItem>(), "Elige una subcategoria", new { @class = "form-control", @id = "subcategorias" })</td>
-                </tr>                             
+                </tr>
                 <tr>
                     <td style="margin:0 auto" colspan="3"><input class="btn btn-success" type="submit" value="Registrarse" /></td>
-                </tr>                
+                </tr>
             }
-        </table> 
-    </div>          
+        </table>
+    </div>
     <script>
         function cargarSubcategorias(categoria) {
             $("#subcategorias").empty();
@@ -63,3 +62,6 @@
         });
     </script>
 </body>
+
+
+

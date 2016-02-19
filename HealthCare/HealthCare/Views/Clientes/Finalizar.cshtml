@@ -1,4 +1,4 @@
-﻿
+﻿@model HealthCare.Models.Clientes
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -9,7 +9,12 @@
 }
 else
 {
-    <p>Enviado correctamente</p><br />
-    <a href="/Clientes/Login">OK</a>
+    <div>
+        <p>@ViewBag.mensaje <span style="margin-left:3px">Se pondran en contacto con usted lo antes posible al telefono:</span></p>
+        <p>@Model.Telefono</p>
+        <p>Gracias por utilizar nuestro servicio.</p>
+        <br />
+        <a href="/Clientes/Login">OK</a>
+    </div>
 }
 

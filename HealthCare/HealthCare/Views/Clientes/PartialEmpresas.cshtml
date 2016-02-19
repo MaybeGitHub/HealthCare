@@ -1,0 +1,28 @@
+﻿@using HealthCare.Models
+
+<tbody>
+    @{
+        List<Empresas> lista = Model as List<Empresas>;
+        foreach (Empresas empresa in lista.OrderByDescending(x => x.Valoracion))
+        {
+            string color = "#FF0000";
+            if (empresa.Valoracion > 3 && empresa.Valoracion < 7) {
+                color = "#FFBF00";
+            }else if( empresa.Valoracion >= 7)
+            {
+                color = "#5FB404";
+            }            
+            <tr>       
+                <td>
+                    @using (Html.BeginForm("Items", "Clientes", new { id = empresa.Nombre }))
+                {
+                    <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span></button>
+                }
+                </td>    
+                <td>@empresa.Nombre</td>
+                <td>@empresa.Telefono</td>
+                <td><span class="badge" style="color:white; background-color:@color">@empresa.Valoracion</span></td>            
+            </tr>
+        }
+    }
+</tbody>

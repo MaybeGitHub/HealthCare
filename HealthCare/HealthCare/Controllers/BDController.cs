@@ -121,19 +121,11 @@ namespace HealthCare.Controllers
             db.SubmitChanges();
         }
 
-        public int cambiarEstadoSolicitud(int idEmpresa, int idCliente, int estado)
+        public void cambiarEstadoSolicitud(int idSolicitud, int estado)
         {
-            Solicitudes s = db.Solicitudes.Single(x => x.IDEmpresa == idEmpresa && x.Estado == estado && x.IDCliente == idCliente);
-            if (s.Estado < 3) s.Estado = estado + 1;
-            try
-            {
-                db.SubmitChanges();
-                return 1;
-            }
-            catch (InvalidOperationException)
-            {
-                return 0;
-            }
+            Solicitudes s = db.Solicitudes.Single(x => x.IDSolicitud == idSolicitud);
+            s.Estado = estado + 1;
+            db.SubmitChanges();
         }
 
         public void borrarSolicitud(int IDSolicitud)
@@ -151,6 +143,18 @@ namespace HealthCare.Controllers
         public Items getItem(int IDItem)
         {
             return db.Items.SingleOrDefault(x => x.IDItem == IDItem);
+        }
+
+        public IEnumerable<Pedidos> getPedidos(int ID, bool empresa)
+        {
+            if (empresa)
+            {
+                return db.Pedidos.Where(x => x.IDEmpresa == ID && x.Solicitudes.Oculto == false);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

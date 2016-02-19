@@ -15,11 +15,11 @@ namespace HealthCare.Controllers
 
         public ViewResult Login(Clientes cliente)
         {
-            Session.Clear();
-            Session["zona"] = "Zona Clientes";
+            Session.Clear();            
             Clientes c = db.getCliente(cliente.SS);
             if (ModelState.IsValid && c != null)
             {
+                Session["zona"] = "Zona Clientes";
                 Session["cliente"] = cliente.SS;
                 Cesta cesta = new Cesta();
                 cesta.cliente = c;
@@ -93,8 +93,9 @@ namespace HealthCare.Controllers
             cesta.listaItems.Add(db.getItem(int.Parse(id)));
             Session["cesta"] = cesta;
             return View();
-        }
+        } 
 
+        
         public ViewResult Cesta()
         {
             Cesta cesta = Session["cesta"] as Cesta;
@@ -103,6 +104,15 @@ namespace HealthCare.Controllers
             Session["cesta"] = cesta;
             return View(cesta);
         }
+                
+        public ViewResult Borrar(string posicion)
+        {
+            Cesta cesta = Session["cesta"] as Cesta;            
+            cesta.listaItems.RemoveAt(int.Parse(posicion));
+            cesta.listaEmpresas.RemoveAll(x => cesta.listaItems.Where(y => y.IDEmpresa == x.IDEmpresa).Count() == 0);            
+            Session["cesta"] = cesta;
+            return View("Cesta", cesta);
+        }
 
         public ViewResult Resumen()
         {
@@ -110,15 +120,29 @@ namespace HealthCare.Controllers
         }
 
         public ViewResult Finalizar()
-        {            
+        {
+            Cesta cesta = Session["cesta"] as Cesta;
             try {
-                dc.enviarEmail(Session["cesta"] as Cesta);
+                dc.enviarEmail(cesta);
             }
             catch
             {
                 ViewBag.error = "No se han enviado los email correctamente";
             }
-            return View();
+
+            try
+            {
+                foreach(Items item in cesta.listaItems)
+                {
+                    db.setSolicitud(cesta.cliente.SS, item.Empresas.IDEmpresa, item.IDItem);                                        
+                }
+                ViewBag.mensaje = "Sus solicitudes se han enviado correctamente a las empresas seleccionadas.";
+            }
+            catch
+            {
+                ViewBag.mensaje = "Ha habido un error mandando alguna de sus solicitudes, sentimos mucho este problema, nuestro equipo se pondra a trabajar en ello cuanto antes.";
+            }
+            return View(cesta.cliente);
         }
     }
 }

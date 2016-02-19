@@ -1,0 +1,19 @@
+﻿@using HealthCare.Models
+<tbody>
+    @{
+        List<Items> lista = Model as List<Items>;
+        foreach (Items item in lista.OrderByDescending(x => x.Nombre))
+        {
+            <tr>
+                <td>
+                    @using (Html.BeginForm("Comprar", "Clientes", new { id = item.IDItem }))
+                    {
+                        <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-shopping-cart"></span></button>
+                    }
+                </td>
+                <td>@item.Nombre</td>
+                <td>@item.Precio<span style="margin-left:3px">€</span></td>
+            </tr>
+        }
+    }
+</tbody>

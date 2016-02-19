@@ -13,80 +13,87 @@
 <body>
     <header>
         <div class="text-center panel panel-title" id="titulo"><h1 class="h1">HealthCare</h1></div>
-        <div id="navegacion" class="text-center">
-           <table id="nav">
-               <tr>
-                    <td>
-                        @using (Html.BeginForm("Login", "Clientes"))
-                        {
-                            if (Session["zona"] as string == "Zona Clientes")
-                            {
-                                <button class="btn" style="background-color:#088A4B; color:white; width:50%">Zona Clientes</button>
-                            }
-                            else
-                            {
-                                <button class="btn btn-default" style="width:50%">Zona Clientes</button>
-                            }
-
-                        }                    
-                    </td>
-                    <td>
-                        @using (Html.BeginForm("Login", "Empresas"))
-                        {
-                            if (Session["zona"] as string == "Zona Empresas")
-                            {
-                                <button id="Empresas" class="btn" style="background-color:#088A4B; color:white; width:50%">Zona Empresas</button>
-                            }
-                            else
-                            {
-                                <button id="Empresas" class="btn btn-default" style="width:50%">Zona Empresas</button>
-                            }
-                        }                                                       
-                    </td>
-                </tr>
-            </table>
-        </div>
     </header>
     <main> 
         <table id="main">
             <tr>
                 <td id="menu" valign="top">
                     <table>
+                        <thead>
+                            @if (Session["zona"] as string == "Zona Clientes")
+                            {
+                                <tr><th><div class="panel panel-primary"><h3 class="panel-heading panel-title text-center">Zona Clientes</h3></div></th></tr>
+                            }
+
+                            @if (Session["zona"] as string == "Zona Empresas")
+                            {
+                                <tr><th><div class="panel panel-primary"><h3 class="panel-heading panel-title text-center">Zona Empresas</h3></div></th></tr>
+                            }
+
+                            @if (Session["zona"] == null)
+                            {
+                                <tr id="zona_inicial">
+                                    <th class="zona">
+                                        @using (Html.BeginForm("Login", "Clientes"))
+                                        {
+                                            <button class="btn btn-block btn-primary">Zona Clientes</button>
+                                        }
+                                    </th>
+                                    <th class="zona">
+                                        @using (Html.BeginForm("Login", "Empresas"))
+                                        {
+                                            <button class="btn btn-block btn-primary">Zona Empresas</button>
+                                        }
+                                    </th>                                        
+                                </tr>
+                            }
+                        </thead>
+
                         <tbody>
-                            <tr><td>@Html.ActionLink("Acceso", "Login", null, new { @style = (ViewBag.menu == "Acceso" ? "background-color:#088A4B; color:white;" : "") })</td></tr>
-                            <tr><td>@Html.ActionLink("Registro", "Registro", null, new { @style = (ViewBag.menu == "Registro" ? "background-color:#088A4B; color:white;" : "") })</td></tr>
-                            <tr><td>@Html.ActionLink("Recuperar Cuenta", "Recuperar", null, new { @style = (ViewBag.menu == "Recuperar" ? "background-color:#088A4B; color:white;" : "") })</td></tr>
                             @if (Session["cliente"] != null)
                             {
-                                <tr><td>@Html.ActionLink("Categorias", "Categorias", null, new { @style = (ViewBag.menu == "Inicio" ? "background-color:#088A4B; color:white;" : "") })</td></tr> 
+                                <tr><td>@Html.ActionLink("Categorias", "Categorias", null, new { @class = "btn btn-success btn-block" })</td></tr> 
 
                                 if (Session["categoria"] != null)
                                 {
-                                    <tr><td>@Html.ActionLink(Session["categoria"].ToString(), "Subcategorias", new { id = Session["categoria"] }, new { @style = (ViewBag.menu == "Categoria" ? "background-color:#088A4B; color:white;" : "") }) </td></tr> 
+                                    <tr><td>@Html.ActionLink(Session["categoria"].ToString(), "Subcategorias", new { id = Session["categoria"] }, new { @class = "btn btn-success btn-block" }) </td></tr> 
                                 }
 
                                 if (Session["subcategoria"] != null)
                                 {
-                                    <tr><td>@Html.ActionLink(Session["subcategoria"].ToString(), "Empresas", new { id = Session["subcategoria"] }, new { @style = (ViewBag.menu == "Subcategoria" ? "background-color:#088A4B; color:white;" : "") }) </td></tr> 
+                                    <tr><td>@Html.ActionLink(Session["subcategoria"].ToString(), "Empresas", new { id = Session["subcategoria"] }, new { @class = "btn btn-success btn-block" }) </td></tr> 
                                 }
 
                                 if (Session["empresa"] != null)
                                 {
-                                <tr><td>@Html.ActionLink(Session["empresa"].ToString(), "Items", new { id = Session["empresa"] }, new { @style = (ViewBag.menu == "Empresa" ? "background-color:#088A4B; color:white;" : "") }) </td></tr> 
+                                    <tr><td>@Html.ActionLink(Session["empresa"].ToString(), "Items", new { id = Session["empresa"] }, new { @class = "btn btn-success btn-block" }) </td></tr>
                                 }
-                             }
-
-                             @if (Session["Job"] != null)
-                             {
-                                <tr><td>@Html.ActionLink("Solicitudes en Espera", "Solicitudes", new { id = 1 }, new { @style = (ViewBag.menu == "Inicio" ? "background-color:#088A4B; color:white;" : "") })</td></tr>
-                                <tr><td>@Html.ActionLink("Solicitudes en Proceso", "Solicitudes", new { id = 2 }, new { @style = (ViewBag.menu == "Inicio" ? "background-color:#088A4B; color:white;" : "") })</td></tr>
-                                <tr><td>@Html.ActionLink("Solicitudes Terminadas", "Solicitudes", new { id = 3 }, new { @style = (ViewBag.menu == "Inicio" ? "background-color:#088A4B; color:white;" : "") })</td></tr>
-                             }
+                            }
+                            else
+                            {
+                                if (Session["worker"] != null)
+                                {
+                                    <tr><td>@Html.ActionLink("Solicitudes en Espera", "SolicitudesEspera", null, new { @class = "btn btn-success btn-block" })</td></tr>
+                                    <tr><td>@Html.ActionLink("Solicitudes en Proceso", "SolicitudesProceso", null, new { @class = "btn btn-warning btn-block" })</td></tr>
+                                    <tr><td>@Html.ActionLink("Solicitudes Terminadas", "SolicitudesTerminadas", null, new { @class = "btn btn-danger btn-block" })</td></tr>
+                                }
+                                else
+                                {
+                                    <tr><td>@Html.ActionLink("Acceso", "Login", null, new { @class = "btn btn-info btn-block" })</td></tr>
+                                    <tr><td>@Html.ActionLink("Registro", "Registro", null, new { @class = "btn btn-success btn-block" })</td></tr>
+                                    <tr><td>@Html.ActionLink("Recuperar Cuenta", "Recuperar", null, new { @class = "btn btn-success btn-block" })</td></tr>
+                                }
+                            }                             
                         </tbody>
                         <tfoot>                            
                             @if (Session["cliente"] != null)
                             {
-                                <tr><td>@Html.ActionLink("Tu cesta", "Cesta")</td></tr> 
+                                <tr><td id="cesta"><a class="btn btn-block btn-warning" href="/Clientes/Cesta"><span class="glyphicon glyphicon-shopping-cart" style="margin-right:10px"></span>Cesta</a></td></tr>
+                                <tr><td>@Html.ActionLink("Desconectar", "Login", null, new { @class = "btn btn-danger btn-block", @style = "margin-top:20px" })</td></tr>
+                            }
+                            else if (Session["worker"] != null)
+                            {
+                                <tr><td>@Html.ActionLink("Desconectar", "Login", null, new { @class = "btn btn-danger btn-block", @style="margin-top:20px" })</td></tr>
                             }
                         </tfoot>
                     </table>
@@ -102,9 +109,9 @@
     </footer>
 
     <script>
-        $("#texto").keyup((ev) => {
-            $("#aviso").text("Quedan " + (140 - ev.target.value.length) + " caracteres");
-        });
+        if ($("#zona_inicial").length > 0) {
+            $("#menu td").attr("colspan", 2);
+        }
     </script>
 </body>
 </html>

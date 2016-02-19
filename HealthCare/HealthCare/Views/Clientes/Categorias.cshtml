@@ -1,17 +1,39 @@
-﻿@using HealthCare.Models
-
-@{
-    
+﻿@{    
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
   
-
-<table>
-    @foreach (Categorias cat in Model)
-    {
-        <tr>
-            <td class="nombre">@cat.Nombre</td>
-            <td><a href="~/Clientes/Subcategorias/@cat.Nombre"><img style="float:left" src="~/Content/Imagenes/@cat.Nombre/@(cat.Nombre).jpg" /></a></td>
-        </tr>
-    }
-</table>  
+<div class="container" name="tablas_imagenes">
+    <table class="table">
+        <thead>
+            <tr>
+                <td colspan="2"><label class="h2">Categorias</label></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <table>
+                        @for (int i = 0; i < Model.Count; i += 2)
+                        {                            
+                            <tr style="margin-top: 20px; display:inline-block">
+                                <td width="120px"><div class="panel-primary" style="height:175px"><h3 class="panel-heading panel-title text-center">@Model[i].Nombre</h3></div></td>
+                                <td><a href="~/Clientes/Subcategorias/@Model[i].Nombre"><img src="~/Content/Imagenes/@Model[i].Nombre/@(Model[i].Nombre).jpg" /></a></td>                              
+                            </tr>
+                        }
+                    </table>
+                </td>
+                <td>
+                    <table>
+                        @for (int i = 1; i < Model.Count; i += 2)
+                        {
+                            <tr style="margin-top: 20px; display:inline-block">
+                                <td width="120px"><div class="panel-primary" style="height:175px"><h3 class="panel-heading panel-title text-center">@Model[i].Nombre</h3></div></td>
+                                <td><a href="~/Clientes/Subcategorias/@Model[i].Nombre"><img src="~/Content/Imagenes/@Model[i].Nombre/@(Model[i].Nombre).jpg" /></a></td>
+                            </tr>
+                        }
+                    </table>                    
+                </td>
+            </tr>            
+        </tbody>
+    </table>
+</div>
