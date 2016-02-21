@@ -84,3 +84,26 @@ footer {
 textarea{
     resize: none;
 }
+
+.direccion label{
+    margin-right: 5px
+}
+
+.mierror{
+     font-size:smaller;
+     color: darkred;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance:textfield;
+}
+
+.req{
+    text-decoration: underline;
+}

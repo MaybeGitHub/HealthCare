@@ -14,7 +14,7 @@
         <tbody>
             <tr>
                 <td colspan="3">
-                    @foreach (Empresas empresa in Model.listaEmpresas)
+                    @foreach (Empresa empresa in Model.listaEmpresas)
                     {
                         <table class="table text-center">
                             <thead>
@@ -26,7 +26,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (Items item in Model.listaItems.Where(x => x.IDEmpresa == empresa.IDEmpresa))
+                                @foreach (Item item in Model.listaItems.Where(x => x.IDEmpresa == empresa.IDEmpresa))
                                 {
                                     <tr>
                                         <td width="33%">@item.Nombre</td>

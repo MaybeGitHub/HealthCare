@@ -1,0 +1,53 @@
+﻿@model HealthCare.Models.Item
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <table>
+        <thead>
+            <tr>
+                <td colspan="2">Su peticion ha sido realizada</td>
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewBag.error == null) {
+                <tr>
+                    <td colspan="2">
+                        <p>Nuestro departamento le ha asignado a su empresa el siguiente producto</p>
+                        <p><span>Producto:</span><span style="margin-left:5px">@Model.Nombre</span></p>
+                        <p><span>Precio:</span><span style="margin-left:5px">@Model.Precio</span><span style="margin-left:5px">€</span></p>
+                        <p>Le recordamos que la asignacion de su producto aun no es definitiva y que nuestros aun puede ser borrarda en caso de detectar alguna irregularidad</p>
+                        <p>Si esto pasara, nos pondriamos en contacto con usted via email y telefonica para aclarar el asunto</p>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td colspan="2">
+                        <p>@ViewBag.error</p>                        
+                    </td>
+                </tr>
+            }
+                <tr><td colspan="2">¿ Que desea hacer ?</td></tr>
+                <tr>
+                    <td>
+                        @using(Html.BeginForm("PedidosEspera", "Empresas"))
+                        {
+                            <button type="submit" class="btn btn-danger">Volver a Pedidos</button>
+                        }
+                    </td>
+                    <td>
+                        @using (Html.BeginForm("SugerirProducto", "Empresas"))
+                        {
+                            <button type="submit" class="btn btn-success">Hacer otra peticion</button>
+                        }
+                    </td>
+                </tr>
+            
+        </tbody>
+    </table>
+</div>
+

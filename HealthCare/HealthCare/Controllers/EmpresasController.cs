@@ -13,57 +13,94 @@ namespace HealthCare.Controllers
         private BDController db = new BDController();
         private DatosController dc = new DatosController();
 
-        public ViewResult Login(Empresas empresa)
+        public ViewResult Login(Empresa empresa)
         {
             Session.Clear();            
-            Empresas e = db.getEmpresa(empresa.IDEmpresa);
+            Empresa e = db.getEmpresa(empresa.IDEmpresa);
             if (ModelState.IsValid && e != null)
             {
                 Session["zona"] = "Zona Empresas";
                 dc.cargarCategorias();
                 Session["worker"] = e.IDEmpresa;
-                return View("SolicitudesEspera", db.getPedidos(e.IDEmpresa, true).Where(x => x.Solicitudes.Estado == 1));
+                Session["nombreEmpresa"] = db.getEmpresa(e.IDEmpresa).Nombre;
+                return View("PedidosEspera", db.getPedidos(e.IDEmpresa, 1));
             }
             else
             {
                 ViewBag.menu = "Acceso";
+                if (empresa.IDEmpresa != 0) ViewBag.error = "La empresa no existe";
                 return View();
             }
         }
 
-        public ViewResult Registro(Empresas empresa)
-        {            
-            Empresas e = db.getEmpresa(empresa.IDEmpresa);
-            if (ModelState.IsValid && e != null)
+        public ViewResult Registro(Empresa empresa, string modificar)
+        {
+
+            if (Session["worker"] != null)
             {
-                ViewBag.menu = "Acceso";
-                db.setEmpresa(empresa);
-                dc.enviarEmail(empresa);
-                return View("Login");
+                if (empresa.Nombre == null)
+                {
+                    empresa = db.getEmpresa((long)Session["worker"]);
+                }
+                else
+                {
+                    empresa.IDEmpresa = (long)Session["worker"];
+                }
+            }
+
+
+            if (modificar != null)
+            {
+                if (ModelState.IsValid)
+                {
+                    ViewBag.menu = "Acceso";
+                    db.setEmpresa(empresa);
+                    Session["nombreEmpresa"] = db.getEmpresa(empresa.IDEmpresa).Nombre;
+                    if (Session["worker"] != null)
+                    {
+                        return View("PedidosEspera", db.getPedidos(empresa.IDEmpresa, 1));
+                    }
+                    else
+                    {
+                        dc.enviarEmail(empresa);
+                        return View("Login");
+                    }
+                }
+                else
+                {
+                    return View(empresa);
+                }
             }
             else
             {
-                ViewBag.menu = "Registro";               
-                return View();                
-            }            
+                ViewBag.menu = "Registro";
+                if (Session["worker"] != null)
+                {
+                    return View(empresa);
+                }
+                else
+                {
+                    return View(empresa);
+                }
+            }           
         }
 
-        public ViewResult SolicitudesEspera()
+        public ViewResult PedidosEspera()
         {
-            int idEmpresa = (int)Session["worker"];
-            return View(db.getPedidos(idEmpresa, true).Where(x => x.Solicitudes.Estado == 1));
+            long idEmpresa = (long)Session["worker"];
+            return View(db.getPedidos(idEmpresa, 1));
         }
 
-        public ViewResult SolicitudesProceso()
+        public ViewResult PedidosProceso()
         {
-            int idEmpresa = (int)Session["worker"];
-            return View(db.getPedidos(idEmpresa, true).Where(x => x.Solicitudes.Estado == 2));
+            long idEmpresa = (long)Session["worker"];
+            return View(db.getPedidos(idEmpresa, 2));
         }
 
-        public ViewResult SolicitudesTerminadas()
+        public ViewResult PedidosTerminadas()
         {
-            int idEmpresa = (int)Session["worker"];
-            return View(db.getPedidos(idEmpresa, true).Where(x => x.Solicitudes.Estado == 3));
+            long idEmpresa = (long)Session["worker"];
+            return View(db.getPedidos(idEmpresa, 3));
         }
 
         public ViewResult SugerirProducto()
@@ -71,64 +108,72 @@ namespace HealthCare.Controllers
             return View();
         }
 
-        public RedirectToRouteResult MoverUna(string estado, string idSolicitud)
+        public ViewResult HacerPeticion(Item item)
         {
-            string view = "SolicitudesProceso";
+            if (!db.setItem(item, (long)Session["worker"])){
+                ViewBag.error = "No se ha completado su sugerencia debido a errores en su proceso";
+            }
+            return View(item);            
+        }
+
+        public RedirectToRouteResult MoverUna(string estado, string IDPedido)
+        {
+            string view = "PedidosProceso";
             int est = int.Parse(estado);
             if(est == 2)
             {
-                view = "SolicitudesTerminadas";
+                view = "PedidosTerminadas";
             }            
-            db.cambiarEstadoSolicitud(int.Parse(idSolicitud), est);
+            db.cambiarEstadoPedido(long.Parse(IDPedido), est);
             return RedirectToAction(view);
         }
 
-        public RedirectToRouteResult BorrarUna(string estado, string idSolicitud)
+        public RedirectToRouteResult BorrarUna(string estado, string IDPedido)
         {
-            db.borrarSolicitud(int.Parse(idSolicitud));
-            string view = "SolicitudesProceso";
+            db.borrarPedido(long.Parse(IDPedido));
+            string view = "PedidosProceso";
             int est = int.Parse(estado);
             if (est == 3)
             {
-                view = "SolicitudesTerminadas";
+                view = "PedidosTerminadas";
             }else if(est == 1)
             {
-                view = "SolicitudesEspera";
+                view = "PedidosEspera";
             }
             return RedirectToAction(view);
         }
 
         public RedirectToRouteResult MoverTodas(string estado, string cliente)
         {
-            int idEmpresa = (int)Session["worker"];
-            string view = "SolicitudesProceso";
+            long idEmpresa = (long)Session["worker"];
+            string view = "PedidosProceso";
             int est = int.Parse(estado);
             if (est == 2)
             {
-                view = "SolicitudesTerminadas";
+                view = "PedidosTerminadas";
             }
 
-            IEnumerable<Solicitudes> listaSolicitudes = db.getSolicitudes(idEmpresa, est).Where(x => x.IDCliente == int.Parse(cliente));
-            foreach (Solicitudes s in listaSolicitudes)
-                db.cambiarEstadoSolicitud(s.IDSolicitud, s.Estado);
+            IEnumerable<Pedido> listaPedidos = db.getPedidos(idEmpresa, est).Where(x => x.IDCliente == long.Parse(cliente));
+            foreach (Pedido s in listaPedidos)
+                db.cambiarEstadoPedido(s.IDPedido, s.Estado);
             return RedirectToAction(view);
         }        
 
         public RedirectToRouteResult BorrarTodas(string estado, string cliente)
         {
-            IEnumerable<Solicitudes> solicitudes = db.getSolicitudes((int)Session["worker"], int.Parse(estado)).Where(x => x.IDCliente == int.Parse(cliente) && x.IDEmpresa == (int)Session["worker"] && x.Estado == int.Parse(estado) && x.Oculto == false);
-            foreach (Solicitudes s in solicitudes)
-                db.borrarSolicitud(s.IDSolicitud);
+            IEnumerable<Pedido> Pedidos = db.getPedidos((long)Session["worker"], int.Parse(estado)).Where(x => x.IDCliente == long.Parse(cliente) && x.IDEmpresa == (long)Session["worker"] && x.Estado == int.Parse(estado) && x.Oculto == false);
+            foreach (Pedido s in Pedidos)
+                db.borrarPedido(s.IDPedido);
 
-            string view = "SolicitudesProceso";
+            string view = "PedidosProceso";
             int est = int.Parse(estado);
             if (est == 3)
             {
-                view = "SolicitudesTerminadas";
+                view = "PedidosTerminadas";
             }
             else if (est == 1)
             {
-                view = "SolicitudesEspera";
+                view = "PedidosEspera";
             }
             return RedirectToAction(view);
         }

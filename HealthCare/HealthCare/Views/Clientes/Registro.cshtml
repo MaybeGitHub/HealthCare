@@ -1,38 +1,102 @@
-﻿@model HealthCare.Models.Clientes
+﻿@model HealthCare.Models.Cliente
+@using HealthCare.Models 
 
 @{
-    
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<body>
-    <div class="container text-center">
-        <table class="columnasSeparadas" style="margin:0 auto">
-            @using (Html.BeginForm())
-            {
-                <tr>
-                    <td><label>Numero Seguridad Social:</label></td>
-                    <td><label>Nombre:</label></td>                          
-                    <td><label>Apellidos:</label></td>
-                </tr>
-                <tr>
-                    <td>@Html.TextBoxFor(x => x.SS, new { @class = "form-control" })</td>
-                    <td>@Html.TextBoxFor(x => x.Nombre, new { @class = "form-control" })</td>
-                    <td>@Html.TextBoxFor(x => x.Apellidos, new { @class = "form-control" })</td>
-                </tr>               
-                <tr>
-                    <td><label>Telefono:</label></td>
-                    <td><label>Email:</label></td>
-                    <td><label>Edad:</label></td>
-                </tr>
-                <tr>
-                    <td>@Html.TextBoxFor(x => x.Telefono, new { @class = "form-control" })</td>
-                    <td>@Html.TextBoxFor(x => x.Email, new { @class = "form-control" })</td>
-                    <td>@Html.TextBoxFor(x => x.Edad, new { @class = "form-control" })</td>
-                </tr>
-                <tr>
-                    <td style="margin:0 auto" colspan="3"><input class="btn btn-success" type="submit" value="Registrarse" /></td>
-                </tr> 
-            }
-        </table>
+
+@using (Html.BeginForm())
+{
+    @Html.Hidden("modificar", "si");
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal" style="padding: 5% 10%">
+        <h2>@(Session["cliente"] == null ? "Registro" : "Modificar Cuenta")</h2>
+        <br />
+        <h4>Cliente</h4>
+        <label style="color:darkred">Los campos <u>subrayados</u> son obligatorios</label>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.SS, "Nº Seguridad Social", htmlAttributes: new { @class = "control-label col-md-2 req"})
+            <div class="col-md-10">
+                @if (Session["cliente"] == null)
+                {
+                    @Html.EditorFor(model => model.SS, new { htmlAttributes = new { @class = "form-control", @id = "ss"} });
+                    <label hidden="hidden" class="mierror"></label>
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.SS, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } });
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2 req" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", @id = "nombre" } })
+                <label hidden="hidden" class="mierror"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Apellidos, htmlAttributes: new { @class = "control-label col-md-2 req" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Apellidos, new { htmlAttributes = new { @class = "form-control", @id = "apellidos" } })
+                <label hidden="hidden" class="mierror"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Telefono, htmlAttributes: new { @class = "control-label col-md-2 req" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @class = "form-control", @id = "telefono" } })
+                <label hidden="hidden" class="mierror"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Edad, htmlAttributes: new { @class = "control-label col-md-2 req" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Edad, new { htmlAttributes = new { @class = "form-control", @id = "edad" } })
+                <label hidden="hidden" class="mierror"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2 req" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @id = "email" } })
+                <label hidden="hidden" class="mierror"></label>
+            </div>
+        </div>        
+        
+        @Html.EditorFor(model => model.Direccions, "Direccion")        
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="@(Session["cliente"] == null ? "Registrarse" : "Modificar")" class="btn btn-success" />
+            </div>
+        </div>
     </div>
-</body>
+}
+
+<script>
+    $("#ss").focusout((ev) => {
+        if (ev.target.value != "") {
+            $.ajax({
+                url: "/Datos/existe",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: 'json',
+                data: JSON.stringify({ "ss": ev.target.value })
+            }).done((data) => {
+                var json = JSON.parse(data);
+                if (json.valido == 0) {
+                    $("#ss").siblings("label").attr("hidden", null).text(json.mensaje);
+                }
+            });
+        }
+    })
+</script>

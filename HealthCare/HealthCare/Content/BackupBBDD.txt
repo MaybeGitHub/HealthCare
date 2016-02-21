@@ -1,0 +1,14 @@
+﻿BACKUP DATABASE MiBBDD 
+TO DISK = 'C:\Users\deadl\Desktop\MiBBDD.bak'
+   WITH FORMAT;
+GO
+
+RESTORE FILELISTONLY
+FROM DISK = 'C:\Users\deadl\Desktop\MiBBDD.bak';
+
+
+RESTORE DATABASE MiDDBB 
+   FROM DISK = 'C:\Users\deadl\Desktop\MiBBDD.bak'
+   WITH  REPLACE,
+   MOVE 'MiBBDD' TO 'C:\Users\deadl\Desktop\MiBBDD.mdf',
+  MOVE 'MiBBDD_log' TO 'C:\Users\deadl\Desktop\MiBBDD.ldf';

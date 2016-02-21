@@ -1,8 +1,8 @@
 ﻿@using HealthCare.Models
 <tbody>
     @{
-        List<Items> lista = Model as List<Items>;
-        foreach (Items item in lista.OrderByDescending(x => x.Nombre))
+        List<Item> lista = Model as List<Item>;
+        foreach (Item item in lista.OrderByDescending(x => x.Nombre))
         {
             <tr>
                 <td>

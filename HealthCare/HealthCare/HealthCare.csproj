@@ -124,6 +124,7 @@
     <Content Include="bin\System.Web.Webpages.Razor.dll" />
     <Content Include="bin\System.Web.Webpages.Razor.xml" />
     <Content Include="bin\System.Web.Webpages.xml" />
+    <Content Include="Content\BackupBBDD.txt" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -208,12 +209,9 @@
     <Content Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <Content Include="obj\Debug\HealthCare.csprojResolveAssemblyReference.cache" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="Views\Clientes\Login.cshtml" />
     <Content Include="Views\Clientes\Categorias.cshtml" />
     <Content Include="Scripts\jquery-1.9.1.min.map" />
-    <Content Include="Views\Clientes\Solicitud.cshtml" />
     <Content Include="Views\Empresas\Login.cshtml" />
-    <Content Include="Views\Clientes\Registro.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Clientes\Subcategorias.cshtml" />
     <Content Include="Views\Clientes\Empresas.cshtml" />
@@ -225,10 +223,16 @@
     <Content Include="Views\Clientes\Finalizar.cshtml" />
     <Content Include="Views\Clientes\PartialEmpresas.cshtml" />
     <Content Include="Views\Clientes\PartialItems.cshtml" />
-    <Content Include="Views\Empresas\SolicitudesEspera.cshtml" />
-    <Content Include="Views\Empresas\SolicitudesProceso.cshtml" />
-    <Content Include="Views\Empresas\SolicitudesTerminadas.cshtml" />
+    <Content Include="Views\Empresas\PedidosEspera.cshtml" />
+    <Content Include="Views\Empresas\PedidosProceso.cshtml" />
+    <Content Include="Views\Empresas\PedidosTerminadas.cshtml" />
+    <Content Include="Views\Empresas\SugerirProducto.cshtml" />
+    <Content Include="Views\Empresas\HacerPeticion.cshtml" />
+    <Content Include="Views\Datos\Direccion.cshtml" />
+    <Content Include="Views\Clientes\Registro.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Direccion.cshtml" />
     <Content Include="Views\Empresas\Registro.cshtml" />
+    <Content Include="Views\Clientes\Login.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -242,7 +246,6 @@
     <Folder Include="Content\Imagenes\Mascotas\Subcategorias\" />
     <Folder Include="Content\Imagenes\Salud\Subcategorias\" />
     <Folder Include="obj\Debug\TempPE\" />
-    <Folder Include="Views\Datos\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Pedidos>
+﻿@model IEnumerable<Pedido>
 @using HealthCare.Models
 
 @{
@@ -9,7 +9,7 @@
     <table class="table">
         <thead>
             <tr>
-                <td colspan="3"><label class="h2">Solicitudes Terminadas</label></td>
+                <td colspan="3"><label class="h2">Pedidos Terminadas</label></td>
             </tr>
         </thead>
         <tbody>
@@ -20,14 +20,14 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>No hay solicitudes terminadas en esta empresa</th>
+                                    <th>No hay Pedidos terminadas en esta empresa</th>
                                 </tr>
                             </thead>
                         </table>
                     }
                     else
                     {
-                        foreach (Pedidos pedido in Model.GroupBy(x => x.IDCliente).Select(x => x.First()))
+                        foreach (Pedido pedido in Model.GroupBy(x => x.IDCliente).Select(x => x.First()))
                         {
                             <table class="table text-center">
                                 <thead>
@@ -40,13 +40,13 @@
                                         <th width="50%" class="text-center">Producto</th>
                                         <th width="50%" class="text-center">Borrar</th>
                                     </tr>                                    
-                                    @foreach (Pedidos ped in Model.Where(x => x.IDCliente == pedido.IDCliente))
+                                    @foreach (Pedido ped in Model.Where(x => x.IDCliente == pedido.IDCliente))
                                     {
                                         <tr>
                                             <td width="50%">@ped.Items.Nombre</td>
                                             @using (Html.BeginForm("BorrarUna", "Empresas", FormMethod.Post))
                                             {
-                                            @Html.Hidden("idSolicitud", ped.IDSolicitud);
+                                            @Html.Hidden("idPedido", ped.IDPedido);
                                             @Html.Hidden("estado", 3);
                                             <td width="50%"><button class="btn btn-danger" type="submit">Borrar Pedido</button></td>
                                             }

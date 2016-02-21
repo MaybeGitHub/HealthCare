@@ -19,11 +19,11 @@
             <tbody>
                 @if (Model.listaItems.Count != 0)
                 {
-                        foreach (Items item in Model.listaItems)
+                        foreach (Item item in Model.listaItems)
                         {
                         <tr>
                             <td width="25">@item.Nombre</td>
-                            <td width="25%">@item.Empresas.Nombre</td>
+                            <td width="25%">@item.Empresa.Nombre</td>
                             <td width="25%">@Session["categoria"] / @Session["subcategoria"]</td>
                             <td width="25%"><label name="precio">@item.Precio</label><label style="margin-left:2px">€</label></td>
                             <td>

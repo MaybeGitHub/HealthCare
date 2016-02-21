@@ -1,0 +1,31 @@
+﻿@model HealthCare.Models.Item
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container text-center">
+    <table style="margin:0 auto">
+        @using (Html.BeginForm("HacerPeticion", "Empresas"))
+        {
+            List<SelectListItem> lista = new List<SelectListItem>(new[] {
+                        new SelectListItem { Text = "Bienestar", Value = "Bienestar" },
+                        new SelectListItem { Text = "Domestico", Value = "Domestico" },
+                        new SelectListItem { Text = "Mascotas", Value = "Mascotas" },
+                        new SelectListItem { Text = "Salud", Value = "Salud" }
+            });
+
+            <tr>
+                <td><label>Nombre:</label></td>
+                <td><label>Precio (use coma para decimales):</label></td>
+            </tr>
+            <tr>
+                <td>@Html.TextBoxFor(x => x.Nombre, new { @class = "form-control" })</td>
+                <td>@Html.TextBoxFor(x => x.Precio, new { @class = "form-control" })</td>
+            </tr>
+            <tr>
+                <td style="margin:0 auto" colspan="3"><input class="btn btn-success" type="submit" value="Hacer peticion" /></td>
+            </tr>
+        }
+    </table>
+</div>

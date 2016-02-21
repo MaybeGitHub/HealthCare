@@ -1,67 +1,99 @@
-﻿@model HealthCare.Models.Empresas
+﻿@model HealthCare.Models.Empresa
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<body>
-    <div class="container text-center">
-        <table class="columnasSeparadas" style="margin:0 auto">
-            @using (Html.BeginForm())
-            {
-                List<SelectListItem> lista = new List<SelectListItem>(new[] {
-                            new SelectListItem { Text = "Bienestar", Value = "Bienestar" },
-                            new SelectListItem { Text = "Domestico", Value = "Domestico" },
-                            new SelectListItem { Text = "Mascotas", Value = "Mascotas" },
-                            new SelectListItem { Text = "Salud", Value = "Salud" }
-                });
 
-                <tr>
-                    <td><label>Nombre:</label></td>
-                    <td><label>Telefono:</label></td>
-                    <td><label>Email:</label></td>
-                    <td colspan="2"><label>Descripcion:</label><br /><label id="aviso" style="font-size:smaller; color:grey">Quedan 140 caracteres</label></td>
-                </tr>
-                <tr>
-                    <td>@Html.TextBoxFor(x => x.Nombre, new { @class = "form-control" })</td>
-                    <td>@Html.TextBoxFor(x => x.Telefono, new { @class = "form-control" })</td>
-                    <td>@Html.TextBoxFor(x => x.Email, new { @class = "form-control" })</td>
-                    <td colspan="2" rowspan="3" height="100%">@Html.TextAreaFor(x => x.Descripcion, new { @class = "form-control", @rows = "7", @maxlength = "140", @id = "texto", @resize = "none" })</td>
-                </tr>
-                <tr>
-                    <td><label>Categoria:</label></td>
-                    <td></td>
-                    <td><label>Subcategoria:</label></td>
-                </tr>
-                <tr>
-                    <td>@Html.DropDownListFor(x => x.Categoria, lista, "Elige una categoria", new { @class = "form-control", @id = "categorias" })</td>
-                    <td></td>
-                    <td>@Html.DropDownListFor(x => x.Subcategoria, Enumerable.Empty<SelectListItem>(), "Elige una subcategoria", new { @class = "form-control", @id = "subcategorias" })</td>
-                </tr>
-                <tr>
-                    <td style="margin:0 auto" colspan="3"><input class="btn btn-success" type="submit" value="Registrarse" /></td>
-                </tr>
-            }
-        </table>
+@using (Html.BeginForm())
+{
+    @Html.Hidden("modificar", "si");
+    @Html.AntiForgeryToken()
+    List<SelectListItem> lista = new List<SelectListItem>(new[] {
+                        new SelectListItem { Text = "Bienestar", Value = "Bienestar" },
+                        new SelectListItem { Text = "Domestico", Value = "Domestico" },
+                        new SelectListItem { Text = "Mascotas", Value = "Mascotas" },
+                        new SelectListItem { Text = "Salud", Value = "Salud" }
+    });
+
+    <div class="form-horizontal" style="padding: 5% 10%">
+        <h2>@(Session["worker"] == null ? "Registro" : "Modificar Cuenta")</h2>
+        <br />
+        <h4>Empresa</h4>
+        <label style="color:darkred">Los campos <u>subrayados</u> son obligatorios</label>
+        <hr />        
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2 req" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", @id = "nombre" } })
+                <label hidden="hidden" class="mierror"></label>
+            </div>
+        </div>        
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Telefono, htmlAttributes: new { @class = "control-label col-md-2 req" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @class = "form-control", @id = "telefono" } })
+                <label hidden="hidden" class="mierror"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2 req" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @id = "email" } })
+                <label hidden="hidden" class="mierror"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Descripcion, htmlAttributes: new { @class = "control-label col-md-2 noreq" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                <label hidden="hidden" class="mierror"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Categoria, htmlAttributes: new { @class = "control-label col-md-2 req" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Categoria, lista, new { @class = "form-control", @id = "categorias" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Subcategoria, htmlAttributes: new { @class = "control-label col-md-2 req" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Subcategoria, Enumerable.Empty<SelectListItem>(), new { @class = "form-control", @id = "subcategorias" })
+            </div>
+        </div>
+
+        @Html.EditorFor(model => model.Direccions, "Direccion")        
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="@(Session["worker"] == null ? "Registrarse" : "Modificar")" class="btn btn-success" />
+            </div>
+        </div>
     </div>
-    <script>
-        function cargarSubcategorias(categoria) {
-            $("#subcategorias").empty();
-            $("#subcategorias").append("<option>Elige una subcategoria</option>");
-            $.ajax({
-                url: "/Datos/Subcategorias?categoria=" + $("#categorias").val()
-            }).done((data) => {
-                var json = JSON.parse(data);
-                $(json).each((pos, el) => {
-                    $("#subcategorias").append("<option value='" + el.Nombre + "'>" + el.Nombre + "</option>");
-                });
+}
+
+<script>
+    function cargarSubcategorias(categoria) {
+        $("#subcategorias").empty();
+        $.ajax({
+            url: "/Datos/Subcategorias?categoria=" + $("#categorias").val() + "&returnJson=true"
+        }).done((data) => {
+            var json = JSON.parse(data);
+            $(json).each((pos, el) => {
+                $("#subcategorias").append("<option value='" + el.Nombre + "'>" + el.Nombre + "</option>");
             });
-        };
-
-        $("#categorias").change((ev) => {
-            cargarSubcategorias(ev.target.value);
         });
-    </script>
-</body>
+    };
 
+    cargarSubcategorias($("#categorias").val());
 
-
+    $("#categorias").change((ev) => {
+        cargarSubcategorias(ev.target.value);
+    });
+</script>

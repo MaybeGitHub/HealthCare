@@ -28,6 +28,11 @@ namespace HealthCare
                 name: "Empresas",
                 url: "{controller}/{action}/{id}"
             );
+
+            routes.MapRoute(
+                name: "Datos",
+                url: "{controller}/{action}/{id}"
+            );
         }
     }
 }

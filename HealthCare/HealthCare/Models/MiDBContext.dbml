@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="MiBBDD" Class="MiDBContextDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="WebSettings" ConnectionString="Data Source=(localdb)\ProjectsV12;Initial Catalog=MiBBDD;Integrated Security=True;Connect Timeout=30" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="MiBBDDConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.Clientes" Member="Clientes">
-    <Type Name="Clientes">
-      <Column Name="SS" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+    <Type Name="Cliente">
+      <Column Name="SS" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Apellidos" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Telefono" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Edad" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Email" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Association Name="Clientes_Direcciones" Member="Direcciones" ThisKey="SS" OtherKey="IDDueño" Type="Direcciones" Cardinality="One" />
-      <Association Name="Clientes_Solicitudes" Member="Solicitudes" ThisKey="SS" OtherKey="IDCliente" Type="Solicitudes" />
-      <Association Name="Clientes_Pedidos" Member="Pedidos" ThisKey="SS" OtherKey="IDCliente" Type="Pedidos" />
+      <Column Name="Email" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="Cliente_Direccion" Member="Direccions" ThisKey="SS" OtherKey="IDDueño" Type="Direccion" Cardinality="One" />
+      <Association Name="Cliente_Pedido" Member="Pedidos" ThisKey="SS" OtherKey="IDCliente" Type="Pedido" />
+      <Association Name="Pedido_Cliente" Member="Pedido" ThisKey="SS" OtherKey="IDCliente" Type="Pedido" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.Direcciones" Member="Direcciones">
-    <Type Name="Direcciones">
-      <Column Name="IDDueño" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+  <Table Name="dbo.Direcciones" Member="Direccions">
+    <Type Name="Direccion">
+      <Column Name="IDDueño" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Calle" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Numero" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Puerta" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
@@ -23,46 +23,13 @@
       <Column Name="Detalles" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Column Name="Portal" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Piso" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Association Name="Clientes_Direcciones" Member="Clientes" ThisKey="IDDueño" OtherKey="SS" Type="Clientes" IsForeignKey="true" />
-      <Association Name="Empresas_Direcciones" Member="Empresas" ThisKey="IDDueño" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Items" Member="Items">
-    <Type Name="Items">
-      <Column Name="IDItem" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Precio" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-      <Column Name="IDEmpresa" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Items_Pedidos" Member="Pedidos" ThisKey="IDItem" OtherKey="IDItem" Type="Pedidos" />
-      <Association Name="Solicitudes_Items" Member="Solicitudes" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Solicitudes" IsForeignKey="true" />
-      <Association Name="Empresas_Items" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.PosiblesItems" Member="PosiblesItems">
-    <Type Name="PosiblesItem">
-      <Column Name="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="IDEmpresa" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Precio" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Association Name="Empresas_PosiblesItem" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Solicitudes" Member="Solicitudes">
-    <Type Name="Solicitudes">
-      <Column Name="IDCliente" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="IDEmpresa" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Hora" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Estado" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="IDSolicitud" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Oculto" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Association Name="Solicitudes_Items" Member="Items" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Items" />
-      <Association Name="Solicitudes_Pedidos" Member="Pedidos" ThisKey="IDSolicitud" OtherKey="IDSolicitud" Type="Pedidos" />
-      <Association Name="Clientes_Solicitudes" Member="Clientes" ThisKey="IDCliente" OtherKey="SS" Type="Clientes" IsForeignKey="true" />
-      <Association Name="Empresas_Solicitudes" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
+      <Association Name="Cliente_Direccion" Member="Cliente" ThisKey="IDDueño" OtherKey="SS" Type="Cliente" IsForeignKey="true" />
+      <Association Name="Empresa_Direccion" Member="Empresa" ThisKey="IDDueño" OtherKey="IDEmpresa" Type="Empresa" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Empresas" Member="Empresas">
-    <Type Name="Empresas">
-      <Column Name="IDEmpresa" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+    <Type Name="Empresa">
+      <Column Name="IDEmpresa" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Subcategoria" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Telefono" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
@@ -70,39 +37,49 @@
       <Column Name="Descripcion" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
       <Column Name="Valoracion" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Categoria" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Association Name="Empresas_Direcciones" Member="Direcciones" ThisKey="IDEmpresa" OtherKey="IDDueño" Type="Direcciones" Cardinality="One" />
-      <Association Name="Empresas_Items" Member="Items" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Items" />
-      <Association Name="Empresas_PosiblesItem" Member="PosiblesItems" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="PosiblesItem" />
-      <Association Name="Empresas_Solicitudes" Member="Solicitudes" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Solicitudes" />
-      <Association Name="Empresas_Pedidos" Member="Pedidos" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Pedidos" />
+      <Association Name="Empresa_Direccion" Member="Direccions" ThisKey="IDEmpresa" OtherKey="IDDueño" Type="Direccion" Cardinality="One" />
+      <Association Name="Empresa_Item" Member="Items" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Item" />
+      <Association Name="Pedido_Empresa" Member="Pedido" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Pedido" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.Pedidos" Member="Pedidos">
-    <Type Name="Pedidos">
-      <Column Name="IDPedido" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="IDEmpresa" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="IDItem" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="IDCliente" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="IDSolicitud" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Items_Pedidos" Member="Items" ThisKey="IDItem" OtherKey="IDItem" Type="Items" IsForeignKey="true" />
-      <Association Name="Clientes_Pedidos" Member="Clientes" ThisKey="IDCliente" OtherKey="SS" Type="Clientes" IsForeignKey="true" />
-      <Association Name="Solicitudes_Pedidos" Member="Solicitudes" ThisKey="IDSolicitud" OtherKey="IDSolicitud" Type="Solicitudes" IsForeignKey="true" />
-      <Association Name="Empresas_Pedidos" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresas" IsForeignKey="true" />
+  <Table Name="dbo.Items" Member="Items">
+    <Type Name="Item">
+      <Column Name="IDItem" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Nombre" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Precio" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="IDEmpresa" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Association Name="Empresa_Item" Member="Empresa" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresa" IsForeignKey="true" />
+      <Association Name="Pedido_Item" Member="Pedido" ThisKey="IDItem" OtherKey="IDItem" Type="Pedido" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Categorias" Member="Categorias">
-    <Type Name="Categorias">
+    <Type Name="Categoria">
       <Column Name="Nombre" Type="System.String" DbType="VarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Empresas" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Categorias_Subcategorias" Member="Subcategorias" ThisKey="Nombre" OtherKey="Categoria" Type="Subcategorias" />
+      <Association Name="Categoria_Subcategoria" Member="Subcategorias" ThisKey="Nombre" OtherKey="Categoria" Type="Subcategoria" />
     </Type>
   </Table>
   <Table Name="dbo.Subcategorias" Member="Subcategorias">
-    <Type Name="Subcategorias">
+    <Type Name="Subcategoria">
       <Column Name="Categoria" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Nombre" Type="System.String" DbType="NVarChar(50) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Empresas" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Categorias_Subcategorias" Member="Categorias" ThisKey="Categoria" OtherKey="Nombre" Type="Categorias" IsForeignKey="true" />
+      <Association Name="Categoria_Subcategoria" Member="Categoria1" ThisKey="Categoria" OtherKey="Nombre" Type="Categoria" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Pedidos" Member="Pedidos">
+    <Type Name="Pedido">
+      <Column Name="IDPedido" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="IDEmpresa" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="IDItem" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="IDCliente" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="Hora" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Estado" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Oculto" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Pedido_Empresa" Member="Empresas" ThisKey="IDEmpresa" OtherKey="IDEmpresa" Type="Empresa" Cardinality="One" />
+      <Association Name="Pedido_Cliente" Member="Clientes" ThisKey="IDCliente" OtherKey="SS" Type="Cliente" Cardinality="One" />
+      <Association Name="Pedido_Item" Member="Items" ThisKey="IDItem" OtherKey="IDItem" Type="Item" Cardinality="One" />
+      <Association Name="Cliente_Pedido" Member="Cliente" ThisKey="IDCliente" OtherKey="SS" Type="Cliente" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

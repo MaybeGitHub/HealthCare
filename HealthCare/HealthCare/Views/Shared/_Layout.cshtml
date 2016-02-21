@@ -22,12 +22,12 @@
                         <thead>
                             @if (Session["zona"] as string == "Zona Clientes")
                             {
-                                <tr><th><div class="panel panel-primary"><h3 class="panel-heading panel-title text-center">Zona Clientes</h3></div></th></tr>
+                                <tr><th><div class="panel panel-primary"><h3 class="panel-heading panel-title text-center">@Session["nombreCliente"]</h3></div></th></tr>
                             }
 
                             @if (Session["zona"] as string == "Zona Empresas")
                             {
-                                <tr><th><div class="panel panel-primary"><h3 class="panel-heading panel-title text-center">Zona Empresas</h3></div></th></tr>
+                                <tr><th><div class="panel panel-primary"><h3 class="panel-heading panel-title text-center">@Session["nombreEmpresa"]</h3></div></th></tr>
                             }
 
                             @if (Session["zona"] == null)
@@ -73,13 +73,15 @@
                             {
                                 if (Session["worker"] != null)
                                 {
-                                    <tr><td>@Html.ActionLink("Solicitudes en Espera", "SolicitudesEspera", null, new { @class = "btn btn-success btn-block" })</td></tr>
-                                    <tr><td>@Html.ActionLink("Solicitudes en Proceso", "SolicitudesProceso", null, new { @class = "btn btn-warning btn-block" })</td></tr>
-                                    <tr><td>@Html.ActionLink("Solicitudes Terminadas", "SolicitudesTerminadas", null, new { @class = "btn btn-danger btn-block" })</td></tr>
+                                    <tr><td>@Html.ActionLink("Pedidos en Espera", "PedidosEspera", null, new { @class = "btn btn-success btn-block" })</td></tr>
+                                    <tr><td>@Html.ActionLink("Pedidos en Proceso", "PedidosProceso", null, new { @class = "btn btn-warning btn-block" })</td></tr>
+                                    <tr><td>@Html.ActionLink("Pedidos Terminadas", "PedidosTerminadas", null, new { @class = "btn btn-danger btn-block" })</td></tr>
+                                    <tr><td>@Html.ActionLink("Modificar Cuenta", "Registro", null, new { @class = "btn btn-info btn-block", @style = "margin-top:20px" })</td></tr>
+                                    <tr><td>@Html.ActionLink("Sugerir Producto", "SugerirProducto", null, new { @class = "btn btn-info btn-block", @style = "margin-top:20px" })</td></tr>
                                 }
                                 else
                                 {
-                                    <tr><td>@Html.ActionLink("Acceso", "Login", null, new { @class = "btn btn-info btn-block" })</td></tr>
+                                    <tr><td>@Html.ActionLink("Login", "Login", null, new { @class = "btn btn-info btn-block" })</td></tr>
                                     <tr><td>@Html.ActionLink("Registro", "Registro", null, new { @class = "btn btn-success btn-block" })</td></tr>
                                     <tr><td>@Html.ActionLink("Recuperar Cuenta", "Recuperar", null, new { @class = "btn btn-success btn-block" })</td></tr>
                                 }
@@ -89,6 +91,7 @@
                             @if (Session["cliente"] != null)
                             {
                                 <tr><td id="cesta"><a class="btn btn-block btn-warning" href="/Clientes/Cesta"><span class="glyphicon glyphicon-shopping-cart" style="margin-right:10px"></span>Cesta</a></td></tr>
+                                <tr><td>@Html.ActionLink("Modificar Cuenta", "Registro", null, new { @class = "btn btn-info btn-block", @style = "margin-top:20px" })</td></tr>
                                 <tr><td>@Html.ActionLink("Desconectar", "Login", null, new { @class = "btn btn-danger btn-block", @style = "margin-top:20px" })</td></tr>
                             }
                             else if (Session["worker"] != null)
@@ -109,9 +112,72 @@
     </footer>
 
     <script>
+        var expresion;
+        var max;
+        var min;
+        function validar(id) {
+            var elemento = $("#" + id);
+            switch (id) {
+                case "ss": expresion = "[0-9]"; max = 12; min = 12; break;
+                case "nombre": expresion = "[A-Z, a-z, \s, ñ, Ñ]"; max = 15; min = 0; break;
+                case "apellidos": expresion = "[A-Z, a-z, \s, ñ, Ñ]"; max = 50; min = 2; break;
+                case "telefono": expresion = "[0-9]"; max = 9; min = 9; break;
+                case "email": expresion = "[A-Z, a-z, 0-9, -, _, @@, .]"; max = 50; min = 5; break;
+                case "edad": expresion = "[0-9]"; max = 2; min = 1; break;
+                case "calle": expresion = "[a-z, A-Z]"; max = 20; min = 2; break;
+                case "numero": expresion = "[0-9]"; max = 3; min = 1; break;
+                case "codigo_postal": expresion = "[0-9]"; max = 5; min = 5; break;
+                case "login": expresion = "[0-9]"; max = 12; min = 1; break;
+            }
+        }
+
+        $('input:visible')[0].focus();
+
         if ($("#zona_inicial").length > 0) {
             $("#menu td").attr("colspan", 2);
         }
+
+        $(".req").siblings("div").children("input").focusout((ev) => {
+            validar(ev.target.id);
+            var elemento = $(ev.target);
+            if (ev.target.value == "") {
+                elemento.siblings("label").attr("hidden", null).text("El campo no puede dejarse vacio");
+                elemento.focus();
+            } else if (min != 0 && elemento.val().length < min ) {
+                elemento.siblings("label").attr("hidden", null).text("El tamaño minimo del campo son " + min + " caracteres");
+                elemento.focus();
+            } else if (ev.target.id == "apellidos" && ev.target.value.split(' ').length != 2) {
+                elemento.siblings("label").attr("hidden", null).text("Por favor ambos apellidos");
+                elemento.focus();
+            }else{
+                elemento.siblings("label").attr("hidden", "hidden");
+            }
+        }).keypress(function (ev) {
+            validar(ev.target.id);
+            var elemento = $(ev.target);
+            var keycode = ev.charCode || ev.keyCode;
+            var key = String.fromCharCode(keycode);
+            if (keycode != 8 && keycode != 9 && keycode != 13 && keycode != 116 && keycode != 46 && keycode != 37 && keycode != 39 && keycode != 99 && keycode != 118 && keycode != 120) {
+                if (key.match(expresion) == null) {
+                    elemento.siblings("label").attr("hidden", null).text("No se puede introducir ese valor en este campo");
+                    return false;
+                } else if (elemento.val().length >= max) {
+                    elemento.siblings("label").attr("hidden", null).text("El tamaño maximo del campo son " + max + " caracteres");
+                    return false;
+                } else {
+                    elemento.siblings("label").attr("hidden", "hidden");
+                }
+            }
+        }).keyup((ev) => {
+            var elemento = $(ev.target);
+            if (elemento.val().match(expresion) == null && elemento.val() != "") {
+                elemento.siblings("label").attr("hidden", null).text("No se puede introducir ese valor en este campo");
+                elemento.val("");
+                return false;
+            } else {
+                elemento.siblings("label").attr("hidden", "hidden");
+            }
+        })        
     </script>
 </body>
 </html>

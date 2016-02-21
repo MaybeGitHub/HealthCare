@@ -7,6 +7,7 @@ using System.Data.Entity;
 using HealthCare.Models;
 using System.Configuration;
 using System.Data.Linq;
+using System.Globalization;
 
 namespace HealthCare.Controllers
 {
@@ -24,32 +25,104 @@ namespace HealthCare.Controllers
             return db.Categorias.ToList();
         }
 
-        public Clientes getCliente(int SS)
+        public Cliente getCliente(long SS)
         {            
             return db.Clientes.SingleOrDefault(x => x.SS == SS);                      
         }
 
-        public Empresas getEmpresa(int iDEmpresa)
+        public Empresa getEmpresa(long iDEmpresa)
         {            
             return db.Empresas.SingleOrDefault(x => x.IDEmpresa == iDEmpresa);                      
         }
 
-        public Empresas getEmpresa(string nombreEmpresa)
+        public Empresa getEmpresa(string nombreEmpresa)
         {
             return db.Empresas.SingleOrDefault(x => x.Nombre == nombreEmpresa);
         }
 
-        public void setEmpresa(Empresas empresa)
+        public void setEmpresa(Empresa empresa)
         {
-            empresa.IDEmpresa = getIDEmpresa();
-            if (empresa.Descripcion == null) empresa.Descripcion = "";
-            db.Empresas.InsertOnSubmit(empresa);
-            db.SubmitChanges();
+            Empresa empresaExistente = db.Empresas.SingleOrDefault(x => x.IDEmpresa == empresa.IDEmpresa);
+            if (empresaExistente == null)
+            {
+                empresa.IDEmpresa = getIDEmpresa();
+                if (empresa.Descripcion == null) empresa.Descripcion = "";
+                empresa.Valoracion = 4;
+                db.Empresas.InsertOnSubmit(empresa);
+
+                Categoria cat = db.Categorias.Single(x => x.Nombre == empresa.Categoria);
+                cat.Empresas++;
+
+                Subcategoria subcat = db.Subcategorias.Single(x => x.Nombre == empresa.Subcategoria);
+                subcat.Empresas++;
+
+                db.SubmitChanges();
+            }
+            else
+            {
+                Categoria cat = db.Categorias.Single(x => x.Nombre == empresaExistente.Categoria);
+                cat.Empresas--;
+
+                Subcategoria subcat = db.Subcategorias.Single(x => x.Nombre == empresaExistente.Subcategoria);
+                subcat.Empresas--;
+
+                db.SubmitChanges();
+
+                cat = db.Categorias.Single(x => x.Nombre == empresa.Categoria);
+                cat.Empresas++;
+
+                subcat = db.Subcategorias.Single(x => x.Nombre == empresa.Subcategoria);
+                subcat.Empresas++;
+
+                empresaExistente.Nombre = empresa.Nombre;
+                empresaExistente.Categoria = empresa.Categoria;
+                empresaExistente.Subcategoria = empresa.Subcategoria;
+                empresaExistente.Email = empresa.Email;
+                empresaExistente.Telefono = empresa.Telefono;
+                if (empresa.Descripcion != null)
+                {
+                    empresaExistente.Descripcion = empresa.Descripcion;
+                }
+                else
+                {
+                    empresaExistente.Descripcion = "";
+                }
+                empresaExistente.Valoracion = empresa.Valoracion;
+                empresaExistente.Direccions.Calle = empresa.Direccions.Calle;
+                empresaExistente.Direccions.Numero = empresa.Direccions.Numero;
+                empresaExistente.Direccions.Piso = empresa.Direccions.Piso;
+                empresaExistente.Direccions.Portal = empresa.Direccions.Portal;
+                empresaExistente.Direccions.Puerta = empresa.Direccions.Puerta;
+                empresaExistente.Direccions.Codigo_Postal = empresa.Direccions.Codigo_Postal;
+                empresaExistente.Direccions.Detalles = empresa.Direccions.Detalles;
+
+                db.SubmitChanges();
+            }
+                  
         }
 
-        public void setCliente(Clientes cliente)
+        public void setCliente(Cliente cliente)
         {
-            db.Clientes.InsertOnSubmit(cliente);
+            Cliente clienteExistente = db.Clientes.SingleOrDefault(x => x.SS == cliente.SS);
+            if (clienteExistente == null){
+                db.Clientes.InsertOnSubmit(cliente);
+            }
+            else
+            {
+                clienteExistente.Nombre = cliente.Nombre;
+                clienteExistente.Apellidos = cliente.Apellidos;
+                clienteExistente.Edad = cliente.Edad;
+                clienteExistente.Email = cliente.Email;
+                clienteExistente.Telefono = cliente.Telefono;
+                clienteExistente.Direccions.Calle = cliente.Direccions.Calle;
+                clienteExistente.Direccions.Numero = cliente.Direccions.Numero;
+                clienteExistente.Direccions.Piso = cliente.Direccions.Piso;
+                clienteExistente.Direccions.Portal = cliente.Direccions.Portal;
+                clienteExistente.Direccions.Puerta = cliente.Direccions.Puerta;
+                clienteExistente.Direccions.Codigo_Postal = cliente.Direccions.Codigo_Postal;
+                clienteExistente.Direccions.Detalles = cliente.Direccions.Detalles;
+            } 
+                     
             db.SubmitChanges();
         }
 
@@ -63,98 +136,96 @@ namespace HealthCare.Controllers
             return idObtenido;
         }
 
-        public List<Empresas> getEmpresas(string subcategoria)
+        public List<Empresa> getEmpresas(string subcategoria)
         {
             return db.Empresas.Where(x=> x.Subcategoria == subcategoria).ToList();
         }
 
-        public Categorias getCategoria(string categoria)
+        public Categoria getCategoria(string categoria)
         {
             return db.Categorias.SingleOrDefault(x => x.Nombre == categoria);
         }
 
-        public List<Subcategorias> getSubcategorias(string categoria)
+        public List<Subcategoria> getSubcategorias(string categoria)
         {
             return db.Subcategorias.Where(x => x.Categoria == categoria).OrderBy(x => x.Nombre).ToList();
         }
 
-        public Direcciones getDireccion(Clientes cliente)
+        public bool setItem(Item item, long idEmpresa)
         {
-            return db.Direcciones.Single(x => x.IDDueño == cliente.SS);
-        }
+            if(item.Precio > 0)
+            {
+                Item itemExistente = db.Items.Where(x => x.Nombre.ToLower() == item.Nombre.ToLower() && x.IDEmpresa == idEmpresa).SingleOrDefault();
+                if (itemExistente == null)
+                {
+                    item.IDItem = db.Items.Count() + 1;
+                    item.IDEmpresa = idEmpresa;
+                    item.Precio = Math.Round(Convert.ToSingle(item.Precio, CultureInfo.InvariantCulture.NumberFormat), 2);
+                    db.Items.InsertOnSubmit(item);
+                    db.SubmitChanges();
+                    return true;
+                }
+            }
 
-        public Direcciones getDireccion(Empresas empresa)
-        {
-            return db.Direcciones.Single(x => x.IDDueño == empresa.IDEmpresa);
-        }        
-
-        public List<Solicitudes> getSolicitudes(int IDEmpresa, int estado)
-        {
-            return db.Solicitudes.Where(x => x.IDEmpresa == IDEmpresa && x.Estado == estado && x.Oculto == false).ToList();
-        }
-
-        public Solicitudes getSolicitud(int IDSolicitud)
-        {
-            return db.Solicitudes.SingleOrDefault(x => x.IDSolicitud == IDSolicitud);
-        }
-
-        public void setSolicitud(int ss, int IDEmpresa, int IDItem)
-        {                 
-            Solicitudes solicitud = new Solicitudes();
-            solicitud.IDSolicitud = db.Solicitudes.Count() + 1;
-            solicitud.Hora = DateTime.Now.ToString();
-            solicitud.Estado = 1;
-            solicitud.IDCliente = ss;
-            solicitud.IDEmpresa = IDEmpresa;
+            return false;
             
-            db.Solicitudes.InsertOnSubmit(solicitud);
+        }
 
-            Pedidos pedido = new Pedidos();
+        public Direccion getDireccion(Cliente cliente)
+        {
+            return db.Direccions.Single(x => x.IDDueño == cliente.SS);
+        }
+
+        public Direccion getDireccion(Empresa empresa)
+        {
+            return db.Direccions.Single(x => x.IDDueño == empresa.IDEmpresa);
+        }
+
+        public void setPedido(long ss, long IDEmpresa, long IDItem)
+        {
+            Pedido pedido = new Pedido();
             pedido.IDPedido = db.Pedidos.Count() + 1;
             pedido.IDCliente = ss;
             pedido.IDEmpresa = IDEmpresa;
             pedido.IDItem = IDItem;
-            pedido.IDSolicitud = solicitud.IDSolicitud;
 
             db.Pedidos.InsertOnSubmit(pedido);
 
             db.SubmitChanges();
         }
 
-        public void cambiarEstadoSolicitud(int idSolicitud, int estado)
+        public void cambiarEstadoPedido(long IDPedido, int estado)
         {
-            Solicitudes s = db.Solicitudes.Single(x => x.IDSolicitud == idSolicitud);
-            s.Estado = estado + 1;
+            Pedido pedido = db.Pedidos.Single(x => x.IDPedido == IDPedido);
+            pedido.Estado = estado + 1;
             db.SubmitChanges();
         }
 
-        public void borrarSolicitud(int IDSolicitud)
+        public Pedido getPedido(long IDPedido)
         {
-            Solicitudes solicitud = getSolicitud(IDSolicitud);
-            solicitud.Oculto = true;            
+            return db.Pedidos.Single(x => x.IDPedido == IDPedido);
+        }
+
+        public void borrarPedido(long IDPedido)
+        {
+            Pedido pedido = getPedido(IDPedido);
+            pedido.Oculto = true;            
             db.SubmitChanges();
         }
 
-        public List<Items> getItems(int idEmpresa)
+        public List<Item> getItems(long idEmpresa)
         {
             return db.Items.Where(x => x.IDEmpresa == idEmpresa).ToList();
         }
 
-        public Items getItem(int IDItem)
+        public Item getItem(long IDItem)
         {
             return db.Items.SingleOrDefault(x => x.IDItem == IDItem);
         }
 
-        public IEnumerable<Pedidos> getPedidos(int ID, bool empresa)
+        public IEnumerable<Pedido> getPedidos(long ID, int est)
         {
-            if (empresa)
-            {
-                return db.Pedidos.Where(x => x.IDEmpresa == ID && x.Solicitudes.Oculto == false);
-            }
-            else
-            {
-                return null;
-            }
+            return db.Pedidos.Where(x => x.IDEmpresa == ID && x.Oculto == false && x.Estado == est);           
         }
     }
 }
