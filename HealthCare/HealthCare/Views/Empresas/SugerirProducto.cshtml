@@ -1,31 +1,35 @@
 ﻿@model HealthCare.Models.Item
-
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container text-center">
-    <table style="margin:0 auto">
-        @using (Html.BeginForm("HacerPeticion", "Empresas"))
-        {
-            List<SelectListItem> lista = new List<SelectListItem>(new[] {
-                        new SelectListItem { Text = "Bienestar", Value = "Bienestar" },
-                        new SelectListItem { Text = "Domestico", Value = "Domestico" },
-                        new SelectListItem { Text = "Mascotas", Value = "Mascotas" },
-                        new SelectListItem { Text = "Salud", Value = "Salud" }
-            });
+@using (Html.BeginForm("HacerPeticion", "Empresas"))
+{
+    @Html.AntiForgeryToken()
 
-            <tr>
-                <td><label>Nombre:</label></td>
-                <td><label>Precio (use coma para decimales):</label></td>
-            </tr>
-            <tr>
-                <td>@Html.TextBoxFor(x => x.Nombre, new { @class = "form-control" })</td>
-                <td>@Html.TextBoxFor(x => x.Precio, new { @class = "form-control" })</td>
-            </tr>
-            <tr>
-                <td style="margin:0 auto" colspan="3"><input class="btn btn-success" type="submit" value="Hacer peticion" /></td>
-            </tr>
-        }
-    </table>
-</div>
+    <div class="form-horizontal form" style="padding: 5% 10%">
+        <h2>Sugerir Producto</h2>
+        <br />
+        <div class="form-group">
+            @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2 req" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", @id = "nombreItem", @style = "width: 40%" } })
+                <label hidden="hidden" class="mierror" id="errorLabel"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Precio, htmlAttributes: new { @class = "control-label col-md-2 req" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Precio, "Precio ( para decimales, usar coma )", new { htmlAttributes = new { @class = "form-control", @id = "precio", @style = "width: 40%" } })
+                <label hidden="hidden" class="mierror" id="errorLabel"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Registrar Producto" class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+}

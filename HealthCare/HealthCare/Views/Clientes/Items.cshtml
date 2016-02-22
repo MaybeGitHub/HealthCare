@@ -13,6 +13,18 @@
                 <td>Precio</td>
             </tr>
         </thead>
-        @Html.Partial("PartialItems", Model as List<Item>)
+        @if (Model.Count > 0)
+        {
+            @Html.Partial("PartialItems", Model as List<Item>);
+        }
+        else
+        {
+            <tbody>
+                <tr><td><br /></td></tr>
+                <tr>
+                    <td colspan="3">Esta empresa no tiene productos que registrados aun</td>
+                </tr>
+            </tbody>
+        }
     </table>
 </div>

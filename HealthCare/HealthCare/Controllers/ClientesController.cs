@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -19,10 +21,9 @@ namespace HealthCare.Controllers
             Cliente c = db.getCliente(cliente.SS);
             if (ModelState.IsValid && c != null)
             {
-                c = cliente;
                 Session["zona"] = "Zona Clientes";
                 Session["cliente"] = c.SS;
-                Session["nombrecliente"] = db.getCliente(c.SS).Nombre;
+                Session["nombrecliente"] = c.Nombre;
                 Cesta cesta = new Cesta();
                 cesta.cliente = c;
                 Session["cesta"] = cesta;
@@ -33,6 +34,7 @@ namespace HealthCare.Controllers
             {
                 ViewBag.menu = "Acceso";
                 if(cliente.SS != 0) ViewBag.error = "El cliente no existe";
+                ViewBag.actual = "Clientes";
                 return View("Login");
             }            
         }
@@ -44,7 +46,6 @@ namespace HealthCare.Controllers
                 if (ModelState.IsValid)
                 {
                     ViewBag.menu = "Acceso";
-                    cliente.SS = (long)Session["cliente"];
                     db.setCliente(cliente);
                     Session["nombrecliente"] = db.getCliente(cliente.SS).Nombre;
                     if (Session["cliente"] != null)
@@ -145,13 +146,14 @@ namespace HealthCare.Controllers
         public ViewResult Finalizar()
         {
             Cesta cesta = Session["cesta"] as Cesta;
-            //try {
+            try
+            {
                 dc.enviarEmail(cesta);
-            //}
-            //catch
-            //{
-            //    ViewBag.error = "No se han enviado los email correctamente";
-            //}
+            }
+            catch
+            {
+                ViewBag.error = "No se han enviado los email correctamente";
+            }
 
             try
             {

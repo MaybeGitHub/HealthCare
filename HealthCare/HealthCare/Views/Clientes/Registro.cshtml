@@ -10,7 +10,7 @@
     @Html.Hidden("modificar", "si");
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal" style="padding: 5% 10%">
+    <div class="form-horizontal form" style="padding: 5% 10%">
         <h2>@(Session["cliente"] == null ? "Registro" : "Modificar Cuenta")</h2>
         <br />
         <h4>Cliente</h4>
@@ -22,12 +22,13 @@
             <div class="col-md-10">
                 @if (Session["cliente"] == null)
                 {
-                    @Html.EditorFor(model => model.SS, new { htmlAttributes = new { @class = "form-control", @id = "ss"} });
+                    @Html.EditorFor(model => model.SS, new { htmlAttributes = new { @class = "form-control", @id = "ss", @maxlength="12"} });
                     <label hidden="hidden" class="mierror"></label>
                 }
                 else
                 {
                     @Html.EditorFor(model => model.SS, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } });
+                    @Html.HiddenFor(model => model.SS);
                 }
             </div>
         </div>

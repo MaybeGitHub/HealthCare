@@ -37,19 +37,31 @@
                                 </thead>
                                 <tbody>
                                     <tr class="warning">
-                                        <th width="50%" class="text-center">Producto</th>
-                                        <th width="50%" class="text-center">Terminar</th>
+                                        <th width="33%" class="text-center">Producto</th>
+                                        <th width="34%" class="text-center">Nº Cliente</th>
+                                        <th width="33%" class="text-center">Terminar</th>
                                     </tr>
                                     
                                     @foreach (Pedido ped in Model.Where(x => x.IDCliente == pedido.IDCliente))
                                     {
                                         <tr>
-                                            <td width="50%">@ped.Items.Nombre</td>
+                                            <td width="33%">@ped.Items.Nombre</td>                                            
                                             @using (Html.BeginForm("MoverUna", "Empresas", FormMethod.Post))
                                             {
                                                 @Html.Hidden("idPedido", ped.IDPedido);
                                                 @Html.Hidden("estado", 2);
-                                                <td width="50%"><button class="btn btn-warning" type="submit">Entrega Finalizada</button></td>
+                                                <td width="34%">
+                                                    <div class="form-group formProductos" style="margin:0 auto; width:50%">
+                                                        <div class="req"></div>
+                                                        <div>
+                                                            <input type="number" class="form-control" name="ss" id="login" />
+                                                            <label hidden="hidden" class="mierror" id="errorLabel">@TempData["error"]</label>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td width="33%">
+                                                    <button class="btn btn-warning" type="submit">Entrega Finalizada</button>
+                                                </td>
                                             }
                                         </tr>
                                     }
@@ -57,13 +69,22 @@
                                 </tbody>
                                 <tr><td style="border:none"><br /></td></tr>
                                 <tr>
-                                    <td style="border:none" width="50%"></td>                               
-
+                                    <td style="border:none" width="33%"></td>                              
+                                    
                                     @using (Html.BeginForm("MoverTodas", "Empresas", FormMethod.Post))
                                     {
+                                        <td width="34%" style="border:none">
+                                            <div class="form-group formProductos" style="margin:0 auto; width:50%">
+                                                <div class="req"></div>
+                                                <div>
+                                                    <input type="number" class="form-control" name="ss" id="login" />
+                                                    <label hidden="hidden" class="mierror" id="errorTodosLabel">@TempData["errorTodos"]</label>
+                                                </div>
+                                            </div>
+                                        </td>
                                         @Html.Hidden("cliente", pedido.Clientes.SS);
                                         @Html.Hidden("estado", 2);
-                                        <td width="50%" style="border:none"><button class="btn btn-warning" type="submit">Todas Entregadas</button></td>
+                                        <td width="33%" style="border:none"><button class="btn btn-warning" type="submit">Entregar Todas</button></td>
                                     }
                                 </tr>                          
                             </table>
@@ -75,4 +96,18 @@
     </table>
 </div>
 
+<script>
+    var errorLabel = $("#errorLabel");
+    if (errorLabel.text().length > 0) {
+        errorLabel.attr("hidden", null);
+    } else {
+        errorLabel.attr("hidden", "hidden");
+    }
 
+    var errorLabel = $("#errorTodosLabel");
+    if (errorLabel.text().length > 0) {
+        errorLabel.attr("hidden", null);
+    } else {
+        errorLabel.attr("hidden", "hidden");
+    }
+</script>

@@ -6,9 +6,9 @@
         foreach (Empresa empresa in lista.OrderByDescending(x => x.Valoracion))
         {
             string color = "#FF0000";
-            if (empresa.Valoracion > 3 && empresa.Valoracion < 7) {
+            if (empresa.Valoracion > 30 && empresa.Valoracion < 70) {
                 color = "#FFBF00";
-            }else if( empresa.Valoracion >= 7)
+            }else if( empresa.Valoracion >= 70)
             {
                 color = "#5FB404";
             }            

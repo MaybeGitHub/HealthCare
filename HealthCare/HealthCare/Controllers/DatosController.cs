@@ -7,12 +7,16 @@ using System.Linq;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace HealthCare.Controllers
 {
     public class DatosController : Controller
     {
         private BDController db = new BDController();
+        private const int Keysize = 256;
+        private const int DerivationIterations = 1000;
 
         public string existe(string ss)
         {
@@ -83,7 +87,7 @@ namespace HealthCare.Controllers
             cesta.listaEmpresas.ForEach(x => WebMail.Send(x.Email, "Pedido Realizada", bodyEmail(cesta, x, true)));            
         }
 
-        public void enviarEmail(Empresa empresa)
+        public void enviarEmail(Empresa empresa, bool recuperacion)
         {
             WebMail.SmtpServer = "smtp.gmail.com";
             WebMail.SmtpPort = 587;
@@ -91,7 +95,19 @@ namespace HealthCare.Controllers
             WebMail.UserName = "proyectos.clase.net@gmail.com";
             WebMail.Password = "solosequenosenada";
             WebMail.From = "proyectos.clase.net@gmail.com";
-            WebMail.Send(empresa.Email, "Numero de identificacion de la empresa", "Su empresa ha quedado registrada en la categoria: " + empresa.Categoria + "/" + empresa.Subcategoria + ". Se le ha asignado el siguiente numero de identificacion: " + empresa.IDEmpresa + " \n Debera usar este numero para acceder a su portal. \n Gracias por confiar en HealthCare y Bienvenido");
+
+            string hash = EncryptionHelper.Encrypt(empresa.Nombre);
+
+
+            if (recuperacion)
+            {
+                WebMail.Send(empresa.Email, "Recuperacion de Cuenta", "Hemos recibido su peticion para recuperar su cuenta</p><br /><p>Si es usted consciente de la peticion, haz click <a href='http://localhost:18500/Empresas/NuevaID/" + hash + "'>Aqui</a><br/><br/><p>Si no es asi, porfavor pongase en contacto con nosotros cuanto antes para solucionar esto</p><p>Muchas gracias por utilizar nuestros servicios</p><br /><br /><p>Atentamente, Equipo de Proteccion de Datos de HealthCare");
+            }
+            else
+            {
+                WebMail.Send(empresa.Email, "Numero de identificacion de la empresa", "<p>Su empresa ha quedado registrada en la categoria: " + empresa.Categoria + "/" + empresa.Subcategoria + "</p></p>Se le ha asignado el siguiente numero de identificacion: " + empresa.IDEmpresa + " </p><p>Debera usar este numero para acceder a su portal</p><br /><p>Gracias por confiar en HealthCare y bienvenido</p>");
+            }
+            
         }
 
         public string bodyEmail(Cesta cesta, Empresa empresa, bool isEmpresa)
@@ -133,5 +149,22 @@ namespace HealthCare.Controllers
             }
             return ret;
         }
-    }
+
+        public int cuantosPedidos(string id)
+        {
+            if(Session["worker"] != null)
+            {
+                return db.getPedidos((long)Session["worker"], int.Parse(id)).Count();
+            }
+            else
+            {
+                return 0;
+            }            
+        }
+
+        public int valoracion(string id)
+        {
+            return db.getEmpresa(id).Valoracion;
+        }
+    }    
 }

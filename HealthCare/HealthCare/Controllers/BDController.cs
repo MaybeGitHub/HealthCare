@@ -40,6 +40,27 @@ namespace HealthCare.Controllers
             return db.Empresas.SingleOrDefault(x => x.Nombre == nombreEmpresa);
         }
 
+        public void modificarIDEmpresa(Empresa empresa)
+        {
+            long antiguoIDEmpresa = empresa.IDEmpresa;
+            long IDEmpresa = getIDEmpresa();
+            empresa.IDEmpresa = IDEmpresa;
+
+            Direccion direccion = db.Direccions.Single(x => x.Dueño == antiguoIDEmpresa);
+            direccion.Dueño = IDEmpresa;
+
+            foreach ( Item item in db.Items.Where(x => x.IDEmpresa == antiguoIDEmpresa))
+            {
+                item.IDEmpresa = IDEmpresa;
+            }
+
+            foreach(Pedido pedido in db.Pedidos.Where(x=> x.IDEmpresa == antiguoIDEmpresa)){
+                pedido.IDEmpresa = IDEmpresa;
+            }
+
+            db.SubmitChanges();
+        }
+
         public void setEmpresa(Empresa empresa)
         {
             Empresa empresaExistente = db.Empresas.SingleOrDefault(x => x.IDEmpresa == empresa.IDEmpresa);
@@ -47,7 +68,9 @@ namespace HealthCare.Controllers
             {
                 empresa.IDEmpresa = getIDEmpresa();
                 if (empresa.Descripcion == null) empresa.Descripcion = "";
-                empresa.Valoracion = 4;
+                empresa.Valoracion = 40;
+                empresa.ID = db.Clientes.Count() + 1;
+                empresa.Direccions.ID = db.Direccions.Count() + 1;
                 db.Empresas.InsertOnSubmit(empresa);
 
                 Categoria cat = db.Categorias.Single(x => x.Nombre == empresa.Categoria);
@@ -74,6 +97,8 @@ namespace HealthCare.Controllers
                 subcat = db.Subcategorias.Single(x => x.Nombre == empresa.Subcategoria);
                 subcat.Empresas++;
 
+                db.SubmitChanges();
+
                 empresaExistente.Nombre = empresa.Nombre;
                 empresaExistente.Categoria = empresa.Categoria;
                 empresaExistente.Subcategoria = empresa.Subcategoria;
@@ -87,7 +112,7 @@ namespace HealthCare.Controllers
                 {
                     empresaExistente.Descripcion = "";
                 }
-                empresaExistente.Valoracion = empresa.Valoracion;
+                empresaExistente.Valoracion = db.Empresas.Single(x => x.IDEmpresa == empresa.IDEmpresa).Valoracion;
                 empresaExistente.Direccions.Calle = empresa.Direccions.Calle;
                 empresaExistente.Direccions.Numero = empresa.Direccions.Numero;
                 empresaExistente.Direccions.Piso = empresa.Direccions.Piso;
@@ -105,6 +130,8 @@ namespace HealthCare.Controllers
         {
             Cliente clienteExistente = db.Clientes.SingleOrDefault(x => x.SS == cliente.SS);
             if (clienteExistente == null){
+                cliente.ID = db.Clientes.Count() + 1;
+                cliente.Direccions.ID = db.Direccions.Count() + 1;                
                 db.Clientes.InsertOnSubmit(cliente);
             }
             else
@@ -126,9 +153,9 @@ namespace HealthCare.Controllers
             db.SubmitChanges();
         }
 
-        private int getIDEmpresa()
+        private long getIDEmpresa()
         {
-            int idObtenido = new Random().Next(1, Int32.MaxValue);
+            long idObtenido = new Random().Next(1, Int32.MaxValue);
             while (db.Empresas.Where(x => x.IDEmpresa == idObtenido).Count() != 0)
             {
                 idObtenido = new Random().Next(1, Int32.MaxValue);
@@ -173,31 +200,37 @@ namespace HealthCare.Controllers
 
         public Direccion getDireccion(Cliente cliente)
         {
-            return db.Direccions.Single(x => x.IDDueño == cliente.SS);
+            return db.Direccions.Single(x => x.Dueño == cliente.SS);
         }
 
         public Direccion getDireccion(Empresa empresa)
         {
-            return db.Direccions.Single(x => x.IDDueño == empresa.IDEmpresa);
+            return db.Direccions.Single(x => x.Dueño == empresa.IDEmpresa);
         }
 
-        public void setPedido(long ss, long IDEmpresa, long IDItem)
+        public void setPedido(long ss, long IDEmpresa, int IDItem)
         {
             Pedido pedido = new Pedido();
             pedido.IDPedido = db.Pedidos.Count() + 1;
             pedido.IDCliente = ss;
             pedido.IDEmpresa = IDEmpresa;
             pedido.IDItem = IDItem;
+            pedido.Estado = 1;
+            pedido.Hora = DateTime.Now.ToShortDateString();
+            pedido.Oculto = false;
 
             db.Pedidos.InsertOnSubmit(pedido);
 
             db.SubmitChanges();
         }
 
-        public void cambiarEstadoPedido(long IDPedido, int estado)
+        public void cambiarEstadoPedido(Pedido pedido)
         {
-            Pedido pedido = db.Pedidos.Single(x => x.IDPedido == IDPedido);
-            pedido.Estado = estado + 1;
+            pedido.Estado = pedido.Estado + 1;
+            if(pedido.Estado == 3 && pedido.Empresa.Valoracion < 100)
+            {
+                pedido.Empresa.Valoracion++;
+            } 
             db.SubmitChanges();
         }
 
@@ -209,7 +242,11 @@ namespace HealthCare.Controllers
         public void borrarPedido(long IDPedido)
         {
             Pedido pedido = getPedido(IDPedido);
-            pedido.Oculto = true;            
+            pedido.Oculto = true; 
+            if(pedido.Estado < 3 && pedido.Empresa.Valoracion > 0)
+            {                
+                pedido.Empresa.Valoracion--;
+            }                  
             db.SubmitChanges();
         }
 

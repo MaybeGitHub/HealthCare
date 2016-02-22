@@ -3,18 +3,22 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@if(ViewBag.error != null)
-{
-    <p>@ViewBag.error</p>
-}
-else
-{
-    <div>
-        <p>@ViewBag.mensaje <span style="margin-left:3px">Se pondran en contacto con usted lo antes posible al telefono:</span></p>
-        <p>@Model.Telefono</p>
-        <p>Gracias por utilizar nuestro servicio.</p>
-        <br />
-        <a href="/Clientes/Login">OK</a>
-    </div>
-}
+<div class="form-horizontal" style="padding: 5% 10%">
+    <h2>Compra Finalizada</h2>
+    <hr />
+    @if (ViewBag.error != null)
+    {
+        <p>@ViewBag.error</p>
+    }
+    else
+    {
+        <div>
+            <p>@ViewBag.mensaje</p>
+            <p>Las empresas a las que ha solicitado productos se pondran en contacto con usted lo antes posible al telefono: <span style="margin-left:10px">@Model.Telefono</span></p>
+            <p>Gracias por utilizar nuestro servicio.</p>
+        </div>
+    }
+</div>
+
+
 

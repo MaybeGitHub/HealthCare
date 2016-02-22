@@ -22,12 +22,12 @@
                         <thead>
                             @if (Session["zona"] as string == "Zona Clientes")
                             {
-                                <tr><th><div class="panel panel-primary"><h3 class="panel-heading panel-title text-center">@Session["nombreCliente"]</h3></div></th></tr>
+                                <tr><th><div class="panel panel-primary"><h3 class="panel-heading panel-title text-center"><label>@Session["nombreCliente"]</label></h3></div></th></tr>
                             }
 
                             @if (Session["zona"] as string == "Zona Empresas")
                             {
-                                <tr><th><div class="panel panel-primary"><h3 class="panel-heading panel-title text-center">@Session["nombreEmpresa"]</h3></div></th></tr>
+                                <tr><th><div class="panel panel-primary"><h3 class="panel-heading panel-title text-center"><span style="margin-right: 5px" class="badge" id="valoracion">?</span><label id="nombre">@Session["nombreEmpresa"]</label></h3></div></th></tr>
                             }
 
                             @if (Session["zona"] == null)
@@ -73,9 +73,9 @@
                             {
                                 if (Session["worker"] != null)
                                 {
-                                    <tr><td>@Html.ActionLink("Pedidos en Espera", "PedidosEspera", null, new { @class = "btn btn-success btn-block" })</td></tr>
-                                    <tr><td>@Html.ActionLink("Pedidos en Proceso", "PedidosProceso", null, new { @class = "btn btn-warning btn-block" })</td></tr>
-                                    <tr><td>@Html.ActionLink("Pedidos Terminadas", "PedidosTerminadas", null, new { @class = "btn btn-danger btn-block" })</td></tr>
+                                    <tr><td><a name="pedidos"  href="/Empresas/PedidosEspera" class = "btn btn-success btn-block"><span class="badge" id="espera">?</span>Pedidos en Espera</a></td></tr>
+                                    <tr><td><a name="pedidos" href="/Empresas/PedidosProceso" class="btn btn-warning btn-block"><span class="badge" id="proceso">?</span>Pedidos en Proceso</a></td></tr>
+                                    <tr><td><a name="pedidos" href="/Empresas/PedidosTerminadas" class="btn btn-danger btn-block"><span class="badge" id="terminadas">?</span>Pedidos Terminadas</a></td></tr>
                                     <tr><td>@Html.ActionLink("Modificar Cuenta", "Registro", null, new { @class = "btn btn-info btn-block", @style = "margin-top:20px" })</td></tr>
                                     <tr><td>@Html.ActionLink("Sugerir Producto", "SugerirProducto", null, new { @class = "btn btn-info btn-block", @style = "margin-top:20px" })</td></tr>
                                 }
@@ -83,7 +83,10 @@
                                 {
                                     <tr><td>@Html.ActionLink("Login", "Login", null, new { @class = "btn btn-info btn-block" })</td></tr>
                                     <tr><td>@Html.ActionLink("Registro", "Registro", null, new { @class = "btn btn-success btn-block" })</td></tr>
-                                    <tr><td>@Html.ActionLink("Recuperar Cuenta", "Recuperar", null, new { @class = "btn btn-success btn-block" })</td></tr>
+                                    if (ViewBag.actual == "Empresas")
+                                    { 
+                                        <tr><td>@Html.ActionLink("Recuperar Cuenta", "Recuperar", null, new { @class = "btn btn-success btn-block" })</td></tr>
+                                    }
                                 }
                             }                             
                         </tbody>
@@ -108,18 +111,21 @@
         </table>
     </main>
     <footer>
-        <div><p>ESTO ES EL FOOTER</p></div>
+        <div><br /><br /></div>
     </footer>
 
     <script>
         var expresion;
         var max;
-        var min;
+        var min;        
+
         function validar(id) {
             var elemento = $("#" + id);
             switch (id) {
                 case "ss": expresion = "[0-9]"; max = 12; min = 12; break;
-                case "nombre": expresion = "[A-Z, a-z, \s, ñ, Ñ]"; max = 15; min = 0; break;
+                case "nombre": expresion = "[A-Z, a-z, \s, ñ, Ñ]"; max = 15; min = 1; break;
+                case "nombreEmpresa": expresion = "[A-Z, a-z, \s, ñ, Ñ]"; max = 30; min = 1; break;
+                case "nombreItem": expresion = "[A-Z, a-z, \s, ñ, Ñ, 0-9]"; max = 30; min = 1; break;
                 case "apellidos": expresion = "[A-Z, a-z, \s, ñ, Ñ]"; max = 50; min = 2; break;
                 case "telefono": expresion = "[0-9]"; max = 9; min = 9; break;
                 case "email": expresion = "[A-Z, a-z, 0-9, -, _, @@, .]"; max = 50; min = 5; break;
@@ -127,57 +133,171 @@
                 case "calle": expresion = "[a-z, A-Z]"; max = 20; min = 2; break;
                 case "numero": expresion = "[0-9]"; max = 3; min = 1; break;
                 case "codigo_postal": expresion = "[0-9]"; max = 5; min = 5; break;
-                case "login": expresion = "[0-9]"; max = 12; min = 1; break;
+                case "login": expresion = "[0-9]"; max = 12; min = 0; break;
+                case "descripcion": expresion = "[A-Z, a-z, \s, ñ, Ñ]"; max = 90; min = 1; break;
+                case "precio": expresion = "[0-9]"; max = 6; min = 1; break;
+                case "portal": expresion = "[0-9]"; max = 3; min = 1; break;
+                case "puerta": expresion = "[A-Z, a-z]"; max = 2; min = 1; break;
+                case "piso": expresion = "[0-9]"; max = 2; min = 1; break;
             }
         }
 
-        $('input:visible')[0].focus();
-
-        if ($("#zona_inicial").length > 0) {
-            $("#menu td").attr("colspan", 2);
-        }
-
-        $(".req").siblings("div").children("input").focusout((ev) => {
+        function validarLongitudConFocus(ev) {
             validar(ev.target.id);
             var elemento = $(ev.target);
             if (ev.target.value == "") {
                 elemento.siblings("label").attr("hidden", null).text("El campo no puede dejarse vacio");
                 elemento.focus();
-            } else if (min != 0 && elemento.val().length < min ) {
+            } else if (min != 0 && elemento.val().length < min) {
                 elemento.siblings("label").attr("hidden", null).text("El tamaño minimo del campo son " + min + " caracteres");
                 elemento.focus();
-            } else if (ev.target.id == "apellidos" && ev.target.value.split(' ').length != 2) {
+            } else if (ev.target.id == "apellidos" && (ev.target.value.split(' ').length != 2 || ev.target.value.split(' ')[1] == "")) {
                 elemento.siblings("label").attr("hidden", null).text("Por favor ambos apellidos");
                 elemento.focus();
-            }else{
+            } else {
                 elemento.siblings("label").attr("hidden", "hidden");
             }
-        }).keypress(function (ev) {
+        }
+
+        function validarLongitudSinVacio(ev) {
+            validar(ev.target.id);
+            var elemento = $(ev.target);
+            if (min != 0 && elemento.val().length < min) {
+                elemento.siblings("label").attr("hidden", null).text("El tamaño minimo del campo son " + min + " caracteres");
+                elemento.focus();
+            } else if (ev.target.id == "apellidos" && (ev.target.value.split(' ').length != 2 || ev.target.value.split(' ')[1] == "")) {
+                elemento.siblings("label").attr("hidden", null).text("Por favor ambos apellidos");
+                elemento.focus();
+            } else {
+                elemento.siblings("label").attr("hidden", "hidden");
+            }
+        }
+
+        function validarTecla(ev){            
             validar(ev.target.id);
             var elemento = $(ev.target);
             var keycode = ev.charCode || ev.keyCode;
             var key = String.fromCharCode(keycode);
             if (keycode != 8 && keycode != 9 && keycode != 13 && keycode != 116 && keycode != 46 && keycode != 37 && keycode != 39 && keycode != 99 && keycode != 118 && keycode != 120) {
-                if (key.match(expresion) == null) {
-                    elemento.siblings("label").attr("hidden", null).text("No se puede introducir ese valor en este campo");
-                    return false;
-                } else if (elemento.val().length >= max) {
-                    elemento.siblings("label").attr("hidden", null).text("El tamaño maximo del campo son " + max + " caracteres");
-                    return false;
-                } else {
-                    elemento.siblings("label").attr("hidden", "hidden");
+                if(validarTextos(ev)){
+                    if (key.match(expresion) == null) {
+                        if (elemento.attr("id") != "precio" || key != ',') {
+                            elemento.siblings("label").attr("hidden", null).text("No se puede introducir ese valor en este campo");
+                            return false;
+                        };                        
+                    } else if (elemento.val().length >= max) {
+                        elemento.siblings("label").attr("hidden", null).text("El tamaño maximo del campo son " + max + " caracteres");
+                        return false;
+                    } else {
+                        elemento.siblings("label").attr("hidden", "hidden");
+                    }
                 }
-            }
-        }).keyup((ev) => {
+            }            
+        }
+
+        function validarTextos(ev){
             var elemento = $(ev.target);
             if (elemento.val().match(expresion) == null && elemento.val() != "") {
                 elemento.siblings("label").attr("hidden", null).text("No se puede introducir ese valor en este campo");
                 elemento.val("");
                 return false;
             } else {
-                elemento.siblings("label").attr("hidden", "hidden");
+                elemento.siblings("label").attr("hidden", "hidden");                
             }
-        })        
+
+            if (elemento.val().length >= max) {
+                elemento.val(elemento.val().substr(0, max - 1));
+            }
+
+            if (elemento.attr("id") == "precio") {
+                elemento.val(elemento.val().replace(".", ","));
+            }
+            
+            return true;
+        }
+
+        if ($('input:visible').length > 0)
+        {
+            $('input:visible')[0].focus();
+        }
+
+        if ($("#zona_inicial").length > 0) {
+            $("#menu td").attr("colspan", 2);
+        }
+
+        $(".form .req").siblings("div").children("input")
+            .focusout((ev) => {
+                validarLongitudConFocus(ev)
+            }).keypress((ev) => {
+                validarTecla(ev)
+            }).focusin((ev) => {
+                if (ev.target.value == "0") {
+                    ev.target.value = "";
+                }
+            });
+
+        $(".form .noreq").siblings("div").children("input")
+            .keypress((ev) => {
+                validarTecla(ev)
+            }).focusin((ev) => {
+                if (ev.target.value == "0") {
+                    ev.target.value = "";
+                }
+            });
+
+        $(".formProductos .req").siblings("div").children("input")
+            .focusout((ev) => {
+                validarLongitudSinVacio(ev)
+            }).keypress((ev) => {
+                validarTecla(ev)
+            }).focusin((ev) => {
+                if (ev.target.value == "0") {
+                    ev.target.value = "";
+                }
+            });
+
+        function comprobarPedidos(estado){
+            $.ajax({
+                type: "POST",
+                url: "/Datos/cuantosPedidos/" + estado
+            }).done((data) => {
+                if (estado == 1) {
+                    $("#espera").text(data);
+                } else if (estado == 2) {
+                    $("#proceso").text(data);
+                } else {
+                    $("#terminadas").text(data);
+                }
+            })
+        }
+
+        function comprobarValoracion() {
+            $.ajax({
+                type: "POST",
+                url: "/Datos/valoracion/" + $("#nombre").text()
+            }).done((data) => {
+                $("#valoracion").text(data);
+            })
+        }
+
+        var interval;
+
+        if ($("a[name='pedidos']").length > 0) {
+            comprobarValoracion();
+            comprobarPedidos(1);
+            comprobarPedidos(2);
+            comprobarPedidos(3);
+            interval = setInterval(() => {
+                comprobarValoracion();
+                comprobarPedidos(1);
+                comprobarPedidos(2);
+                comprobarPedidos(3);
+            }, 60000);
+        } else {
+            clearInterval(interval);
+        }
+
+        $("#ss").focus();
     </script>
 </body>
 </html>

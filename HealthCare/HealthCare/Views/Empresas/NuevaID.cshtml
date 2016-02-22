@@ -1,0 +1,23 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="form-horizontal" style="padding: 5% 10%">
+    <h2>Asignacion de nueva ID</h2>
+    <br />
+    <h4>Empresas</h4>
+    <hr />
+    <div class="form-group">
+        <div class="col-md-10">
+            <p>Su cuenta ha sido recuperada con exito</p>
+            <p>Para acceder a su cuenta debera usar su nueva ID: @ViewBag.ID</p>
+            <p>Por favor, bajo ningun concepto haga publica esta ID ya que estaria poniendo en peligro su cuenta</p>
+            <p>Se le mandara un email con esta misma información</p>
+            <br />
+            <br />
+            @Html.ActionLink("Gracias, volver a Login", "Login", "Empresas", new { @class = "btn btn-success" })
+        </div>
+    </div>    
+</div>
+

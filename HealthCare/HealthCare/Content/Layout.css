@@ -107,3 +107,7 @@ input[type=number] {
 .req{
     text-decoration: underline;
 }
+
+.badge{
+    margin-right: 10px;
+}

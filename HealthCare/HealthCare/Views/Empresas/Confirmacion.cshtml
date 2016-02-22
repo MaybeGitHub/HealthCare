@@ -1,0 +1,20 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="form-horizontal" style="padding: 5% 10%">
+    <h2>Confirmacion</h2>
+    <br />
+    <h4>Empresas</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">        
+        <div class="col-md-10">            
+            <label>Se le ha enviado un email con informacion para recuperar su cuenta</label>
+            <br /><br />
+            @Html.ActionLink("Volver a Login", "Login", "Empresas", new { @class = "btn btn-danger" })
+        </div>
+    </div>    
+</div>
+

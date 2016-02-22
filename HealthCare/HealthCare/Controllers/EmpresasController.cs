@@ -28,6 +28,7 @@ namespace HealthCare.Controllers
             else
             {
                 ViewBag.menu = "Acceso";
+                ViewBag.actual = "Empresas";
                 if (empresa.IDEmpresa != 0) ViewBag.error = "La empresa no existe";
                 return View();
             }
@@ -35,7 +36,7 @@ namespace HealthCare.Controllers
 
         public ViewResult Registro(Empresa empresa, string modificar)
         {
-
+            ViewBag.actual = "Empresas";
             if (Session["worker"] != null)
             {
                 if (empresa.Nombre == null)
@@ -62,7 +63,7 @@ namespace HealthCare.Controllers
                     }
                     else
                     {
-                        dc.enviarEmail(empresa);
+                        dc.enviarEmail(empresa, false);
                         return View("Login");
                     }
                 }
@@ -83,6 +84,40 @@ namespace HealthCare.Controllers
                     return View(empresa);
                 }
             }           
+        }
+
+        public ViewResult Recuperar(Empresa empresa)
+        {
+            Empresa emp = db.getEmpresa(empresa.Nombre);
+            ViewBag.actual = "Empresas";
+            if (emp != null)
+            {
+                if(emp.Email == empresa.Email)
+                {
+                    dc.enviarEmail(emp, true);
+                    return View("Confirmacion");
+                }
+                else
+                {
+                    ViewBag.errorEmail = "El email no es correcto";
+                    return View();
+                }
+            }
+            else
+            {
+                if(empresa.Nombre != null ) ViewBag.errorNombre = "La empresa no existe";
+                return View();
+            }
+        }
+
+        public ViewResult NuevaID(string id)
+        {
+            string nombreEmpresa = EncryptionHelper.Decrypt(id);
+            Empresa empresa = db.getEmpresa(nombreEmpresa);
+            db.modificarIDEmpresa(empresa);
+            dc.enviarEmail(empresa, false);
+            ViewBag.ID = empresa.IDEmpresa;
+            return View();
         }
 
         public ViewResult PedidosEspera()
@@ -116,16 +151,32 @@ namespace HealthCare.Controllers
             return View(item);            
         }
 
-        public RedirectToRouteResult MoverUna(string estado, string IDPedido)
+        public RedirectToRouteResult MoverUna(string estado, string IDPedido, string ss)
         {
-            string view = "PedidosProceso";
-            int est = int.Parse(estado);
-            if(est == 2)
+            Pedido pedido = db.getPedido(long.Parse(IDPedido));            
+            int status = int.Parse(estado);
+            if(status == 1)
             {
-                view = "PedidosTerminadas";
-            }            
-            db.cambiarEstadoPedido(long.Parse(IDPedido), est);
-            return RedirectToAction(view);
+                db.cambiarEstadoPedido(pedido);
+                return RedirectToAction("PedidosProceso");
+            }
+            else if(status == 2)
+            {                
+                if (ss != "" && pedido.Cliente.SS == long.Parse(ss))
+                {
+                    db.cambiarEstadoPedido(pedido);
+                    return RedirectToAction("PedidosTerminadas");
+                }
+                else
+                {
+                    TempData["error"] = "El cliente no es correcto";
+                    return RedirectToAction("PedidosProceso");
+                }
+            }
+            else
+            {
+                return RedirectToAction("PedidosEspera");
+            }
         }
 
         public RedirectToRouteResult BorrarUna(string estado, string IDPedido)
@@ -137,26 +188,50 @@ namespace HealthCare.Controllers
             {
                 view = "PedidosTerminadas";
             }else if(est == 1)
-            {
+            {                
                 view = "PedidosEspera";
             }
             return RedirectToAction(view);
         }
 
-        public RedirectToRouteResult MoverTodas(string estado, string cliente)
+        public RedirectToRouteResult MoverTodas(string estado, string cliente, string ss)
         {
-            long idEmpresa = (long)Session["worker"];
-            string view = "PedidosProceso";
-            int est = int.Parse(estado);
-            if (est == 2)
+            long IDEmpresa = (long)Session["worker"];
+            int status = int.Parse(estado);
+
+            IEnumerable<Pedido> listaPedidos = db.getPedidos(IDEmpresa, status).Where(x => x.IDCliente == long.Parse(cliente));
+            foreach (Pedido pedido in listaPedidos)
             {
-                view = "PedidosTerminadas";
+                if (status == 1)
+                {
+                    db.cambiarEstadoPedido(pedido);                   
+                }
+                else if (status == 2)
+                {
+                    if (ss != "" && pedido.Cliente.SS == long.Parse(ss))
+                    {
+                        db.cambiarEstadoPedido(pedido);
+                    }
+                    else
+                    {
+                        TempData["errorTodos"] = "El cliente no es correcto";
+                        return RedirectToAction("PedidosProceso");
+                    }                    
+                }
+                else
+                {
+                    return RedirectToAction("PedidosEspera");
+                }
             }
 
-            IEnumerable<Pedido> listaPedidos = db.getPedidos(idEmpresa, est).Where(x => x.IDCliente == long.Parse(cliente));
-            foreach (Pedido s in listaPedidos)
-                db.cambiarEstadoPedido(s.IDPedido, s.Estado);
-            return RedirectToAction(view);
+            if(status == 1)
+            {
+                return RedirectToAction("PedidosProceso");
+            }
+            else
+            {
+                return RedirectToAction("PedidosTerminadas");
+            }            
         }        
 
         public RedirectToRouteResult BorrarTodas(string estado, string cliente)

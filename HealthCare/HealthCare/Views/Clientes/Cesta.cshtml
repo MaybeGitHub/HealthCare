@@ -59,6 +59,10 @@
         total += parseFloat(el.innerHTML.replace(',','.'));
     })
 
+    total = Number((total).toFixed(1));
+    total = String(total);
+    total = total.replace(".", ",");
+
     $("#total").text(total);
 </script>
 
